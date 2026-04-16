@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #16A34A;
+  --color-primary-dark: #15803D;
+  --color-accent: #F97316;
+  --color-accent-dark: #EA6C0A;
+  --color-surface: #F8FAFC;
+  --color-muted: #6B7280;
+  --color-border: #E5E7EB;
+}
+
+body {
+  background-color: #ffffff;
+  color: #111827;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4 {
+  color: #111827;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.prose h2 { font-size: 1.5rem; }
+.prose h3 { font-size: 1.25rem; }
+
+.prose p {
+  margin-bottom: 1.25rem;
+  line-height: 1.75;
+  color: #374151;
+}
+
+.prose ul,
+.prose ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.prose ul { list-style-type: disc; }
+.prose ol { list-style-type: decimal; }
+
+.prose li {
+  margin-bottom: 0.4rem;
+  line-height: 1.75;
+  color: #374151;
+}
+
+.prose a {
+  color: #16A34A;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+.prose blockquote {
+  border-left: 4px solid #16A34A;
+  padding-left: 1rem;
+  color: #6B7280;
+  font-style: italic;
+  margin: 1.5rem 0;
+}
