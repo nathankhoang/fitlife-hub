@@ -4,28 +4,17 @@
       <stop offset="0%" stop-color="#7C2D12"/>
       <stop offset="100%" stop-color="#9A3412"/>
     </linearGradient>
-    <radialGradient id="glow" cx="80%" cy="20%" r="60%">
-      <stop offset="0%" stop-color="#FB923C" stop-opacity="0.4"/>
+    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FB923C" stop-opacity="0.45"/>
       <stop offset="100%" stop-color="#FB923C" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="800" height="500" fill="url(#bg)"/>
   <rect width="800" height="500" fill="url(#glow)"/>
-  <g transform="translate(400 250)" stroke="#FAFAFA" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.95">
-    <!-- Head -->
-    <circle cx="42" cy="-95" r="26" fill="#FAFAFA" stroke="none"/>
-    <!-- Torso (leaning forward) -->
-    <line x1="30" y1="-69" x2="-16" y2="24" stroke-width="15"/>
-    <!-- Forward arm (reaching out ahead) -->
-    <line x1="14" y1="-44" x2="80" y2="-72" stroke-width="12"/>
-    <!-- Back arm (swinging behind) -->
-    <line x1="4" y1="-54" x2="-60" y2="-20" stroke-width="12"/>
-    <!-- Forward leg (long stride) -->
-    <line x1="-16" y1="24" x2="50" y2="84" stroke-width="15"/>
-    <!-- Back leg (pushed behind) -->
-    <line x1="-16" y1="24" x2="-78" y2="60" stroke-width="15"/>
-    <!-- Front foot -->
-    <line x1="50" y1="84" x2="80" y2="94" stroke-width="11"/>
+  <!-- Flame: outer white body + inner orange core -->
+  <g transform="translate(400, 268)">
+    <path d="M 0,88 C -62,76 -90,28 -88,-28 C -86,-75 -60,-102 -36,-116 C -18,-126 0,-130 0,-130 C 0,-130 18,-126 36,-116 C 60,-102 86,-75 88,-28 C 90,28 62,76 0,88 Z" fill="#FAFAFA" opacity="0.95"/>
+    <path d="M 0,52 C -34,28 -46,-18 -28,-60 C -15,-86 0,-98 0,-98 C 0,-98 15,-86 28,-60 C 46,-18 34,28 0,52 Z" fill="#FB923C" opacity="0.85"/>
   </g>
   <text x="40" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#FAFAFA" letter-spacing="3" opacity="0.85">WEIGHT LOSS</text>
 </svg>
