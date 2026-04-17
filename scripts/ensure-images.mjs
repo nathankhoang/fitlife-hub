@@ -50,6 +50,7 @@ const CATEGORY_HINTS = {
 };
 
 const SLUG_KEYWORDS = {
+  // — already-good posts (kept for completeness) —
   "best-creatine-for-beginners": ["creatine supplement", "protein powder", "gym"],
   "hiit-workout-plan-beginners": ["hiit workout", "running", "exercise"],
   "how-to-lose-belly-fat-30-day-plan-beginners": ["running exercise", "fitness", "healthy lifestyle"],
@@ -63,15 +64,26 @@ const SLUG_KEYWORDS = {
   "how-to-get-bigger-arms-beginner-guide": ["biceps dumbbell", "gym weights", "bodybuilding"],
   "yoga-for-beginners-complete-starter-guide": ["yoga pose", "yoga", "meditation"],
   "breathing-techniques-stress-relief": ["meditation", "yoga", "relaxation"],
-  "kettlebell-workout-for-beginners": ["kettlebell", "gym weights", "exercise"],
-  "creatine-monohydrate-review-2026": ["creatine supplement", "powder", "gym"],
+  "fat-loss-vs-weight-loss-difference": ["scale weight", "fitness running", "healthy lifestyle"],
   "intermittent-fasting-for-beginners-16-8": ["clock food", "healthy food", "plate"],
   "how-to-build-stronger-legs-beginners": ["squat exercise", "legs gym", "weightlifting"],
-  "calorie-counting-for-beginners": ["healthy food", "measuring food", "nutrition"],
   "best-pre-workout-for-beginners-review": ["pre workout", "supplement powder", "gym"],
-  "resistance-band-workout-12-exercises": ["resistance band", "exercise band", "fitness"],
-  "fat-loss-vs-weight-loss-difference": ["scale weight", "fitness running", "healthy lifestyle"],
-  "how-to-sleep-better-athletes": ["sleep bed", "sleeping", "rest"],
+  // — fixed queries for previously bad images —
+  "best-pre-workout-supplements": ["gym workout training", "weightlifting barbell", "fitness athlete workout"],
+  "best-creatine-supplements": ["gym strength training", "barbell weightlifting", "dumbbell workout gym"],
+  "best-multivitamins-athletes": ["athlete running track", "sports fitness running", "jogging exercise athlete"],
+  "best-protein-powders-2025": ["protein tub scoop gym", "gym nutrition supplement bottle", "fitness drink muscle gym"],
+  "calorie-counting-for-beginners": ["salad healthy green plate", "fresh vegetables healthy diet", "colorful salad bowl"],
+  "creatine-monohydrate-review-2026": ["gym barbell weights", "strength training workout", "weightlifting muscle"],
+  "how-to-sleep-better-athletes": ["woman sleeping white bed", "person resting pillow bedroom", "man asleep modern bed"],
+  "kettlebell-workout-for-beginners": ["kettlebell swing exercise", "kettlebell workout", "kettlebell training gym"],
+  "resistance-band-workout-12-exercises": ["woman resistance band squat", "fitness stretch band workout", "leg exercise band stretch"],
+  "7-day-meal-plan-weight-loss": ["meal prep food bowls", "healthy food containers diet", "vegetables meal prep"],
+  "hiit-vs-steady-state-cardio": ["running sprint cardio", "jogging run fitness", "cardio running exercise"],
+  "home-gym-setup-under-200": ["dumbbell rack home exercise", "home barbell garage gym", "home weights exercise"],
+  "home-workouts-beginners": ["pushup exercise floor", "home exercise workout", "fitness training indoors"],
+  "intermittent-fasting-beginners": ["healthy lunch salad bowl", "morning fruit bowl breakfast", "fresh healthy food eating"],
+  "keto-diet-beginners-guide": ["avocado eggs bacon", "low carb keto food", "keto diet avocado"],
 };
 
 function buildQueryCandidates(slug, title, category) {
@@ -88,6 +100,31 @@ function buildQueryCandidates(slug, title, category) {
   if (CATEGORY_HINTS[category]) candidates.push(CATEGORY_HINTS[category]);
   candidates.push("fitness");
   return [...new Set(candidates)];
+}
+
+// Creators/sources known to dominate Openverse results with irrelevant content.
+// These are legitimate CC-licensed photographers, but their material doesn't fit
+// a fitness blog (Indian food, historical archives, sports conferences, etc.).
+const BLOCKED_CREATORS = new Set([
+  "sumita roy dutta",
+  "biswarup ganguly",
+  "oketch michael eriya",
+  "sportsmedcon",
+  "library of congress",
+  "national library of medicine",
+  "wellcome collection gallery",
+  "internet archive book images",
+  "rawpixel",     // often low-quality clipart
+  "usfws",        // wildlife service — unrelated
+]);
+
+function isBlocked(result) {
+  const creator = (result.creator ?? "").toLowerCase();
+  const source = (result.source ?? "").toLowerCase();
+  for (const blocked of BLOCKED_CREATORS) {
+    if (creator.includes(blocked) || source.includes(blocked)) return true;
+  }
+  return false;
 }
 
 // ---------------------------------------------------------------------------
@@ -110,8 +147,9 @@ async function gatherCandidatePool(queries) {
   const pool = [];
   for (const q of queries) {
     for (const strict of [true, false]) {
-      for (const r of await searchOpenverse(q, { pageSize: 15, strictAspect: strict })) {
+      for (const r of await searchOpenverse(q, { pageSize: 20, strictAspect: strict })) {
         if (seen.has(r.id)) continue;
+        if (isBlocked(r)) continue;
         if (r.width < 900 || r.height < 500) continue;
         const ratio = r.width / r.height;
         if (ratio < (strict ? 1.2 : 0.95)) continue;
