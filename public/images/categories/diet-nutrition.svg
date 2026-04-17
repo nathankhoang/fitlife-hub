@@ -4,16 +4,20 @@
       <stop offset="0%" stop-color="#064E3B"/>
       <stop offset="100%" stop-color="#065F46"/>
     </linearGradient>
-    <radialGradient id="glow" cx="20%" cy="80%" r="60%">
+    <radialGradient id="glow" cx="50%" cy="30%" r="60%">
       <stop offset="0%" stop-color="#34D399" stop-opacity="0.4"/>
       <stop offset="100%" stop-color="#34D399" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="800" height="500" fill="url(#bg)"/>
   <rect width="800" height="500" fill="url(#glow)"/>
-  <g transform="translate(400 250)" fill="#FAFAFA" opacity="0.95">
-    <path d="M -90 -60 C -90 -130, 0 -150, 80 -110 C 110 -90, 110 -50, 90 -10 C 60 50, 0 100, -50 110 C -100 110, -120 60, -110 0 C -105 -25, -95 -50, -90 -60 Z"/>
-    <path d="M 30 -60 C 0 -20, -30 30, -60 80" stroke="#064E3B" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <g transform="translate(400 265)">
+    <!-- Apple body: two lobes at top meet at centre dip, round bottom -->
+    <path d="M 0 -52 C -22 -90 -80 -84 -82 -38 C -84 8 -70 60 -38 80 C -18 92 0 84 0 84 C 0 84 18 92 38 80 C 70 60 84 8 82 -38 C 80 -84 22 -90 0 -52 Z" fill="#FAFAFA" opacity="0.95"/>
+    <!-- Stem -->
+    <path d="M 7 -55 C 14 -82 30 -98 28 -94" stroke="#34D399" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <!-- Leaf -->
+    <path d="M 24 -95 C 48 -115 72 -103 60 -80 C 54 -68 28 -76 24 -95 Z" fill="#34D399"/>
   </g>
   <text x="40" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#FAFAFA" letter-spacing="3" opacity="0.85">DIET &amp; NUTRITION</text>
 </svg>
