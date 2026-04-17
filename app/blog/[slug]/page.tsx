@@ -72,14 +72,15 @@ export default async function ArticlePage({ params }: Props) {
     ? heroImage
     : `${SITE_URL}${heroImage.startsWith("/") ? "" : "/"}${heroImage}`;
   const pageUrl = `${SITE_URL}/blog/${article.slug}`;
+  const publishedIso = new Date(article.date).toISOString();
 
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: article.title,
     description: article.description,
-    datePublished: article.date,
-    dateModified: article.date,
+    datePublished: publishedIso,
+    dateModified: publishedIso,
     image: absoluteHeroImage,
     mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
     author: {
