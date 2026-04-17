@@ -36,12 +36,25 @@ export const metadata: Metadata = {
   },
 };
 
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "LeanBodyEngine",
+  url: SITE_URL,
+  logo: `${SITE_URL}/opengraph-image`,
+  description: siteDescription,
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={geist.className}>
       <body className="min-h-screen flex flex-col bg-white text-[#0A0A0A] antialiased">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
         <Navbar />
         <main className="flex-1">{children}</main>
         <Footer />
