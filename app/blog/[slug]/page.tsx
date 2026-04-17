@@ -6,7 +6,9 @@ import {
   getAllArticles,
   getRelatedArticles,
   formatDate,
+  categoryLabels,
 } from "@/lib/articles";
+import { SITE_URL } from "@/lib/site";
 import CategoryBadge from "@/components/CategoryBadge";
 import ArticleCard from "@/components/ArticleCard";
 import AffiliateProductCard from "@/components/AffiliateProductCard";
@@ -66,26 +68,60 @@ export default async function ArticlePage({ params }: Props) {
 
   const related = await getRelatedArticles(slug, article.category);
   const heroImage = article.image || `/images/categories/${article.category}.svg`;
+  const absoluteHeroImage = heroImage.startsWith("http")
+    ? heroImage
+    : `${SITE_URL}${heroImage.startsWith("/") ? "" : "/"}${heroImage}`;
+  const pageUrl = `${SITE_URL}/blog/${article.slug}`;
 
-  const jsonLd = {
+  const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: article.title,
     description: article.description,
     datePublished: article.date,
-    image: heroImage,
+    dateModified: article.date,
+    image: absoluteHeroImage,
+    mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
+    author: {
+      "@type": "Organization",
+      name: "LeanBodyEngine",
+      url: SITE_URL,
+    },
     publisher: {
       "@type": "Organization",
       name: "LeanBodyEngine",
-      url: "https://fitbodyengine.com",
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/opengraph-image`,
+      },
     },
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: categoryLabels[article.category],
+        item: `${SITE_URL}/category/${article.category}`,
+      },
+      { "@type": "ListItem", position: 3, name: article.title },
+    ],
   };
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">

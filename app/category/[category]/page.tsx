@@ -5,6 +5,7 @@ import {
   categoryLabels,
   type Category,
 } from "@/lib/articles";
+import { SITE_URL } from "@/lib/site";
 import ArticleCard from "@/components/ArticleCard";
 import CategoryBadge from "@/components/CategoryBadge";
 
@@ -46,8 +47,22 @@ export default async function CategoryPage({ params }: Props) {
   const articles = await getArticlesByCategory(cat);
   const label = categoryLabels[cat];
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: label },
+    ],
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       {/* Category hero strip */}
       <div className="aspect-[16/5] rounded-2xl overflow-hidden bg-[#F5F5F5] mb-10 border border-[#E5E5E5]">
         <img
