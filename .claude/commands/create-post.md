@@ -105,7 +105,8 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
 
 3. **Output contract** — the sub-agent must:
    - Write the MDX article (1,000–2,000 words) to `content/drafts/<slug>.mdx` with `image: ""` initially. Follow the exact frontmatter + content structure in §Sub-step D below.
-   - Run `node scripts/generate-thumbnail.mjs --slug "<slug>" --title "<title>" --category <category>` from the project root. The script now pulls real stock photography from **Pexels** (requires `PEXELS_API_KEY` env var) and uses **Claude Haiku 4.5 vision** to pick the best of 4 candidates (requires `ANTHROPIC_API_KEY` env var). It writes hero/OG/Pinterest WebPs and updates frontmatter `image:`, `imageOg:`, `imagePinterest:`, plus `photoCredit:` / `photoCreditUrl:` for Pexels attribution. If the script fails (missing env var, rate limit, no matching photos), proceed anyway — the ArticleCard fallback renders the category SVG.
+   - Run `node scripts/generate-thumbnail.mjs --slug "<slug>" --title "<title>" --category <category>` from the project root. The script pulls real stock photography from **Pexels** (requires `PEXELS_API_KEY` env var) and uses **Claude Haiku 4.5 vision** to pick the best of 4 candidates (requires `ANTHROPIC_API_KEY` env var). It writes hero/OG/Pinterest WebPs and updates frontmatter `image:`, `imageOg:`, `imagePinterest:`, plus `photoCredit:` / `photoCreditUrl:` for Pexels attribution.
+   - **Image generation is required.** If the command exits non-zero or returns `"ok": false`, retry up to **2 more times** (3 attempts total) before giving up. On final failure, set `"image_status": "missing"` in the returned JSON so the parent can flag it — but still complete the post. Do **not** proceed with an empty `image:` field without attempting all retries.
    - Copy `content/drafts/<slug>.mdx` to `content/articles/<slug>.mdx` (publish).
    - **Do NOT touch `data/queue.json`** — race-unsafe with 10 parallel agents.
    - **Return** (as the final message to the parent) a single JSON object with shape:
@@ -130,6 +131,7 @@ Each sub-agent returns one JSON object. Parse all 10 results.
 
 - If a sub-agent failed or returned invalid JSON, note it in the final report but do NOT block the batch — proceed with the valid results.
 - If two sub-agents somehow produced the same slug (race on topic picking), rename the later one with a `-v2` suffix before queueing (and rename the MDX file accordingly).
+- If a result contains `"image_status": "missing"`, flag that slug in the final report under a **"Posts needing images"** section so the user can run `npm run ensure:images -- --slug <slug>` to backfill later.
 
 ---
 
