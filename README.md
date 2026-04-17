@@ -1,4 +1,4 @@
-# FitLife Hub
+# LeanBodyEngine
 
 An opinionated, evidence-first fitness and wellness content site. Static-first MDX articles, Vercel-hosted, with a built-in editorial queue that publishes on a schedule.
 

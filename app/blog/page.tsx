@@ -6,7 +6,7 @@ import ArticleCard from "@/components/ArticleCard";
 export const metadata: Metadata = {
   title: "All Articles",
   description:
-    "Browse all fitness, supplement, diet, and wellness articles on FitBodyEngine.",
+    "Browse all fitness, supplement, diet, and wellness articles on LeanBodyEngine.",
 };
 
 export default async function BlogPage({
