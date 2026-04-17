@@ -18,10 +18,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
   if (!(category in categoryLabels)) return {};
   const label = categoryLabels[category as Category];
+  const title = `${label} Articles`;
+  const description = `Browse all ${label.toLowerCase()} articles on LeanBodyEngine — expert tips, guides, and reviews.`;
 
   return {
-    title: `${label} Articles`,
-    description: `Browse all ${label.toLowerCase()} articles on LeanBodyEngine — expert tips, guides, and reviews.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `/category/${category}`,
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
   };
 }
 

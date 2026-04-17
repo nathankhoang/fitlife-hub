@@ -3,21 +3,33 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { SITE_URL } from "@/lib/site";
 
 const geist = Geist({ subsets: ["latin"] });
 
+const siteTitle = "LeanBodyEngine — Fitness, Health & Wellness";
+const siteDescription =
+  "Expert fitness tips, supplement reviews, workout guides, and diet plans to help you build a healthier life.";
+
 export const metadata: Metadata = {
   title: {
-    default: "LeanBodyEngine — Fitness, Health & Wellness",
+    default: siteTitle,
     template: "%s | LeanBodyEngine",
   },
-  description:
-    "Expert fitness tips, supplement reviews, workout guides, and diet plans to help you build a healthier life.",
-  metadataBase: new URL("https://fitbodyengine.com"),
+  description: siteDescription,
+  metadataBase: new URL(SITE_URL),
   openGraph: {
     siteName: "LeanBodyEngine",
+    title: siteTitle,
+    description: siteDescription,
+    url: "/",
     type: "website",
     locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
   },
   verification: {
     google: "BahZBtGY8W-XRLIR-DrkeYGYjdlYc00nQgzWGs9pc7I",
