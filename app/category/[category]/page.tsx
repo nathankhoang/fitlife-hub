@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `${label} Articles`,
-    description: `Browse all ${label.toLowerCase()} articles on FitBodyEngine — expert tips, guides, and reviews.`,
+    description: `Browse all ${label.toLowerCase()} articles on LeanBodyEngine — expert tips, guides, and reviews.`,
   };
 }
 

@@ -76,7 +76,7 @@ export default async function ArticlePage({ params }: Props) {
     image: heroImage,
     publisher: {
       "@type": "Organization",
-      name: "FitBodyEngine",
+      name: "LeanBodyEngine",
       url: "https://fitbodyengine.com",
     },
   };

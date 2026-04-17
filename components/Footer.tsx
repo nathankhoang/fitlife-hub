@@ -66,11 +66,11 @@ export default function Footer() {
 
         <div className="border-t border-[#262626] mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
           <p className="text-[#737373] text-xs">
-            © {new Date().getFullYear()} FitBodyEngine. All rights reserved.
+            © {new Date().getFullYear()} LeanBodyEngine. All rights reserved.
           </p>
           <p className="text-[#737373] text-xs text-center md:text-right max-w-xl">
             <strong className="text-[#A3A3A3]">Affiliate disclosure:</strong>{" "}
-            FitBodyEngine participates in Amazon Associates and other affiliate
+            LeanBodyEngine participates in Amazon Associates and other affiliate
             programs. We may earn a commission on purchases made through our
             links at no extra cost to you.
           </p>
