@@ -2,7 +2,7 @@
 
 An opinionated, evidence-first fitness and wellness content site. Static-first MDX articles, Vercel-hosted, with a built-in editorial queue that publishes on a schedule.
 
-**Live:** [fitlife-hub-omega.vercel.app](https://fitlife-hub-omega.vercel.app)
+**Live:** [leanbodyengine.com](https://leanbodyengine.com)
 
 ## Stack
 

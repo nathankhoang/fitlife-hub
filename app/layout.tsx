@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   },
   description:
     "Expert fitness tips, supplement reviews, workout guides, and diet plans to help you build a healthier life.",
-  metadataBase: new URL("https://fitbodyengine.com"),
+  metadataBase: new URL("https://leanbodyengine.com"),
   openGraph: {
     siteName: "FitBodyEngine",
     type: "website",

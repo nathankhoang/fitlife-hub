@@ -1,7 +1,8 @@
 import { MetadataRoute } from "next";
 import { getAllArticles, categoryLabels } from "@/lib/articles";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://leanbodyengine.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articles = await getAllArticles();
