@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed:blob": "node --env-file=.env.local scripts/seed-blob.mjs"
+    "seed:blob": "node --env-file=.env.local scripts/seed-blob.mjs",
+    "ensure:images": "node --env-file=.env.local scripts/ensure-images.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.68.0",
