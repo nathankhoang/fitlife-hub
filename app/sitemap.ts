@@ -1,20 +1,19 @@
 import { MetadataRoute } from "next";
 import { getAllArticles, categoryLabels } from "@/lib/articles";
-
-const BASE_URL = "http://localhost:3000";
+import { SITE_URL } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articles = await getAllArticles();
 
   const articleUrls = articles.map((article) => ({
-    url: `${BASE_URL}/blog/${article.slug}`,
+    url: `${SITE_URL}/blog/${article.slug}`,
     lastModified: new Date(article.date),
     changeFrequency: "monthly" as const,
     priority: 0.8,
   }));
 
   const categoryUrls = Object.keys(categoryLabels).map((cat) => ({
-    url: `${BASE_URL}/category/${cat}`,
+    url: `${SITE_URL}/category/${cat}`,
     lastModified: new Date(),
     changeFrequency: "weekly" as const,
     priority: 0.6,
@@ -22,19 +21,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     {
-      url: BASE_URL,
+      url: SITE_URL,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
     },
     {
-      url: `${BASE_URL}/blog`,
+      url: `${SITE_URL}/blog`,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 0.9,
     },
     {
-      url: `${BASE_URL}/about`,
+      url: `${SITE_URL}/about`,
       lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 0.3,
