@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     description: blogDescription,
     url: "/blog",
     type: "website",
+    images: ["/opengraph-image"],
   },
   twitter: {
     card: "summary_large_image",
