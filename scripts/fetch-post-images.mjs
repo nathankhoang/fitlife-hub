@@ -101,7 +101,7 @@ async function searchOpenverse(query, { pageSize = 12, strictAspect = true } = {
   const url = "https://api.openverse.org/v1/images/?" + new URLSearchParams(params);
 
   const res = await fetch(url, {
-    headers: { "User-Agent": "fitbodyengine-image-fetcher/1.0" },
+    headers: { "User-Agent": "leanbodyengine-image-fetcher/1.0" },
     signal: AbortSignal.timeout(20_000),
   });
   if (!res.ok) throw new Error(`Openverse HTTP ${res.status}: ${await res.text()}`);
@@ -156,7 +156,7 @@ async function fetchImageBuffer(url, { attempts = 3, timeout = 30_000 } = {}) {
   for (let i = 1; i <= attempts; i++) {
     try {
       const res = await fetch(url, {
-        headers: { "User-Agent": "fitbodyengine-image-fetcher/1.0" },
+        headers: { "User-Agent": "leanbodyengine-image-fetcher/1.0" },
         signal: AbortSignal.timeout(timeout),
       });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
