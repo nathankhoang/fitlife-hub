@@ -11,10 +11,12 @@
     "ensure:images": "node --env-file=.env.local scripts/ensure-images.mjs"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.64",
     "@anthropic-ai/sdk": "^0.68.0",
     "@fontsource/geist-sans": "^5.2.5",
     "@resvg/resvg-js": "^2.6.2",
     "@vercel/blob": "^2.3.3",
+    "ai": "^6.0.168",
     "gray-matter": "^4.0.3",
     "next": "16.2.4",
     "next-mdx-remote": "^6.0.0",
