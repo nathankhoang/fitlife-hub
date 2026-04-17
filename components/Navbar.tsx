@@ -16,12 +16,12 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-[#E5E7EB] shadow-sm">
+    <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-[#E5E5E5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-[#16A34A]">FitLife</span>
-            <span className="text-2xl font-bold text-[#111827]">Hub</span>
+          <Link href="/" className="flex items-center gap-2 group">
+            <span className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white text-[11px] font-bold tracking-tight">FBE</span>
+            <span className="text-lg font-semibold text-[#0A0A0A] tracking-tight">FitBodyEngine</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-1">
@@ -29,7 +29,7 @@ export default function Navbar() {
               <Link
                 key={cat.slug}
                 href={`/category/${cat.slug}`}
-                className="px-3 py-2 text-sm font-medium text-[#6B7280] hover:text-[#16A34A] hover:bg-[#F8FAFC] rounded-md transition-colors"
+                className="px-3 py-2 text-sm font-medium text-[#525252] hover:text-[#0A0A0A] rounded-md transition-colors"
               >
                 {cat.label}
               </Link>
@@ -39,20 +39,20 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             <Link
               href="/blog"
-              className="text-sm font-medium text-[#6B7280] hover:text-[#16A34A] transition-colors"
+              className="text-sm font-medium text-[#525252] hover:text-[#0A0A0A] transition-colors"
             >
               All Articles
             </Link>
             <Link
               href="/about"
-              className="text-sm font-medium text-[#6B7280] hover:text-[#16A34A] transition-colors"
+              className="text-sm font-medium text-[#525252] hover:text-[#0A0A0A] transition-colors"
             >
               About
             </Link>
           </div>
 
           <button
-            className="md:hidden p-2 rounded-md text-[#6B7280] hover:text-[#111827] hover:bg-[#F8FAFC]"
+            className="md:hidden p-2 rounded-md text-[#525252] hover:text-[#0A0A0A] hover:bg-[#FAFAFA]"
             onClick={() => setMenuOpen(!menuOpen)}
             aria-label="Toggle menu"
           >
@@ -67,14 +67,14 @@ export default function Navbar() {
         </div>
 
         {menuOpen && (
-          <div className="md:hidden border-t border-[#E5E7EB] py-3">
+          <div className="md:hidden border-t border-[#E5E5E5] py-3">
             <div className="flex flex-col gap-1">
               {categories.map((cat) => (
                 <Link
                   key={cat.slug}
                   href={`/category/${cat.slug}`}
                   onClick={() => setMenuOpen(false)}
-                  className="px-3 py-2 text-sm font-medium text-[#6B7280] hover:text-[#16A34A] hover:bg-[#F8FAFC] rounded-md transition-colors"
+                  className="px-3 py-2 text-sm font-medium text-[#525252] hover:text-[#0A0A0A] hover:bg-[#FAFAFA] rounded-md transition-colors"
                 >
                   {cat.label}
                 </Link>
@@ -82,14 +82,14 @@ export default function Navbar() {
               <Link
                 href="/blog"
                 onClick={() => setMenuOpen(false)}
-                className="px-3 py-2 text-sm font-medium text-[#6B7280] hover:text-[#16A34A] hover:bg-[#F8FAFC] rounded-md transition-colors"
+                className="px-3 py-2 text-sm font-medium text-[#525252] hover:text-[#0A0A0A] hover:bg-[#FAFAFA] rounded-md transition-colors"
               >
                 All Articles
               </Link>
               <Link
                 href="/about"
                 onClick={() => setMenuOpen(false)}
-                className="px-3 py-2 text-sm font-medium text-[#6B7280] hover:text-[#16A34A] hover:bg-[#F8FAFC] rounded-md transition-colors"
+                className="px-3 py-2 text-sm font-medium text-[#525252] hover:text-[#0A0A0A] hover:bg-[#FAFAFA] rounded-md transition-colors"
               >
                 About
               </Link>

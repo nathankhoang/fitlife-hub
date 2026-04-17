@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Creatine powder">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FAFAFA"/>
+      <stop offset="100%" stop-color="#F5F5F5"/>
+    </linearGradient>
+    <radialGradient id="accent" cx="100%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#F59E0B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <rect width="400" height="400" fill="url(#accent)"/>
+  <g transform="translate(200 210)">
+    <path d="M -100 -90 L 100 -90 L 90 110 L -90 110 Z" fill="#FAFAFA" stroke="#0F172A" stroke-width="3"/>
+    <rect x="-100" y="-100" width="200" height="20" rx="6" fill="#0F172A"/>
+    <text x="0" y="-35" text-anchor="middle" font-family="system-ui, sans-serif" font-size="22" font-weight="800" fill="#0F172A" letter-spacing="1">CREATINE</text>
+    <text x="0" y="-12" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="600" fill="#525252" letter-spacing="2">MONOHYDRATE</text>
+    <line x1="-50" y1="5" x2="50" y2="5" stroke="#F59E0B" stroke-width="3"/>
+    <text x="0" y="35" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#525252" letter-spacing="2">5G PER SCOOP</text>
+    <text x="0" y="80" text-anchor="middle" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#F59E0B" letter-spacing="3">PURE</text>
+  </g>
+</svg>

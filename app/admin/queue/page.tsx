@@ -1,6 +1,14 @@
+import Link from "next/link";
 import { getQueue, QueueEntry } from "@/lib/queue";
 import { categoryLabels } from "@/lib/articles";
-import { publishPost, deleteFromQueue } from "./actions";
+import {
+  publishPost,
+  schedulePost,
+  unschedulePost,
+  deleteFromQueue,
+} from "./actions";
+
+export const dynamic = "force-dynamic";
 
 function StatusBadge({ status }: { status: QueueEntry["status"] }) {
   const styles = {
@@ -13,6 +21,12 @@ function StatusBadge({ status }: { status: QueueEntry["status"] }) {
       {status.charAt(0).toUpperCase() + status.slice(1)}
     </span>
   );
+}
+
+function defaultScheduleValue(): string {
+  const d = new Date(Date.now() + 60 * 60 * 1000);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
 function PostCard({ entry }: { entry: QueueEntry }) {
@@ -33,16 +47,24 @@ function PostCard({ entry }: { entry: QueueEntry }) {
 
       {entry.scheduledDate && (
         <p className="text-xs text-gray-400">
-          Scheduled: {new Date(entry.scheduledDate).toLocaleDateString()}
+          Scheduled: {new Date(entry.scheduledDate).toLocaleString()}
         </p>
       )}
       {entry.publishedDate && (
         <p className="text-xs text-gray-400">
-          Published: {new Date(entry.publishedDate).toLocaleDateString()}
+          Published: {new Date(entry.publishedDate).toLocaleString()}
         </p>
       )}
 
-      <div className="flex gap-2 pt-1">
+      <div className="flex flex-wrap gap-2 pt-1 items-center">
+        <Link
+          href={`/admin/queue/${entry.slug}/preview`}
+          target="_blank"
+          className="text-xs text-gray-700 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-md font-medium"
+        >
+          Preview →
+        </Link>
+
         {entry.status !== "published" && (
           <form action={publishPost.bind(null, entry.slug)}>
             <button
@@ -53,6 +75,18 @@ function PostCard({ entry }: { entry: QueueEntry }) {
             </button>
           </form>
         )}
+
+        {entry.status === "scheduled" && (
+          <form action={unschedulePost.bind(null, entry.slug)}>
+            <button
+              type="submit"
+              className="text-xs text-blue-600 hover:text-blue-800 px-2 py-1.5"
+            >
+              Unschedule
+            </button>
+          </form>
+        )}
+
         {entry.status === "published" && (
           <a
             href={`/blog/${entry.slug}`}
@@ -62,6 +96,7 @@ function PostCard({ entry }: { entry: QueueEntry }) {
             View post →
           </a>
         )}
+
         <form action={deleteFromQueue.bind(null, entry.slug)}>
           <button
             type="submit"
@@ -71,6 +106,32 @@ function PostCard({ entry }: { entry: QueueEntry }) {
           </button>
         </form>
       </div>
+
+      {entry.status === "draft" && (
+        <details className="text-xs">
+          <summary className="cursor-pointer text-blue-600 hover:underline select-none">
+            Schedule for later
+          </summary>
+          <form
+            action={schedulePost.bind(null, entry.slug)}
+            className="mt-2 flex flex-wrap gap-2 items-center"
+          >
+            <input
+              type="datetime-local"
+              name="scheduledDate"
+              required
+              defaultValue={defaultScheduleValue()}
+              className="text-xs border border-gray-300 rounded px-2 py-1"
+            />
+            <button
+              type="submit"
+              className="text-xs bg-blue-500 text-white px-3 py-1.5 rounded-md hover:bg-blue-600 font-medium"
+            >
+              Schedule
+            </button>
+          </form>
+        </details>
+      )}
     </div>
   );
 }
@@ -101,8 +162,8 @@ function Column({
   );
 }
 
-export default function AdminQueuePage() {
-  const all = getQueue();
+export default async function AdminQueuePage() {
+  const all = await getQueue();
   const drafts = all.filter((e) => e.status === "draft");
   const scheduled = all.filter((e) => e.status === "scheduled");
   const published = all.filter((e) => e.status === "published");

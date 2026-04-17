@@ -3,8 +3,8 @@ import { getAllArticles, categoryLabels } from "@/lib/articles";
 
 const BASE_URL = "http://localhost:3000";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const articles = getAllArticles();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const articles = await getAllArticles();
 
   const articleUrls = articles.map((article) => ({
     url: `${BASE_URL}/blog/${article.slug}`,

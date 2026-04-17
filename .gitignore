@@ -39,3 +39,18 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
+.env*.local
+
+# Claude / agent runtime
+.claude/settings.local.json
+.claude/hooks/
+.claude/scheduled_tasks.lock
+
+# Agent telemetry / runtime state
+/data/telemetry/
+/assets/
+
+# Local tooling backups
+*.bak

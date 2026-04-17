@@ -1,32 +1,46 @@
 "use server";
 
-import fs from "fs";
-import path from "path";
-import { revalidatePath } from "next/cache";
-import { getQueue, updateQueueEntry, removeFromQueue } from "@/lib/queue";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { updateQueueEntry, removeFromQueue } from "@/lib/queue";
+import { publishSlug } from "@/lib/scheduler";
 
 export async function publishPost(slug: string): Promise<void> {
-  const draftsDir = path.join(process.cwd(), "content", "drafts");
-  const articlesDir = path.join(process.cwd(), "content", "articles");
-  const src = path.join(draftsDir, `${slug}.mdx`);
-  const dest = path.join(articlesDir, `${slug}.mdx`);
-
-  if (!fs.existsSync(src)) {
-    throw new Error(`Draft not found: content/drafts/${slug}.mdx`);
-  }
-
-  fs.copyFileSync(src, dest);
-  updateQueueEntry(slug, {
-    status: "published",
-    publishedDate: new Date().toISOString(),
-  });
-
+  await publishSlug(slug);
   revalidatePath("/admin/queue");
   revalidatePath("/blog");
   revalidatePath(`/blog/${slug}`);
+  revalidatePath("/");
+}
+
+export async function schedulePost(
+  slug: string,
+  formData: FormData,
+): Promise<void> {
+  const raw = formData.get("scheduledDate");
+  if (typeof raw !== "string" || raw === "") {
+    throw new Error("scheduledDate is required");
+  }
+  const isoDate = new Date(raw).toISOString();
+  await updateQueueEntry(slug, {
+    status: "scheduled",
+    scheduledDate: isoDate,
+  });
+  revalidatePath("/admin/queue");
+}
+
+export async function unschedulePost(slug: string): Promise<void> {
+  await updateQueueEntry(slug, {
+    status: "draft",
+    scheduledDate: null,
+  });
+  revalidatePath("/admin/queue");
 }
 
 export async function deleteFromQueue(slug: string): Promise<void> {
-  removeFromQueue(slug);
+  await removeFromQueue(slug);
+  revalidateTag(`article:${slug}`, "max");
+  revalidateTag(`draft:${slug}`, "max");
   revalidatePath("/admin/queue");
+  revalidatePath("/blog");
+  revalidatePath("/");
 }

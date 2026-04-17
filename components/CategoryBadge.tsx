@@ -2,12 +2,12 @@ import Link from "next/link";
 import { type Category, categoryLabels } from "@/lib/articles";
 
 const categoryColors: Record<Category, string> = {
-  "home-workouts": "bg-blue-100 text-blue-700",
-  supplements: "bg-purple-100 text-purple-700",
-  "diet-nutrition": "bg-yellow-100 text-yellow-700",
-  "weight-loss": "bg-orange-100 text-orange-700",
-  "muscle-building": "bg-red-100 text-red-700",
-  wellness: "bg-green-100 text-green-700",
+  "home-workouts": "bg-emerald-50 text-emerald-800 ring-emerald-200/60",
+  supplements: "bg-violet-50 text-violet-800 ring-violet-200/60",
+  "diet-nutrition": "bg-lime-50 text-lime-800 ring-lime-200/60",
+  "weight-loss": "bg-amber-50 text-amber-800 ring-amber-200/60",
+  "muscle-building": "bg-rose-50 text-rose-800 ring-rose-200/60",
+  wellness: "bg-teal-50 text-teal-800 ring-teal-200/60",
 };
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 };
 
 export default function CategoryBadge({ category, linkable = true }: Props) {
-  const className = `inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${categoryColors[category]}`;
+  const className = `inline-block text-xs font-semibold px-2.5 py-1 rounded-full ring-1 ${categoryColors[category]}`;
   const label = categoryLabels[category];
 
   if (linkable) {

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Resistance bands">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FAFAFA"/>
+      <stop offset="100%" stop-color="#F5F5F5"/>
+    </linearGradient>
+    <radialGradient id="accent" cx="100%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#06B6D4" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#06B6D4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <rect width="400" height="400" fill="url(#accent)"/>
+  <g transform="translate(200 200)" fill="none" stroke-width="14" stroke-linecap="round">
+    <ellipse cx="0" cy="-65" rx="100" ry="14" stroke="#EF4444"/>
+    <ellipse cx="0" cy="-32" rx="100" ry="14" stroke="#F59E0B"/>
+    <ellipse cx="0" cy="0" rx="100" ry="14" stroke="#10B981"/>
+    <ellipse cx="0" cy="32" rx="100" ry="14" stroke="#06B6D4"/>
+    <ellipse cx="0" cy="65" rx="100" ry="14" stroke="#8B5CF6"/>
+  </g>
+  <text x="200" y="370" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#0F172A" letter-spacing="3">RESISTANCE BANDS</text>
+</svg>

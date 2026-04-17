@@ -18,14 +18,22 @@ const mdxComponents = {
 
 type Props = { params: Promise<{ slug: string }> };
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
-  return getAllArticles().map((a) => ({ slug: a.slug }));
+  const articles = await getAllArticles();
+  return articles.map((a) => ({ slug: a.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
   if (!article) return {};
+
+  const ogImage =
+    article.imageOg ||
+    article.image ||
+    `/images/categories/${article.category}.svg`;
 
   return {
     title: article.title,
@@ -35,16 +43,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: article.description,
       type: "article",
       publishedTime: article.date,
+      images: [{ url: ogImage, width: 1200, height: 630 }],
     },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.description,
+      images: [ogImage],
+    },
+    other: article.imagePinterest
+      ? {
+          "pinterest:image": article.imagePinterest,
+        }
+      : undefined,
   };
 }
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
+  const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
-  const related = getRelatedArticles(slug, article.category);
+  const related = await getRelatedArticles(slug, article.category);
+  const heroImage = article.image || `/images/categories/${article.category}.svg`;
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -52,10 +73,11 @@ export default async function ArticlePage({ params }: Props) {
     headline: article.title,
     description: article.description,
     datePublished: article.date,
+    image: heroImage,
     publisher: {
       "@type": "Organization",
-      name: "FitLife Hub",
-      url: "http://localhost:3000",
+      name: "FitBodyEngine",
+      url: "https://fitbodyengine.com",
     },
   };
 
@@ -70,20 +92,29 @@ export default async function ArticlePage({ params }: Props) {
         <div className="max-w-3xl mx-auto">
           {/* Article header */}
           <div className="mb-8">
-            <div className="mb-3">
+            <div className="mb-4">
               <CategoryBadge category={article.category} />
             </div>
-            <h1 className="text-3xl md:text-4xl font-bold text-[#111827] leading-tight mb-4">
+            <h1 className="text-3xl md:text-5xl font-semibold text-[#0A0A0A] leading-[1.1] tracking-tight mb-5">
               {article.title}
             </h1>
-            <p className="text-lg text-[#6B7280] leading-relaxed mb-4">
+            <p className="text-lg text-[#525252] leading-relaxed mb-6">
               {article.description}
             </p>
-            <div className="flex items-center gap-4 text-sm text-[#9CA3AF] border-t border-b border-[#F3F4F6] py-3">
+            <div className="flex items-center gap-4 text-sm text-[#A3A3A3] border-t border-b border-[#F5F5F5] py-3">
               <span>{formatDate(article.date)}</span>
               <span>·</span>
               <span>{article.readTime} min read</span>
             </div>
+          </div>
+
+          {/* Hero image */}
+          <div className="aspect-[16/10] rounded-2xl overflow-hidden bg-[#F5F5F5] mb-10 border border-[#E5E5E5]">
+            <img
+              src={heroImage}
+              alt=""
+              className="w-full h-full object-cover"
+            />
           </div>
 
           {/* Article content */}
@@ -92,19 +123,19 @@ export default async function ArticlePage({ params }: Props) {
           </div>
 
           {/* Affiliate disclosure */}
-          <div className="mt-10 p-4 bg-[#F8FAFC] border border-[#E5E7EB] rounded-lg text-xs text-[#6B7280]">
-            <strong>Affiliate Disclosure:</strong> Some links in this article
-            are affiliate links. If you purchase through them, we may earn a
-            small commission at no extra cost to you. We only recommend products
-            we genuinely believe in.
+          <div className="mt-12 p-4 bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl text-xs text-[#525252]">
+            <strong className="text-[#0A0A0A]">Affiliate disclosure:</strong>{" "}
+            Some links in this article are affiliate links. If you purchase
+            through them, we may earn a small commission at no extra cost to
+            you. We only recommend products we genuinely believe in.
           </div>
         </div>
 
         {/* Related articles */}
         {related.length > 0 && (
-          <div className="max-w-7xl mx-auto mt-16">
-            <h2 className="text-2xl font-bold text-[#111827] mb-6">
-              Related Articles
+          <div className="max-w-7xl mx-auto mt-20">
+            <h2 className="text-2xl font-semibold text-[#0A0A0A] mb-7 tracking-tight">
+              Related articles
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {related.map((a) => (
@@ -115,7 +146,7 @@ export default async function ArticlePage({ params }: Props) {
         )}
 
         {/* Newsletter */}
-        <div className="max-w-3xl mx-auto mt-14">
+        <div className="max-w-3xl mx-auto mt-16">
           <NewsletterCTA />
         </div>
       </div>

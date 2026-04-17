@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { getAllArticles, categoryLabels, type Category } from "@/lib/articles";
 import ArticleCard from "@/components/ArticleCard";
 
 export const metadata: Metadata = {
   title: "All Articles",
   description:
-    "Browse all fitness, supplement, diet, and wellness articles on FitLife Hub.",
+    "Browse all fitness, supplement, diet, and wellness articles on FitBodyEngine.",
 };
 
 export default async function BlogPage({
@@ -14,7 +15,7 @@ export default async function BlogPage({
   searchParams: Promise<{ category?: string }>;
 }) {
   const { category } = await searchParams;
-  const allArticles = getAllArticles();
+  const allArticles = await getAllArticles();
 
   const filtered =
     category && category in categoryLabels
@@ -24,46 +25,49 @@ export default async function BlogPage({
   const categories = Object.entries(categoryLabels) as [Category, string][];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#111827] mb-2">
-          All Articles
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+      <div className="mb-10">
+        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#A3A3A3] mb-2">
+          Library
+        </p>
+        <h1 className="text-3xl md:text-4xl font-semibold text-[#0A0A0A] mb-2 tracking-tight">
+          All articles
         </h1>
-        <p className="text-[#6B7280]">
+        <p className="text-[#525252]">
           {filtered.length} article{filtered.length !== 1 ? "s" : ""} on
-          fitness, supplements, diet, and wellness
+          fitness, supplements, diet, and wellness.
         </p>
       </div>
 
       {/* Category filter */}
-      <div className="flex flex-wrap gap-2 mb-8">
-        <a
+      <div className="flex flex-wrap gap-2 mb-10">
+        <Link
           href="/blog"
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
+          className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors border ${
             !category
-              ? "bg-[#16A34A] text-white border-[#16A34A]"
-              : "bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#16A34A] hover:text-[#16A34A]"
+              ? "bg-[#0A0A0A] text-white border-[#0A0A0A]"
+              : "bg-white text-[#525252] border-[#E5E5E5] hover:border-[#0A0A0A] hover:text-[#0A0A0A]"
           }`}
         >
           All
-        </a>
+        </Link>
         {categories.map(([slug, label]) => (
-          <a
+          <Link
             key={slug}
             href={`/blog?category=${slug}`}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors border ${
+            className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors border ${
               category === slug
-                ? "bg-[#16A34A] text-white border-[#16A34A]"
-                : "bg-white text-[#6B7280] border-[#E5E7EB] hover:border-[#16A34A] hover:text-[#16A34A]"
+                ? "bg-[#0A0A0A] text-white border-[#0A0A0A]"
+                : "bg-white text-[#525252] border-[#E5E5E5] hover:border-[#0A0A0A] hover:text-[#0A0A0A]"
             }`}
           >
             {label}
-          </a>
+          </Link>
         ))}
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-[#6B7280] text-center py-20">No articles found.</p>
+        <p className="text-[#525252] text-center py-20">No articles found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map((article) => (

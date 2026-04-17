@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Adjustable dumbbells">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FAFAFA"/>
+      <stop offset="100%" stop-color="#F5F5F5"/>
+    </linearGradient>
+    <radialGradient id="accent" cx="100%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#475569" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#475569" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <rect width="400" height="400" fill="url(#accent)"/>
+  <g transform="translate(200 200)">
+    <rect x="-90" y="-12" width="180" height="24" rx="6" fill="#475569"/>
+    <rect x="-130" y="-50" width="40" height="100" rx="8" fill="#0F172A"/>
+    <rect x="-150" y="-35" width="20" height="70" rx="6" fill="#0F172A"/>
+    <rect x="90" y="-50" width="40" height="100" rx="8" fill="#0F172A"/>
+    <rect x="130" y="-35" width="20" height="70" rx="6" fill="#0F172A"/>
+    <text x="0" y="6" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#FAFAFA">52.5 LB</text>
+  </g>
+  <text x="200" y="340" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#0F172A" letter-spacing="3">ADJUSTABLE DUMBBELLS</text>
+</svg>

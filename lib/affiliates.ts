@@ -12,6 +12,7 @@ export type AffiliateProduct = {
 const TAG = "leanbodyengin-20";
 const amz = (asin: string) =>
   `https://www.amazon.com/dp/${asin}?tag=${TAG}`;
+const img = (id: string, ext: "webp" | "svg" = "webp") => `/images/products/${id}.${ext}`;
 
 export const affiliateProducts: Record<string, AffiliateProduct> = {
   "optimum-nutrition-gold-standard": {
@@ -23,6 +24,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$30–$60",
     url: amz("B000QSNYGI"),
     source: "amazon",
+    imageUrl: img("optimum-nutrition-gold-standard"),
   },
   "myprotein-impact-whey": {
     id: "myprotein-impact-whey",
@@ -33,6 +35,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$35–$60",
     url: amz("B099HXNRKK"),
     source: "amazon",
+    imageUrl: img("myprotein-impact-whey"),
   },
   "creatine-monohydrate-bulk": {
     id: "creatine-monohydrate-bulk",
@@ -43,6 +46,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$20–$40",
     url: amz("B00E9M4XEE"),
     source: "amazon",
+    imageUrl: img("creatine-monohydrate-bulk"),
   },
   "cellucor-c4-preworkout": {
     id: "cellucor-c4-preworkout",
@@ -53,6 +57,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$30–$45",
     url: amz("B01N272UAI"),
     source: "amazon",
+    imageUrl: img("cellucor-c4-preworkout"),
   },
   "legion-pulse-preworkout": {
     id: "legion-pulse-preworkout",
@@ -63,6 +68,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$45–$50",
     url: amz("B00QYZ6MLG"),
     source: "amazon",
+    imageUrl: img("legion-pulse-preworkout"),
   },
   "thorne-multivitamin": {
     id: "thorne-multivitamin",
@@ -73,6 +79,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$35–$45",
     url: amz("B09YJ2Q2D1"),
     source: "amazon",
+    imageUrl: img("thorne-multivitamin"),
   },
   "garden-of-life-multivitamin": {
     id: "garden-of-life-multivitamin",
@@ -83,6 +90,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$30–$40",
     url: amz("B00K5NEKT4"),
     source: "amazon",
+    imageUrl: img("garden-of-life-multivitamin"),
   },
   "resistance-bands-set": {
     id: "resistance-bands-set",
@@ -93,6 +101,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$10–$15",
     url: amz("B01AVDVHTI"),
     source: "amazon",
+    imageUrl: img("resistance-bands-set"),
   },
   "adjustable-dumbbells": {
     id: "adjustable-dumbbells",
@@ -103,6 +112,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$300–$400",
     url: amz("B0FRNG2N5H"),
     source: "amazon",
+    imageUrl: img("adjustable-dumbbells"),
   },
   "pull-up-bar": {
     id: "pull-up-bar",
@@ -113,6 +123,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$25–$35",
     url: amz("B001EJMS6K"),
     source: "amazon",
+    imageUrl: img("pull-up-bar"),
   },
   "yoga-mat": {
     id: "yoga-mat",
@@ -123,6 +134,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$80–$120",
     url: amz("B01CGLCGRA"),
     source: "amazon",
+    imageUrl: img("yoga-mat"),
   },
   "foam-roller": {
     id: "foam-roller",
@@ -133,5 +145,6 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$30–$40",
     url: amz("B0040EGNIU"),
     source: "amazon",
+    imageUrl: img("foam-roller"),
   },
 };

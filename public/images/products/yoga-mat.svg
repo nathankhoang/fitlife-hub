@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Yoga mat">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FAFAFA"/>
+      <stop offset="100%" stop-color="#F5F5F5"/>
+    </linearGradient>
+    <radialGradient id="accent" cx="100%" cy="0%" r="80%">
+      <stop offset="0%" stop-color="#14B8A6" stop-opacity="0.20"/>
+      <stop offset="100%" stop-color="#14B8A6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg)"/>
+  <rect width="400" height="400" fill="url(#accent)"/>
+  <g transform="translate(200 230)">
+    <ellipse cx="-90" cy="0" rx="40" ry="55" fill="#14B8A6"/>
+    <ellipse cx="-90" cy="0" rx="25" ry="40" fill="#0F766E"/>
+    <ellipse cx="-90" cy="0" rx="12" ry="22" fill="#FAFAFA"/>
+    <rect x="-90" y="-55" width="200" height="110" fill="#14B8A6"/>
+    <rect x="-90" y="-55" width="200" height="6" fill="#0F766E"/>
+    <rect x="-90" y="49" width="200" height="6" fill="#0F766E"/>
+    <line x1="-30" y1="-30" x2="100" y2="-30" stroke="#0F766E" stroke-width="2" opacity="0.5"/>
+    <line x1="-30" y1="0" x2="100" y2="0" stroke="#0F766E" stroke-width="2" opacity="0.5"/>
+    <line x1="-30" y1="30" x2="100" y2="30" stroke="#0F766E" stroke-width="2" opacity="0.5"/>
+  </g>
+  <text x="200" y="350" text-anchor="middle" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#0F172A" letter-spacing="3">YOGA MAT</text>
+</svg>
