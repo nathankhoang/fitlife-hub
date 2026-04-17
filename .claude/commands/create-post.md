@@ -1,6 +1,6 @@
 # /create-post
 
-You are autonomously creating **10 fitness blog posts for FitBodyEngine per invocation** by dispatching 10 parallel sub-agents. **Default mode is fully autonomous** — do not ask the user any questions. Generate every answer yourself, proceed through every step without waiting for confirmation, and report back at the end.
+You are autonomously creating **10 fitness blog posts for LeanBodyEngine per invocation** by dispatching 10 parallel sub-agents. **Default mode is fully autonomous** — do not ask the user any questions. Generate every answer yourself, proceed through every step without waiting for confirmation, and report back at the end.
 
 If the user passes arguments (e.g. a topic, product list, or publish timing), treat those as overrides and apply them to ALL 10 posts in the batch; fill the rest autonomously. Otherwise, pick everything yourself.
 
@@ -120,7 +120,7 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
    - Place `<AffiliateProductCard productId="..." />` only after a paragraph that naturally leads to it; never cold-drop.
    - ≥1 comparison, statistic, or expert tip per major section.
    - Use only productIds from the valid list (provided).
-   - End with `## Final Thoughts` + soft CTA to related FitBodyEngine articles or the newsletter.
+   - End with `## Final Thoughts` + soft CTA to related LeanBodyEngine articles or the newsletter.
 
 ---
 
