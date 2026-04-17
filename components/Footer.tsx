@@ -16,8 +16,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white text-[11px] font-bold tracking-tight">FBE</span>
-              <span className="text-lg font-semibold tracking-tight">FitBodyEngine</span>
+              <span className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white text-[11px] font-bold tracking-tight">LBE</span>
+              <span className="text-lg font-semibold tracking-tight">LeanBodyEngine</span>
             </div>
             <p className="text-[#A3A3A3] text-sm leading-relaxed">
               Honest, evidence-based guides on training, supplements, and
