@@ -8,14 +8,14 @@ const geist = Geist({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "FitBodyEngine — Fitness, Health & Wellness",
-    template: "%s | FitBodyEngine",
+    default: "LeanBodyEngine — Fitness, Health & Wellness",
+    template: "%s | LeanBodyEngine",
   },
   description:
     "Expert fitness tips, supplement reviews, workout guides, and diet plans to help you build a healthier life.",
   metadataBase: new URL("https://fitbodyengine.com"),
   openGraph: {
-    siteName: "FitBodyEngine",
+    siteName: "LeanBodyEngine",
     type: "website",
     locale: "en_US",
   },

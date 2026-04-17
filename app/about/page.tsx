@@ -5,7 +5,7 @@ import NewsletterCTA from "@/components/NewsletterCTA";
 export const metadata: Metadata = {
   title: "About",
   description:
-    "Learn about FitBodyEngine — our mission to deliver honest, evidence-based fitness and wellness content.",
+    "Learn about LeanBodyEngine — our mission to deliver honest, evidence-based fitness and wellness content.",
 };
 
 export default function AboutPage() {
@@ -25,7 +25,7 @@ export default function AboutPage() {
       <div className="prose max-w-none">
         <h2>Our mission</h2>
         <p>
-          FitBodyEngine was built to cut through the noise in the fitness and
+          LeanBodyEngine was built to cut through the noise in the fitness and
           wellness industry. There&apos;s a lot of misinformation out there —
           from overhyped supplements to extreme diets that don&apos;t work
           long-term. Our mission is simple: provide honest, practical, and
@@ -62,7 +62,7 @@ export default function AboutPage() {
 
         <h2>Affiliate disclosure</h2>
         <p>
-          FitBodyEngine participates in affiliate programs including Amazon
+          LeanBodyEngine participates in affiliate programs including Amazon
           Associates, ClickBank, and ShareASale. When you click a product link
           and make a purchase, we may earn a small commission at no additional
           cost to you. This helps us keep the site running and content free.
