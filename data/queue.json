@@ -218,14 +218,220 @@
       "resistance-bands-set"
     ]
   },
-  {"id":"par-i11-breathing","slug":"breathing-techniques-stress-relief","title":"Breathing Techniques for Stress Relief: 7 Methods That Actually Work","description":"7 breathing techniques for stress relief — box breathing, 4-7-8, and more. Science-backed methods to lower cortisol in minutes, for beginners.","category":"wellness","status":"published","scheduledDate":null,"publishedDate":"2026-04-17T00:24:31.180Z","createdAt":"2026-04-17T00:24:31.180Z","featured":false,"readTime":9,"affiliateProductIds":["foam-roller","yoga-mat"]},
-  {"id":"par-i11-kettlebell","slug":"kettlebell-workout-for-beginners","title":"Kettlebell Workout for Beginners: Full-Body Routine to Build Strength at Home","description":"A step-by-step kettlebell workout for beginners — the 5 foundational moves, a 4-week progression, and how it stacks up to dumbbells for home training.","category":"home-workouts","status":"published","scheduledDate":null,"publishedDate":"2026-04-17T00:23:35.695Z","createdAt":"2026-04-17T00:23:35.695Z","featured":false,"readTime":10,"affiliateProductIds":["adjustable-dumbbells","pull-up-bar","resistance-bands-set"]},
-  {"id":"par-i11-creatine","slug":"creatine-monohydrate-review-2026","title":"Creatine Monohydrate Review: Why It's Still the #1 Strength Supplement in 2026","description":"An honest creatine monohydrate review — dosage, timing, who benefits, side effects, and why newer forms like HCl haven't beaten monohydrate.","category":"supplements","status":"published","scheduledDate":null,"publishedDate":"2026-04-17T00:23:30.000Z","createdAt":"2026-04-17T00:23:30.000Z","featured":false,"readTime":9,"affiliateProductIds":["creatine-monohydrate-bulk","myprotein-impact-whey"]},
-  {"id":"par-i11-fasting","slug":"intermittent-fasting-for-beginners-16-8","title":"Intermittent Fasting for Beginners: The Complete 16/8 Guide","description":"A beginner's guide to intermittent fasting with the 16/8 protocol — how it works, realistic fat-loss expectations, meal timing, and the training pitfalls.","category":"weight-loss","status":"published","scheduledDate":null,"publishedDate":"2026-04-17T00:23:48.794Z","createdAt":"2026-04-17T00:23:48.794Z","featured":false,"readTime":10,"affiliateProductIds":["myprotein-impact-whey","thorne-multivitamin","cellucor-c4-preworkout"]},
-  {"id":"par-i11-legs","slug":"how-to-build-stronger-legs-beginners","title":"How to Build Stronger Legs: A Beginner's Complete Guide","description":"Learn how to build stronger legs with the 5 best exercises, weekly volume targets, progressive overload rules, and a realistic 12-week beginner plan.","category":"muscle-building","status":"published","scheduledDate":null,"publishedDate":"2026-04-17T00:24:01.584Z","createdAt":"2026-04-17T00:24:01.584Z","featured":false,"readTime":10,"affiliateProductIds":["adjustable-dumbbells","resistance-bands-set","creatine-monohydrate-bulk"]},
-  {"id":"par-i11-calories","slug":"calorie-counting-for-beginners","title":"How to Count Calories for Beginners: A Step-by-Step Guide","description":"Learn how to count calories for beginners — from calculating your TDEE to tracking apps, macro splits, and the 5 biggest mistakes that stall progress.","category":"diet-nutrition","status":"published","scheduledDate":null,"publishedDate":"2026-04-17T00:23:59.941Z","createdAt":"2026-04-17T00:23:59.941Z","featured":false,"readTime":10,"affiliateProductIds":["thorne-multivitamin","myprotein-impact-whey","garden-of-life-multivitamin"]},
-  {"id":"par-i11-preworkout","slug":"best-pre-workout-for-beginners-review","title":"Best Pre-Workout for Beginners: 5 Top Picks Reviewed (2026)","description":"The best pre-workout for beginners — 5 options ranked by ingredients, caffeine dose, taste, and value. Includes stimulant-free and low-caffeine picks.","category":"supplements","status":"published","scheduledDate":null,"publishedDate":"2026-04-17T00:24:40.647Z","createdAt":"2026-04-17T00:24:40.647Z","featured":false,"readTime":9,"affiliateProductIds":["cellucor-c4-preworkout","legion-pulse-preworkout"]},
-  {"id":"par-i11-bands","slug":"resistance-band-workout-12-exercises","title":"Resistance Band Workout: 12 Exercises for Full-Body Strength at Home","description":"A complete resistance band workout — 12 exercises covering push, pull, legs, and core, scaling from absolute beginner to intermediate load.","category":"home-workouts","status":"published","scheduledDate":null,"publishedDate":"2026-04-17T00:24:31.796Z","createdAt":"2026-04-17T00:24:31.796Z","featured":false,"readTime":10,"affiliateProductIds":["resistance-bands-set","pull-up-bar","foam-roller"]},
-  {"id":"par-i11-fatvsweight","slug":"fat-loss-vs-weight-loss-difference","title":"Fat Loss vs Weight Loss: What's the Difference and Why It Matters","description":"Fat loss vs weight loss isn't semantics — the difference determines whether you end up lean or skinny-fat. Here's how to tell them apart and target fat.","category":"weight-loss","status":"published","scheduledDate":null,"publishedDate":"2026-04-17T00:24:45.264Z","createdAt":"2026-04-17T00:24:45.264Z","featured":false,"readTime":9,"affiliateProductIds":["myprotein-impact-whey","thorne-multivitamin"]},
-  {"id":"par-i11-sleep","slug":"how-to-sleep-better-athletes","title":"How to Sleep Better: A Science-Backed Guide for Athletes and Lifters","description":"Learn how to sleep better as an athlete — circadian habits, pre-bed routine, supplements that help, and the mistakes stealing your recovery.","category":"wellness","status":"published","scheduledDate":null,"publishedDate":"2026-04-17T00:25:00.015Z","createdAt":"2026-04-17T00:25:00.015Z","featured":false,"readTime":10,"affiliateProductIds":["thorne-multivitamin","garden-of-life-multivitamin","foam-roller"]}
+  {
+    "id": "par-i11-breathing",
+    "slug": "breathing-techniques-stress-relief",
+    "title": "Breathing Techniques for Stress Relief: 7 Methods That Actually Work",
+    "description": "7 breathing techniques for stress relief — box breathing, 4-7-8, and more. Science-backed methods to lower cortisol in minutes, for beginners.",
+    "category": "wellness",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-17T00:24:31.180Z",
+    "createdAt": "2026-04-17T00:24:31.180Z",
+    "featured": false,
+    "readTime": 9,
+    "affiliateProductIds": [
+      "foam-roller",
+      "yoga-mat"
+    ]
+  },
+  {
+    "id": "par-i11-kettlebell",
+    "slug": "kettlebell-workout-for-beginners",
+    "title": "Kettlebell Workout for Beginners: Full-Body Routine to Build Strength at Home",
+    "description": "A step-by-step kettlebell workout for beginners — the 5 foundational moves, a 4-week progression, and how it stacks up to dumbbells for home training.",
+    "category": "home-workouts",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-17T00:23:35.695Z",
+    "createdAt": "2026-04-17T00:23:35.695Z",
+    "featured": false,
+    "readTime": 10,
+    "affiliateProductIds": [
+      "adjustable-dumbbells",
+      "pull-up-bar",
+      "resistance-bands-set"
+    ]
+  },
+  {
+    "id": "par-i11-creatine",
+    "slug": "creatine-monohydrate-review-2026",
+    "title": "Creatine Monohydrate Review: Why It's Still the #1 Strength Supplement in 2026",
+    "description": "An honest creatine monohydrate review — dosage, timing, who benefits, side effects, and why newer forms like HCl haven't beaten monohydrate.",
+    "category": "supplements",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-17T00:23:30.000Z",
+    "createdAt": "2026-04-17T00:23:30.000Z",
+    "featured": false,
+    "readTime": 9,
+    "affiliateProductIds": [
+      "creatine-monohydrate-bulk",
+      "myprotein-impact-whey"
+    ]
+  },
+  {
+    "id": "par-i11-fasting",
+    "slug": "intermittent-fasting-for-beginners-16-8",
+    "title": "Intermittent Fasting for Beginners: The Complete 16/8 Guide",
+    "description": "A beginner's guide to intermittent fasting with the 16/8 protocol — how it works, realistic fat-loss expectations, meal timing, and the training pitfalls.",
+    "category": "weight-loss",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-17T00:23:48.794Z",
+    "createdAt": "2026-04-17T00:23:48.794Z",
+    "featured": false,
+    "readTime": 10,
+    "affiliateProductIds": [
+      "myprotein-impact-whey",
+      "thorne-multivitamin",
+      "cellucor-c4-preworkout"
+    ]
+  },
+  {
+    "id": "par-i11-legs",
+    "slug": "how-to-build-stronger-legs-beginners",
+    "title": "How to Build Stronger Legs: A Beginner's Complete Guide",
+    "description": "Learn how to build stronger legs with the 5 best exercises, weekly volume targets, progressive overload rules, and a realistic 12-week beginner plan.",
+    "category": "muscle-building",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-17T00:24:01.584Z",
+    "createdAt": "2026-04-17T00:24:01.584Z",
+    "featured": false,
+    "readTime": 10,
+    "affiliateProductIds": [
+      "adjustable-dumbbells",
+      "resistance-bands-set",
+      "creatine-monohydrate-bulk"
+    ]
+  },
+  {
+    "id": "par-i11-calories",
+    "slug": "calorie-counting-for-beginners",
+    "title": "How to Count Calories for Beginners: A Step-by-Step Guide",
+    "description": "Learn how to count calories for beginners — from calculating your TDEE to tracking apps, macro splits, and the 5 biggest mistakes that stall progress.",
+    "category": "diet-nutrition",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-17T00:23:59.941Z",
+    "createdAt": "2026-04-17T00:23:59.941Z",
+    "featured": false,
+    "readTime": 10,
+    "affiliateProductIds": [
+      "thorne-multivitamin",
+      "myprotein-impact-whey",
+      "garden-of-life-multivitamin"
+    ]
+  },
+  {
+    "id": "par-i11-preworkout",
+    "slug": "best-pre-workout-for-beginners-review",
+    "title": "Best Pre-Workout for Beginners: 5 Top Picks Reviewed (2026)",
+    "description": "The best pre-workout for beginners — 5 options ranked by ingredients, caffeine dose, taste, and value. Includes stimulant-free and low-caffeine picks.",
+    "category": "supplements",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-17T00:24:40.647Z",
+    "createdAt": "2026-04-17T00:24:40.647Z",
+    "featured": false,
+    "readTime": 9,
+    "affiliateProductIds": [
+      "cellucor-c4-preworkout",
+      "legion-pulse-preworkout"
+    ]
+  },
+  {
+    "id": "par-i11-bands",
+    "slug": "resistance-band-workout-12-exercises",
+    "title": "Resistance Band Workout: 12 Exercises for Full-Body Strength at Home",
+    "description": "A complete resistance band workout — 12 exercises covering push, pull, legs, and core, scaling from absolute beginner to intermediate load.",
+    "category": "home-workouts",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-17T00:24:31.796Z",
+    "createdAt": "2026-04-17T00:24:31.796Z",
+    "featured": false,
+    "readTime": 10,
+    "affiliateProductIds": [
+      "resistance-bands-set",
+      "pull-up-bar",
+      "foam-roller"
+    ]
+  },
+  {
+    "id": "par-i11-fatvsweight",
+    "slug": "fat-loss-vs-weight-loss-difference",
+    "title": "Fat Loss vs Weight Loss: What's the Difference and Why It Matters",
+    "description": "Fat loss vs weight loss isn't semantics — the difference determines whether you end up lean or skinny-fat. Here's how to tell them apart and target fat.",
+    "category": "weight-loss",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-17T00:24:45.264Z",
+    "createdAt": "2026-04-17T00:24:45.264Z",
+    "featured": false,
+    "readTime": 9,
+    "affiliateProductIds": [
+      "myprotein-impact-whey",
+      "thorne-multivitamin"
+    ]
+  },
+  {
+    "id": "par-i11-sleep",
+    "slug": "how-to-sleep-better-athletes",
+    "title": "How to Sleep Better: A Science-Backed Guide for Athletes and Lifters",
+    "description": "Learn how to sleep better as an athlete — circadian habits, pre-bed routine, supplements that help, and the mistakes stealing your recovery.",
+    "category": "wellness",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-17T00:25:00.015Z",
+    "createdAt": "2026-04-17T00:25:00.015Z",
+    "featured": false,
+    "readTime": 10,
+    "affiliateProductIds": [
+      "thorne-multivitamin",
+      "garden-of-life-multivitamin",
+      "foam-roller"
+    ]
+  },
+  {
+    "id": "sleep-muscle-growth-001",
+    "slug": "how-to-optimize-sleep-for-muscle-growth",
+    "title": "How to Optimize Sleep for Muscle Growth: The Athlete's Complete Guide",
+    "description": "Discover how sleep directly impacts muscle growth, fat loss, and recovery. Science-backed strategies, supplements, and routines to transform your sleep.",
+    "category": "wellness",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-17T17:55:55.349Z",
+    "createdAt": "2026-04-17T17:55:55.349Z",
+    "featured": false,
+    "readTime": 20,
+    "affiliateProductIds": [
+      "magnesium-glycinate",
+      "ashwagandha-ksm66",
+      "white-noise-machine",
+      "sleep-mask-alaska-bear",
+      "melatonin-natrol"
+    ]
+  },
+  {
+    "id": "hiit-fat-loss-001",
+    "slug": "hiit-for-fat-loss-complete-guide",
+    "title": "HIIT for Fat Loss: The Science-Backed Complete Guide (With Sample Workouts)",
+    "description": "Learn exactly how HIIT burns fat, builds endurance, and transforms your body. Includes 3 sample workouts for all levels, backed by research.",
+    "category": "weight-loss",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-17T17:55:55.349Z",
+    "createdAt": "2026-04-17T17:55:55.349Z",
+    "featured": false,
+    "readTime": 15,
+    "affiliateProductIds": [
+      "jump-rope-wod-nation",
+      "fitness-tracker-fitbit",
+      "bcaa-xtend",
+      "resistance-bands-set",
+      "food-scale-etekcity"
+    ]
+  }
 ]
