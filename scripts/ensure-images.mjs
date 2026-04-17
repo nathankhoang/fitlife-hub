@@ -28,11 +28,12 @@ const ATTR_PATH = path.join(ROOT, "data", "telemetry", "image-attributions.json"
 // Args
 // ---------------------------------------------------------------------------
 function parseArgs(argv) {
-  const args = { dryRun: false, force: false, slug: null };
+  const args = { dryRun: false, force: false, slug: null, url: null };
   for (let i = 2; i < argv.length; i++) {
     if (argv[i] === "--dry-run") args.dryRun = true;
     else if (argv[i] === "--force") args.force = true;
     else if (argv[i] === "--slug" && argv[i + 1]) args.slug = argv[++i];
+    else if (argv[i] === "--url" && argv[i + 1]) args.url = argv[++i];
   }
   return args;
 }
@@ -253,31 +254,49 @@ async function collectPosts(dir, targetSlug) {
 // ---------------------------------------------------------------------------
 // Fetch + save one post's image
 // ---------------------------------------------------------------------------
-async function fetchAndSave(post, attributions) {
+async function fetchAndSave(post, attributions, directUrl = null) {
   const { slug, fm } = post;
-  const title = fm.title ?? slug;
-  const category = fm.category ?? "wellness";
 
-  const queries = buildQueryCandidates(slug, title, category);
-  process.stderr.write(`  queries: ${queries.join(" | ")}\n`);
+  let srcBuf;
+  let attribution;
 
-  const pool = await gatherCandidatePool(queries);
-  if (pool.length === 0) return { ok: false, error: "no Openverse results across all fallback queries" };
-
-  let chosen = null;
-  let srcBuf = null;
-  for (const cand of pool.slice(0, 8)) {
-    process.stderr.write(`  trying: ${cand.width}×${cand.height} — ${cand.creator ?? "anon"} (${cand.license}) [${cand._query}]\n`);
+  if (directUrl) {
+    process.stderr.write(`  direct URL: ${directUrl}\n`);
     try {
-      srcBuf = await fetchImageBuffer(cand.url, { attempts: 2, timeout: 25_000 });
-      chosen = cand;
-      break;
+      srcBuf = await fetchImageBuffer(directUrl, { attempts: 3, timeout: 30_000 });
     } catch (err) {
-      process.stderr.write(`    ↳ ${err.message} — next\n`);
-      await new Promise((r) => setTimeout(r, 600));
+      return { ok: false, error: `failed to download direct URL: ${err.message}` };
     }
+    attribution = { source_url: directUrl, fetched_at: new Date().toISOString() };
+  } else {
+    const title = fm.title ?? slug;
+    const category = fm.category ?? "wellness";
+    const queries = buildQueryCandidates(slug, title, category);
+    process.stderr.write(`  queries: ${queries.join(" | ")}\n`);
+
+    const pool = await gatherCandidatePool(queries);
+    if (pool.length === 0) return { ok: false, error: "no Openverse results across all fallback queries" };
+
+    let chosen = null;
+    for (const cand of pool.slice(0, 8)) {
+      process.stderr.write(`  trying: ${cand.width}×${cand.height} — ${cand.creator ?? "anon"} (${cand.license}) [${cand._query}]\n`);
+      try {
+        srcBuf = await fetchImageBuffer(cand.url, { attempts: 2, timeout: 25_000 });
+        chosen = cand;
+        break;
+      } catch (err) {
+        process.stderr.write(`    ↳ ${err.message} — next\n`);
+        await new Promise((r) => setTimeout(r, 600));
+      }
+    }
+    if (!chosen) return { ok: false, error: "all candidates failed to download" };
+    attribution = {
+      title: chosen.title, creator: chosen.creator, creator_url: chosen.creator_url,
+      license: chosen.license, license_version: chosen.license_version, license_url: chosen.license_url,
+      source: chosen.source, source_url: chosen.foreign_landing_url,
+      attribution_text: chosen.attribution, fetched_at: new Date().toISOString(),
+    };
   }
-  if (!chosen) return { ok: false, error: "all candidates failed to download" };
 
   await fs.mkdir(OUT_DIR, { recursive: true });
 
@@ -291,31 +310,13 @@ async function fetchAndSave(post, attributions) {
 
   const heroPath = `/images/articles/${heroFile}`;
   const fmUpdates = { image: heroPath, imageOg: heroPath, imagePinterest: heroPath };
-
   for (const dir of ["drafts", "articles"]) {
     await updateFrontmatter(path.join(ROOT, "content", dir, `${slug}.mdx`), fmUpdates);
   }
 
-  attributions[slug] = {
-    title: chosen.title,
-    creator: chosen.creator,
-    creator_url: chosen.creator_url,
-    license: chosen.license,
-    license_version: chosen.license_version,
-    license_url: chosen.license_url,
-    source: chosen.source,
-    source_url: chosen.foreign_landing_url,
-    attribution_text: chosen.attribution,
-    fetched_at: new Date().toISOString(),
-  };
+  attributions[slug] = attribution;
 
-  return {
-    ok: true,
-    bytes: webp.length,
-    creator: chosen.creator,
-    license: chosen.license,
-    source: chosen.source,
-  };
+  return { ok: true, bytes: webp.length, source: attribution.source_url };
 }
 
 async function loadAttributions() {
@@ -373,13 +374,13 @@ async function main() {
   for (const post of needsWork) {
     process.stdout.write(`[${post.slug}]\n`);
     try {
-      const result = await fetchAndSave(post, attributions);
+      const result = await fetchAndSave(post, attributions, args.url ?? null);
       if (result.ok) {
-        console.log(`  → OK — ${result.creator ?? "anon"} (${result.license}, ${result.source}) ${(result.bytes / 1024).toFixed(0)} KB\n`);
+        console.log(`  → OK — ${result.source} ${(result.bytes / 1024).toFixed(0)} KB\n`);
         results.ok.push(post.slug);
         await fs.mkdir(path.dirname(ATTR_PATH), { recursive: true });
         await fs.writeFile(ATTR_PATH, JSON.stringify(attributions, null, 2));
-        await new Promise((r) => setTimeout(r, 1500)); // respect Openverse rate limit
+        if (!args.url) await new Promise((r) => setTimeout(r, 1500)); // respect Openverse rate limit
       } else {
         console.log(`  → FAILED: ${result.error}\n`);
         results.failed.push({ slug: post.slug, reason: result.error });
