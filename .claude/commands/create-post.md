@@ -23,19 +23,113 @@ Print a single-line header: `=== create-post iteration N/10 (mode) — dispatchi
 
 ---
 
-## Step 1 — Plan 10 Distinct Assignments
+## Step 0.5 — Queue Reconciliation (runs every invocation, before Step 1)
 
-Read `data/queue.json`. For the current batch, plan **10 distinct (topic, category, format) assignments** that:
+Ensure every published MDX file is registered in `queue.json` — including articles that predate the queue system or were committed directly to git.
+
+Run this Node snippet from the project root:
+
+```
+node --env-file=.env.local -e "
+const fs = require('fs');
+const path = require('path');
+const matter = require('gray-matter');
+const { put } = require('@vercel/blob');
+
+const ARTICLES_DIR = path.join(process.cwd(), 'content', 'articles');
+const QUEUE_PATH = path.join(process.cwd(), 'data', 'queue.json');
+
+const queue = JSON.parse(fs.readFileSync(QUEUE_PATH, 'utf8'));
+const existingSlugs = new Set(queue.map(e => e.slug));
+
+const mdxFiles = fs.readdirSync(ARTICLES_DIR).filter(f => f.endsWith('.mdx'));
+const added = [];
+
+for (const file of mdxFiles) {
+  const slug = file.replace(/\.mdx$/, '');
+  if (existingSlugs.has(slug)) continue;
+  const raw = fs.readFileSync(path.join(ARTICLES_DIR, file), 'utf8');
+  const { data } = matter(raw);
+  if (!data.title || !data.category) continue;
+  const entry = {
+    id: slug,
+    slug,
+    title: data.title,
+    description: data.description || '',
+    category: data.category,
+    status: 'published',
+    scheduledDate: null,
+    publishedDate: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
+    createdAt: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
+    featured: !!data.featured,
+    readTime: data.readTime || 5,
+    affiliateProductIds: []
+  };
+  queue.push(entry);
+  existingSlugs.add(slug);
+  added.push(slug);
+}
+
+if (added.length > 0) {
+  fs.writeFileSync(QUEUE_PATH, JSON.stringify(queue, null, 2));
+  console.log('Reconciled', added.length, 'unregistered articles:', added.join(', '));
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    put('queue.json', JSON.stringify(queue, null, 2), {
+      access: 'public', addRandomSuffix: false, allowOverwrite: true,
+      contentType: 'application/json; charset=utf-8'
+    }).then(() => console.log('queue.json synced to Blob')).catch(e => console.error('Blob sync failed:', e.message));
+  }
+} else {
+  console.log('Queue reconciliation: all articles already registered, nothing to do.');
+}
+"
+```
+
+If any articles were reconciled, print a summary line: `→ reconciled N unregistered articles: <slug1>, <slug2>, ...`
+
+This step is idempotent — running it when nothing is missing takes under 1 second.
+
+---
+
+## Step 1 — Research Trends, Then Plan 10 Distinct Assignments
+
+### Step 1a — Trend Research (do this BEFORE planning topics)
+
+Before picking any topics, spend time researching what is currently trending and gaining traction in the fitness, health, and wellness space. Use WebSearch and WebFetch to:
+
+1. **Check what major fitness/health sites are publishing right now.** Search for recent articles (last 30–90 days) on sites like:
+   - Healthline (`site:healthline.com fitness OR supplements OR workout 2025`)
+   - Men's Health / Women's Health
+   - Examine.com (supplement research summaries — fetch their human effect matrix pages)
+   - Barbend, Garage Gym Reviews, T-Nation (strength/training)
+   - PubMed / NIH for recent studies (`site:pubmed.ncbi.nlm.nih.gov 2024 2025`)
+
+2. **Search for trending fitness topics broadly:**
+   - "fitness trends 2025 2026"
+   - "best supplements 2025"
+   - "trending workouts 2025"
+   - "new research [topic] 2025"
+   - Check Reddit (r/fitness, r/strength_training, r/nutrition, r/supplements) for what practitioners are actively debating
+
+3. **Note what's gaining traction:** new training methodologies (e.g. zone 2 cardio, Norwegian 4×4, blood flow restriction training, RIR-based programming, HIIT vs LISS debates), emerging supplements (e.g. tongkat ali, fadogia agrestis, NMN/NR for longevity, creatine HCl vs monohydrate, berberine), trending diets (e.g. protein-sparing modified fasts, carnivore refinements, GLP-1 diet adjustments), recovery modalities, longevity/healthspan topics.
+
+Summarize the top 10–15 trending topic opportunities you discovered, then use that list to inform your assignment plan below.
+
+### Step 1b — Plan 10 Distinct Assignments
+
+Read `data/queue.json`. Using your trend research from Step 1a, plan **10 distinct (topic, category, format) assignments** that:
 - Do NOT duplicate any existing `slug` or `title` in `data/queue.json`
 - Collectively cover as many of the 6 categories as possible (home-workouts, supplements, diet-nutrition, weight-loss, muscle-building, wellness) — aim for ~2 per category across the batch if feasible
-- Use varied formats (Review, How-to Guide, Listicle, Comparison, Beginner Guide, Deep Dive)
+- **Prioritize trending, advanced, and timely topics** from your Step 1a research — avoid generic beginner topics that are already widely covered everywhere
+- **Target an intermediate-to-advanced audience by default.** Assume the reader has been training or following their diet for 1+ years. Skip "what is X" basics. Go deep: advanced programming concepts, nuanced supplement science, performance optimization, research-backed specificity, edge cases, and common mistakes made by experienced trainees
+- Use varied formats (Deep Dive, Advanced Guide, Research Breakdown, Protocol Guide, Data-Driven Comparison, Myth-Busting) — avoid generic "Beginner Guide" framing unless the topic itself is genuinely niche or emerging
 - Mix article lengths: ~4 posts at 1,500–2,000 words (8–10 min read), ~4 posts at 2,500–3,500 words (12–18 min), ~2 posts at 4,000+ words (20+ min deep dives)
 
-For each assignment, pre-decide: **topic, slug, category, format, audience (default Beginner), tone (default Balanced), target word count, and 3–5 affiliate product IDs**.
+For each assignment, pre-decide: **topic, slug, category, format, audience, tone, target word count, trending angle (why this topic now / what makes it timely), and 3–5 affiliate product IDs**.
 
 **Product IDs MUST be chosen AFTER reasoning about what the specific article topic needs** — see the Product Selection Rules section below.
 
-Print the full 10-row plan as a numbered list (include target word count and chosen product IDs) so the run is auditable before dispatch.
+Print the full 10-row plan as a numbered list (include target word count, trending angle, and chosen product IDs) so the run is auditable before dispatch.
 
 ---
 
@@ -161,7 +255,7 @@ In **a single message**, issue 10 `Agent` tool calls (`subagent_type: "general-p
 
 Each sub-agent prompt must be fully self-contained (sub-agents start with no conversation context). Include in every prompt:
 
-1. **Assignment:** topic, slug, category, format, audience, tone, target word count, and the 3–5 product IDs selected.
+1. **Assignment:** topic, slug, category, format, audience, tone, target word count, trending angle, and the 3–5 product IDs selected.
 
 2. **Scope restrictions — HARD RULES. Violating any of these fails the task.**
 
@@ -172,6 +266,8 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
    **You MAY read (but NOT modify) these files when needed:**
    - `lib/affiliates.ts` — to confirm the productIds in your assignment are valid
    - `data/queue.json` — if you need to confirm your slug doesn't collide
+
+   **You MAY use WebSearch and WebFetch freely** to research your topic before writing. This is required — see Content Rules (Sub-step D). Fetch real studies, authoritative health sites, examine.com summaries, Reddit threads, and recent articles from major fitness publications.
 
    **You MAY execute ONLY this command:**
    - `node scripts/generate-thumbnail.mjs --slug "<slug>" --title "<title>" --category <category>` from the project root. This script itself writes to `public/images/articles/<slug>*.webp` and rewrites the frontmatter of your own draft — that is allowed because it's scoped to your slug.
@@ -203,15 +299,28 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
 
 4. **Content Rules (Sub-step D):**
 
+   **Research first — before writing a single word of the article.**
+
+   Use WebSearch and WebFetch to gather real, current information on your assigned topic:
+   - Search for recent studies or meta-analyses on PubMed/NIH. Fetch the abstract or summary and extract actual findings, effect sizes, dosages, and study populations.
+   - Fetch 2–3 recent articles from Healthline, Examine.com, Men's Health, Barbend, T-Nation, or similar authoritative sources. Note their coverage gaps — angle your article at what they missed or understated.
+   - Search Reddit (r/fitness, r/strength_training, r/nutrition, r/supplements) for practitioner debates and real-world nuance that academic sources miss.
+   - If the topic is a supplement, fetch the Examine.com page for that compound and pull their evidence summary and human effect matrix data.
+   - If the topic involves a training protocol, find the original program or study it derives from and pull the actual sets/reps/frequency/progression scheme.
+
+   Write the article FROM this research — not from memory. Every specific claim, statistic, dosage, or protocol must trace back to something you actually fetched, not something recalled from training data. If you can't find a real source for a claim, don't make it.
+
    **Frontmatter:**
    - `title`, `description` (150–160 chars), `category`, `date` (today YYYY-MM-DD), `readTime`, `featured: false`, `image: ""`
    - Primary keyword in H1, first paragraph, ≥2 H2s, and meta description
 
-   **Length & depth:**
-   - Write to the target word count in your assignment — do not truncate early
-   - Every major claim must be backed by a real statistic, study name, or expert guideline (cite inline, e.g. "A 2022 meta-analysis in the *Journal of Strength and Conditioning Research* found…")
-   - Include ≥1 comparison table, numbered step list, or data-backed callout per major section
-   - Avoid generic filler sentences — each paragraph must add specific, actionable information
+   **Audience & depth — intermediate to advanced:**
+   - Assume the reader has been training or following their diet for 1+ years. Skip all "what is X" and "why exercise matters" basics.
+   - Go deep: explain the mechanism (how does this work physiologically or biochemically?), give specific protocols (exact sets/reps/rest/frequency/progression), give specific dosages and timing windows from the research you fetched, address edge cases and common mistakes made by experienced trainees.
+   - Cite real studies inline using what you fetched: "A 2024 meta-analysis in the *British Journal of Sports Medicine* found…" — use real authors, journals, and years from actual fetched content, never fabricated citations.
+   - Include actual numbers throughout: effect sizes, percentage improvements, mg/kg dosages, rep ranges with rationale, sample sizes. Vague language ("studies suggest it may help") is not acceptable.
+   - Write to the target word count — do not truncate early.
+   - Include ≥1 comparison table, numbered protocol, or data-backed callout per major section.
 
    **Product placement — follow all 6 Product Selection Rules provided above:**
    - Each `<AffiliateProductCard productId="..." />` must appear inside the specific section where that product is discussed
@@ -220,9 +329,9 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
    - NEVER recommend a product that isn't directly relevant to the article's topic
 
    **Structure:**
-   - Open with a hook — a relatable problem, surprising stat, or myth-busting statement
+   - Open with a hook grounded in something you researched — a surprising study result, a practice being challenged by new data, a specific performance gap, or a real gap in mainstream advice
    - Use H2s for major sections, H3s for subsections
-   - Include a "Key Takeaways" or "Quick Summary" box near the top for skimmers (use a markdown blockquote or bold list)
+   - Include a "Key Takeaways" box near the top for skimmers — make these specific numbers and protocols, not vague platitudes (e.g. "5g creatine monohydrate daily increases 1RM by ~8% in trained athletes" not "creatine helps with strength")
    - End with `## Final Thoughts` + soft CTA to related LeanBodyEngine articles or the newsletter
 
 ---
@@ -240,6 +349,25 @@ Each sub-agent returns one JSON object. Parse all 10 results.
 ## Step 4 — Append All 10 Entries to the Queue
 
 Read `data/queue.json` once, append all valid entries from Step 3 in one pass, and write the file back. This is the only write to `queue.json` in the entire batch.
+
+---
+
+## Step 4.5 — Sync to Blob and Revalidate Home Page
+
+After writing `data/queue.json`, sync the new posts to Vercel Blob and flush the Next.js cache so the home page "guides published" count updates immediately.
+
+Run from the project root, passing all successful batch slugs as arguments:
+
+```
+node --env-file=.env.local scripts/sync-batch-to-blob.mjs <slug1> <slug2> ... <slugN>
+```
+
+The script exits cleanly if `BLOB_READ_WRITE_TOKEN` is not set (local-only mode — in that case `getAllArticles()` reads from the filesystem and the count already reflects new articles on the next page load). When the token IS set the script:
+1. Uploads each article MDX to Blob at `articles/<slug>.mdx` (parallel)
+2. Uploads the updated `data/queue.json` to Blob
+3. POSTs to `${SITE_URL}/api/revalidate` to invalidate the `queue` cache tag and flush `/` and `/blog`
+
+`SITE_URL` defaults to `http://localhost:3000`. Set it in `.env.local` to your Vercel deployment URL (e.g. `SITE_URL=https://leanbodyengine.com`) to revalidate the live site after each batch.
 
 ---
 
