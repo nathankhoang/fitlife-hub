@@ -5,6 +5,7 @@ import {
   categoryLabels,
   type Category,
 } from "@/lib/articles";
+import { SITE_URL } from "@/lib/site";
 import ArticleCard from "@/components/ArticleCard";
 
 type Props = { params: Promise<{ category: string }> };
@@ -50,10 +51,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
   if (!(category in categoryLabels)) return {};
   const label = categoryLabels[category as Category];
+  const title = `${label} Articles`;
+  const description = `Browse all ${label.toLowerCase()} articles on LeanBodyEngine — expert tips, guides, and reviews.`;
 
   return {
-    title: `${label} Articles`,
-    description: `Browse all ${label.toLowerCase()} articles on LeanBodyEngine — expert tips, guides, and reviews.`,
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `/category/${category}`,
+      type: "website",
+      images: ["/opengraph-image"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
   };
 }
 
@@ -66,8 +81,22 @@ export default async function CategoryPage({ params }: Props) {
   const label = categoryLabels[cat];
   const meta = categoryMeta[cat];
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: label },
+    ],
+  };
+
   return (
     <div>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       {/* Photo hero */}
       <section className={`relative overflow-hidden bg-gradient-to-br ${meta.gradient}`}>
         <img

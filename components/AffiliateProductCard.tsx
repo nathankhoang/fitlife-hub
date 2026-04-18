@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { affiliateProducts } from "@/lib/affiliates";
 
 type Props = {
@@ -55,12 +56,13 @@ export default function AffiliateProductCard({ productId }: Props) {
 
   return (
     <div className="not-prose my-8 bg-white border border-[#E5E5E5] rounded-2xl p-5 flex flex-col sm:flex-row gap-5 items-start hover:border-[#A3A3A3] transition-colors">
-      <div className="bg-[#FAFAFA] rounded-xl border border-[#E5E5E5] w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center overflow-hidden flex-shrink-0">
-        <img
+      <div className="relative bg-[#FAFAFA] rounded-xl border border-[#E5E5E5] w-28 h-28 sm:w-32 sm:h-32 flex items-center justify-center overflow-hidden flex-shrink-0">
+        <Image
           src={imageUrl}
           alt={product.name}
-          loading="lazy"
-          className="w-full h-full object-contain"
+          fill
+          sizes="128px"
+          className="object-contain"
         />
       </div>
 

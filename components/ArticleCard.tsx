@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { type Article, formatDate } from "@/lib/articles";
 import CategoryBadge from "./CategoryBadge";
@@ -16,12 +17,13 @@ export default function ArticleCard({ article, featured = false }: Props) {
         featured ? "ring-1 ring-[#059669]/30" : ""
       }`}
     >
-      <Link href={`/blog/${article.slug}`} className="block aspect-[16/10] overflow-hidden bg-[#F5F5F5]">
-        <img
+      <Link href={`/blog/${article.slug}`} className="relative block aspect-[16/10] overflow-hidden bg-[#F5F5F5]">
+        <Image
           src={thumb}
-          alt=""
-          loading="lazy"
-          className="w-full h-full object-cover transition-transform duration-300 hover:scale-[1.02]"
+          alt={article.title}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover transition-transform duration-300 hover:scale-[1.02]"
         />
       </Link>
 

@@ -3,10 +3,25 @@ import Link from "next/link";
 import { getAllArticles, categoryLabels, type Category } from "@/lib/articles";
 import ArticleCard from "@/components/ArticleCard";
 
+const blogTitle = "All Articles";
+const blogDescription =
+  "Browse all fitness, supplement, diet, and wellness articles on LeanBodyEngine.";
+
 export const metadata: Metadata = {
-  title: "All Articles",
-  description:
-    "Browse all fitness, supplement, diet, and wellness articles on LeanBodyEngine.",
+  title: blogTitle,
+  description: blogDescription,
+  openGraph: {
+    title: blogTitle,
+    description: blogDescription,
+    url: "/blog",
+    type: "website",
+    images: ["/opengraph-image"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: blogTitle,
+    description: blogDescription,
+  },
 };
 
 export default async function BlogPage({
