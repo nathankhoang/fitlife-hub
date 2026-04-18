@@ -15,6 +15,11 @@ const GENERIC_WORDS = new Set([
   "in",
   "of",
   "with",
+  "how",
+  "vs",
+  "why",
+  "what",
+  "complete",
 ]);
 
 export type LinkCandidate = {
@@ -33,6 +38,14 @@ function deriveKeywords(slug: string): string[] {
   const phrase = s.replace(/-/g, " ").trim();
   const variants = new Set<string>([phrase]);
   if (phrase.startsWith("best ")) variants.add(phrase.slice(5));
+
+  const words = phrase.split(/\s+/);
+  const nonGeneric = words.filter((w) => !GENERIC_WORDS.has(w));
+  if (nonGeneric.length >= 2) {
+    variants.add(nonGeneric.slice(0, 2).join(" "));
+    variants.add(nonGeneric.slice(-2).join(" "));
+  }
+
   return Array.from(variants);
 }
 
