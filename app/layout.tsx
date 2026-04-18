@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Sora, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { SITE_URL } from "@/lib/site";
 
-const geist = Geist({ subsets: ["latin"] });
+const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta", display: "swap" });
 
 const siteTitle = "LeanBodyEngine — Fitness, Health & Wellness";
 const siteDescription =
@@ -49,7 +50,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={geist.className}>
+    <html lang="en" className={`${sora.variable} ${jakarta.variable}`}>
       <body className="min-h-screen flex flex-col bg-white text-[#0A0A0A] antialiased">
         <script
           type="application/ld+json"

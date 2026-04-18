@@ -85,7 +85,7 @@ export default function AffiliateProductCard({ productId }: Props) {
             href={product.url}
             target="_blank"
             rel="noopener noreferrer nofollow sponsored"
-            className="inline-flex items-center gap-1.5 bg-[#0A0A0A] hover:bg-[#262626] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+            className="inline-flex items-center gap-1.5 bg-[#F97316] hover:bg-[#EA580C] text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
           >
             {ctaLabel}
             <span aria-hidden>→</span>
