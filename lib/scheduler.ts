@@ -1,6 +1,7 @@
 import { put, del } from "@vercel/blob";
 import { revalidateTag } from "next/cache";
 import { getQueue, updateQueueEntry } from "./queue";
+import { enqueueSocialPosts } from "./social/enqueue";
 
 function blobBase(): string {
   const base = process.env.BLOB_PUBLIC_BASE;
@@ -13,6 +14,9 @@ function blobBase(): string {
 }
 
 export async function publishSlug(slug: string): Promise<void> {
+  const queue = await getQueue();
+  const entry = queue.find((e) => e.slug === slug);
+
   const draftUrl = `${blobBase()}/drafts/${slug}.mdx`;
   const res = await fetch(draftUrl, { cache: "no-store" });
   if (res.status === 404) {
@@ -39,6 +43,24 @@ export async function publishSlug(slug: string): Promise<void> {
 
   revalidateTag(`article:${slug}`, "max");
   revalidateTag(`draft:${slug}`, "max");
+
+  // Social autoposting: enqueue 4 pending drafts (one per platform). The
+  // generation worker picks these up from /api/cron/generate-social. Wrapped
+  // so a social-side failure never blocks publish.
+  if (entry) {
+    try {
+      await enqueueSocialPosts({
+        slug,
+        title: entry.title,
+        description: entry.description,
+        category: entry.category,
+      });
+    } catch (err) {
+      console.error(`[scheduler] social enqueue failed for ${slug}:`, err);
+    }
+  } else {
+    console.warn(`[scheduler] no queue entry for ${slug}; skipping social enqueue`);
+  }
 }
 
 export async function processExpiredScheduled(): Promise<string[]> {
