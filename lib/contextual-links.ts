@@ -40,13 +40,13 @@ function deriveKeywords(slug: string): string[] {
   if (phrase.startsWith("best ")) variants.add(phrase.slice(5));
 
   const words = phrase.split(/\s+/);
-  const nonGeneric = words.filter((w) => !GENERIC_WORDS.has(w));
+  const nonGeneric = words.filter((w) => !GENERIC_WORDS.has(w) && !/\d/.test(w));
   if (nonGeneric.length >= 2) {
     variants.add(nonGeneric.slice(0, 2).join(" "));
     variants.add(nonGeneric.slice(-2).join(" "));
   }
 
-  return Array.from(variants);
+  return Array.from(variants).filter((v) => !/\d/.test(v));
 }
 
 export function buildLinkCandidates(
