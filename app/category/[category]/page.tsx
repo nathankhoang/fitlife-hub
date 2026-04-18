@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   getArticlesByCategory,
@@ -65,11 +66,14 @@ export default async function CategoryPage({ params }: Props) {
       />
 
       {/* Category hero strip */}
-      <div className="aspect-[16/5] rounded-2xl overflow-hidden bg-[#F5F5F5] mb-10 border border-[#E5E5E5]">
-        <img
+      <div className="relative aspect-[16/5] rounded-2xl overflow-hidden bg-[#F5F5F5] mb-10 border border-[#E5E5E5]">
+        <Image
           src={`/images/categories/${cat}.svg`}
           alt=""
-          className="w-full h-full object-cover"
+          fill
+          priority
+          sizes="(max-width: 1280px) 100vw, 1280px"
+          className="object-cover"
         />
       </div>
 
