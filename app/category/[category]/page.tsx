@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import {
   getArticlesByCategory,
@@ -99,10 +100,13 @@ export default async function CategoryPage({ params }: Props) {
 
       {/* Photo hero */}
       <section className={`relative overflow-hidden bg-gradient-to-br ${meta.gradient}`}>
-        <img
+        <Image
           src={`/images/categories/${cat}.jpg`}
           alt=""
-          className="absolute inset-0 w-full h-full object-cover"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
           aria-hidden
         />
         <div className="absolute inset-0 pointer-events-none" aria-hidden>

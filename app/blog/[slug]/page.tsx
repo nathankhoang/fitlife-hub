@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import rehypeSlug from "rehype-slug";
@@ -242,12 +243,12 @@ export default async function ArticlePage({ params }: Props) {
                 <p className="text-sm text-white/70 leading-relaxed mb-4">
                   LeanBodyEngine publishes evidence-based fitness guides — free to read, with no sponsored content.
                 </p>
-                <a
+                <Link
                   href="/#newsletter"
                   className="block text-center text-sm font-semibold bg-[#059669] hover:bg-[#047857] text-white px-4 py-2.5 rounded-lg transition-colors"
                 >
                   Get new articles →
-                </a>
+                </Link>
               </div>
             </div>
           </aside>
