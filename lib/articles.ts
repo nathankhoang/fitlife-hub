@@ -129,7 +129,7 @@ export async function getAllArticles(): Promise<Article[]> {
 
   const results = await Promise.all(
     slugs.map(async (slug) => {
-      const raw = await fetchMdx(`articles/${slug}.mdx`, `article:${slug}`);
+      const raw = await fetchMdx(`articles/${slug}.mdx`, `article:v2:${slug}`);
       return raw ? parseMdx(slug, raw) : null;
     }),
   );
@@ -144,7 +144,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
     const raw = readLocalMdx(LOCAL_ARTICLES_DIR, slug);
     return raw ? parseMdx(slug, raw) : null;
   }
-  const raw = await fetchMdx(`articles/${slug}.mdx`, `article:${slug}`);
+  const raw = await fetchMdx(`articles/${slug}.mdx`, `article:v2:${slug}`);
   return raw ? parseMdx(slug, raw) : null;
 }
 
@@ -153,7 +153,7 @@ export async function getDraftBySlug(slug: string): Promise<Article | null> {
     const raw = readLocalMdx(LOCAL_DRAFTS_DIR, slug);
     return raw ? parseMdx(slug, raw) : null;
   }
-  const raw = await fetchMdx(`drafts/${slug}.mdx`, `draft:${slug}`);
+  const raw = await fetchMdx(`drafts/${slug}.mdx`, `draft:v2:${slug}`);
   return raw ? parseMdx(slug, raw) : null;
 }
 
