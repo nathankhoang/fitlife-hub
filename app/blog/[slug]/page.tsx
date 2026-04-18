@@ -18,6 +18,7 @@ import NewsletterCTA from "@/components/NewsletterCTA";
 import ReadingProgress from "@/components/ReadingProgress";
 import TableOfContents, { type TocHeading } from "@/components/TableOfContents";
 import FaqSection from "@/components/FaqSection";
+import { buildProductListSchema } from "@/lib/product-schema";
 
 const mdxComponents = {
   AffiliateProductCard,
@@ -153,6 +154,12 @@ export default async function ArticlePage({ params }: Props) {
       }
     : null;
 
+  const productListSchema = buildProductListSchema(
+    article.content,
+    pageUrl,
+    SITE_URL,
+  );
+
   return (
     <>
       <script
@@ -167,6 +174,12 @@ export default async function ArticlePage({ params }: Props) {
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
+      {productListSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productListSchema) }}
         />
       )}
       <ReadingProgress />
