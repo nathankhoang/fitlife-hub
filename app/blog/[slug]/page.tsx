@@ -17,6 +17,7 @@ import AffiliateProductCard from "@/components/AffiliateProductCard";
 import NewsletterCTA from "@/components/NewsletterCTA";
 import ReadingProgress from "@/components/ReadingProgress";
 import TableOfContents, { type TocHeading } from "@/components/TableOfContents";
+import FaqSection from "@/components/FaqSection";
 
 const mdxComponents = {
   AffiliateProductCard,
@@ -228,6 +229,11 @@ export default async function ArticlePage({ params }: Props) {
               through them, we may earn a small commission at no extra cost to
               you. We only recommend products we genuinely believe in.
             </div>
+
+            {/* FAQ section (visible content required for FAQPage schema) */}
+            {article.faq && article.faq.length > 0 && (
+              <FaqSection items={article.faq} />
+            )}
           </div>
 
           {/* Sticky sidebar */}
