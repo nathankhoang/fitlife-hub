@@ -446,7 +446,13 @@
     "createdAt": "2026-04-18T05:00:00.000Z",
     "featured": false,
     "readTime": 18,
-    "affiliateProductIds": ["meal-prep-containers", "food-scale-etekcity", "fish-oil-nordic-naturals", "thorne-multivitamin", "orgain-organic-protein"]
+    "affiliateProductIds": [
+      "meal-prep-containers",
+      "food-scale-etekcity",
+      "fish-oil-nordic-naturals",
+      "thorne-multivitamin",
+      "orgain-organic-protein"
+    ]
   },
   {
     "id": "prog-overload-001",
@@ -460,7 +466,12 @@
     "createdAt": "2026-04-18T05:00:00.000Z",
     "featured": false,
     "readTime": 13,
-    "affiliateProductIds": ["adjustable-dumbbells", "resistance-bands-set", "creatine-monohydrate-bulk", "myprotein-impact-whey"]
+    "affiliateProductIds": [
+      "adjustable-dumbbells",
+      "resistance-bands-set",
+      "creatine-monohydrate-bulk",
+      "myprotein-impact-whey"
+    ]
   },
   {
     "id": "fish-oil-athl-001",
@@ -474,7 +485,12 @@
     "createdAt": "2026-04-18T05:00:00.000Z",
     "featured": false,
     "readTime": 9,
-    "affiliateProductIds": ["fish-oil-nordic-naturals", "vitamin-d3-sports-research", "turmeric-curcumin", "collagen-vital-proteins"]
+    "affiliateProductIds": [
+      "fish-oil-nordic-naturals",
+      "vitamin-d3-sports-research",
+      "turmeric-curcumin",
+      "collagen-vital-proteins"
+    ]
   },
   {
     "id": "wl-plateau-001",
@@ -488,7 +504,12 @@
     "createdAt": "2026-04-18T05:00:00.000Z",
     "featured": false,
     "readTime": 13,
-    "affiliateProductIds": ["fitness-tracker-fitbit", "food-scale-etekcity", "myprotein-impact-whey", "bcaa-xtend"]
+    "affiliateProductIds": [
+      "fitness-tracker-fitbit",
+      "food-scale-etekcity",
+      "myprotein-impact-whey",
+      "bcaa-xtend"
+    ]
   },
   {
     "id": "pullup-prog-001",
@@ -502,7 +523,12 @@
     "createdAt": "2026-04-18T05:00:00.000Z",
     "featured": false,
     "readTime": 11,
-    "affiliateProductIds": ["pull-up-bar", "resistance-bands-set", "adjustable-dumbbells", "ab-roller"]
+    "affiliateProductIds": [
+      "pull-up-bar",
+      "resistance-bands-set",
+      "adjustable-dumbbells",
+      "ab-roller"
+    ]
   },
   {
     "id": "stress-cort-001",
@@ -516,7 +542,12 @@
     "createdAt": "2026-04-18T05:00:00.000Z",
     "featured": false,
     "readTime": 9,
-    "affiliateProductIds": ["ashwagandha-ksm66", "magnesium-glycinate", "thorne-multivitamin", "garden-of-life-multivitamin"]
+    "affiliateProductIds": [
+      "ashwagandha-ksm66",
+      "magnesium-glycinate",
+      "thorne-multivitamin",
+      "garden-of-life-multivitamin"
+    ]
   },
   {
     "id": "macros-track-001",
@@ -530,7 +561,12 @@
     "createdAt": "2026-04-18T05:00:00.000Z",
     "featured": false,
     "readTime": 13,
-    "affiliateProductIds": ["food-scale-etekcity", "meal-prep-containers", "optimum-nutrition-gold-standard", "orgain-organic-protein"]
+    "affiliateProductIds": [
+      "food-scale-etekcity",
+      "meal-prep-containers",
+      "optimum-nutrition-gold-standard",
+      "orgain-organic-protein"
+    ]
   },
   {
     "id": "best-protein-001",
@@ -544,7 +580,13 @@
     "createdAt": "2026-04-18T05:00:00.000Z",
     "featured": false,
     "readTime": 13,
-    "affiliateProductIds": ["optimum-nutrition-gold-standard", "myprotein-impact-whey", "orgain-organic-protein", "quest-protein-bars", "creatine-monohydrate-bulk"]
+    "affiliateProductIds": [
+      "optimum-nutrition-gold-standard",
+      "myprotein-impact-whey",
+      "orgain-organic-protein",
+      "quest-protein-bars",
+      "creatine-monohydrate-bulk"
+    ]
   },
   {
     "id": "vitd-perf-001",
@@ -558,7 +600,12 @@
     "createdAt": "2026-04-18T05:00:00.000Z",
     "featured": false,
     "readTime": 18,
-    "affiliateProductIds": ["vitamin-d3-sports-research", "thorne-multivitamin", "fish-oil-nordic-naturals", "magnesium-glycinate"]
+    "affiliateProductIds": [
+      "vitamin-d3-sports-research",
+      "thorne-multivitamin",
+      "fish-oil-nordic-naturals",
+      "magnesium-glycinate"
+    ]
   },
   {
     "id": "home-gym-budget-001",
@@ -572,6 +619,82 @@
     "createdAt": "2026-04-18T05:00:00.000Z",
     "featured": false,
     "readTime": 18,
-    "affiliateProductIds": ["resistance-bands-set", "pull-up-bar", "kettlebell-cap", "adjustable-dumbbells", "weight-bench-flybird"]
+    "affiliateProductIds": [
+      "resistance-bands-set",
+      "pull-up-bar",
+      "kettlebell-cap",
+      "adjustable-dumbbells",
+      "weight-bench-flybird"
+    ]
+  },
+  {
+    "id": "best-creatine-supplements",
+    "slug": "best-creatine-supplements",
+    "title": "Best Creatine Supplements for Muscle Growth (2025)",
+    "description": "Creatine is the most well-researched supplement in sports nutrition. Here's which form works best, how to take it, and our top product picks.",
+    "category": "supplements",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2025-04-08T00:00:00.000Z",
+    "createdAt": "2025-04-08T00:00:00.000Z",
+    "featured": false,
+    "readTime": 8,
+    "affiliateProductIds": []
+  },
+  {
+    "id": "best-multivitamins-athletes",
+    "slug": "best-multivitamins-athletes",
+    "title": "Best Multivitamins for Athletes (2025 Guide)",
+    "description": "Athletes have different nutritional needs than sedentary individuals. We reviewed the top multivitamins for athletes based on bioavailability, dosing, and third-party testing.",
+    "category": "supplements",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2025-04-03T00:00:00.000Z",
+    "createdAt": "2025-04-03T00:00:00.000Z",
+    "featured": false,
+    "readTime": 8,
+    "affiliateProductIds": []
+  },
+  {
+    "id": "best-pre-workout-supplements",
+    "slug": "best-pre-workout-supplements",
+    "title": "Best Pre-Workout Supplements Ranked (2025)",
+    "description": "We reviewed the top pre-workout supplements for energy, pump, and focus. See which formulas are clinically dosed and worth your money.",
+    "category": "supplements",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2025-04-10T00:00:00.000Z",
+    "createdAt": "2025-04-10T00:00:00.000Z",
+    "featured": true,
+    "readTime": 9,
+    "affiliateProductIds": []
+  },
+  {
+    "id": "best-protein-powders-2025",
+    "slug": "best-protein-powders-2025",
+    "title": "Best Protein Powders of 2025: Tested & Reviewed",
+    "description": "We ranked the top protein powders of 2025 by taste, mixability, protein quality, and value. Find the best whey, plant-based, and casein options.",
+    "category": "supplements",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2025-04-05T00:00:00.000Z",
+    "createdAt": "2025-04-05T00:00:00.000Z",
+    "featured": true,
+    "readTime": 10,
+    "affiliateProductIds": []
+  },
+  {
+    "id": "home-gym-setup-under-200",
+    "slug": "home-gym-setup-under-200",
+    "title": "Home Gym Setup: Essential Equipment Under $200",
+    "description": "Build a fully functional home gym for under $200. These 5 essential pieces of equipment cover strength, cardio, and flexibility training.",
+    "category": "home-workouts",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2025-03-15T00:00:00.000Z",
+    "createdAt": "2025-03-15T00:00:00.000Z",
+    "featured": false,
+    "readTime": 7,
+    "affiliateProductIds": []
   }
 ]
