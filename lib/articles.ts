@@ -94,11 +94,13 @@ function parseMdx(slug: string, raw: string): Article {
   };
 }
 
+const MDX_CACHE_BUST = "3";
+
 async function fetchMdx(
   blobPath: string,
   tag: string,
 ): Promise<string | null> {
-  const res = await fetch(`${blobBase()}/${blobPath}`, {
+  const res = await fetch(`${blobBase()}/${blobPath}?v=${MDX_CACHE_BUST}`, {
     cache: "force-cache",
     next: { tags: [tag] },
   });
