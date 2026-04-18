@@ -49,19 +49,30 @@ function productSchema(product: AffiliateProduct, siteUrl: string) {
     name: product.name,
     description: product.description,
     ...(image ? { image } : {}),
-    review: {
-      "@type": "Review",
-      reviewRating: {
-        "@type": "Rating",
-        ratingValue: product.rating.toFixed(1),
-        bestRating: "5",
-      },
-      author: {
-        "@type": "Organization",
-        name: "LeanBodyEngine",
-        url: siteUrl,
-      },
-    },
+    ...(product.reviewCount
+      ? {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: product.rating.toFixed(1),
+            bestRating: "5",
+            ratingCount: product.reviewCount,
+          },
+        }
+      : {
+          review: {
+            "@type": "Review",
+            reviewRating: {
+              "@type": "Rating",
+              ratingValue: product.rating.toFixed(1),
+              bestRating: "5",
+            },
+            author: {
+              "@type": "Organization",
+              name: "LeanBodyEngine",
+              url: siteUrl,
+            },
+          },
+        }),
     offers,
   };
 }
