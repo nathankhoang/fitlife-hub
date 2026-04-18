@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.64",
+    "@ai-sdk/groq": "^3.0.35",
     "@anthropic-ai/sdk": "^0.68.0",
     "@fontsource/geist-sans": "^5.2.5",
     "@resvg/resvg-js": "^2.6.2",

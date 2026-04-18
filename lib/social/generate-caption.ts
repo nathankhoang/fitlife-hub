@@ -4,13 +4,16 @@
 // Returns a ready-to-post caption + (for Instagram only) a first-comment
 // hashtag dump.
 
-import { google } from "@ai-sdk/google";
+import { groq } from "@ai-sdk/groq";
 import { generateObject } from "ai";
 import { z } from "zod";
 import { STRATEGIES, type Platform } from "./strategies";
 import { BRAND_VOICE } from "./voice";
 
-const MODEL = "gemini-2.5-flash";
+// Groq free tier: 30 req/min, generous daily quota. Using gpt-oss-120b
+// because it natively supports JSON schema structured outputs (Llama 3.3
+// on Groq does not).
+const MODEL = "openai/gpt-oss-120b";
 
 export type ArticleForCaption = {
   slug: string;
@@ -119,7 +122,7 @@ export async function generateCaption({
 
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
     const result = await generateObject({
-      model: google(MODEL),
+      model: groq(MODEL),
       schema: ResponseSchema,
       system,
       prompt,
