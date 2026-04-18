@@ -57,6 +57,8 @@ Every post MUST include:
 
 Do not use all mid-range products. Readers have different budgets.
 
+**Premium vs Budget pairing (strongly preferred):** Where two products serve the same purpose at different price points, feature them as an explicit pair — a **"Best Overall"** (flagship/premium) and a **"Best Budget Pick"** (affordable alternative). Explain the trade-offs clearly so the reader can choose based on their budget. Example: Manduka PRO yoga mat (premium) paired with Gaiam Essentials mat (budget). This pairing approach should appear in at least one section per article.
+
 ### Rule 4 — Brand diversity
 No more than **2 products from the same brand** per post. Vary brands across posts in the same batch.
 
@@ -66,6 +68,14 @@ Place every `<AffiliateProductCard productId="..." />` component:
 - Inside a comparison or "What to Look For" section
 - After a specific recommendation sentence like "For this, we recommend [product name], which [specific reason]."
 - NEVER as a standalone block dropped below a generic paragraph that doesn't mention the product
+
+### Rule 6 — Product quality standards (required)
+Every product recommended in a post MUST be a high-quality, well-reviewed product:
+- **Minimum 4.0 stars** average rating (4.5+ stars strongly preferred)
+- **Minimum 500 customer reviews** (1,000+ preferred — high volume confirms the rating is reliable)
+- Only recommend products you can genuinely justify as "best in class" or "best value" for the use case — not just filler to hit a product count
+- When writing about the product, briefly mention WHY it is trusted (e.g. "with over 50,000 five-star reviews", "Amazon's #1 bestseller in creatine", "NSF Certified for sport") — this builds reader confidence
+- Do NOT recommend a product solely because it is in the catalog; if a catalog product has weak reviews or is a poor fit, skip it and use a better-matched alternative
 
 ---
 
@@ -203,7 +213,7 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
    - Include ≥1 comparison table, numbered step list, or data-backed callout per major section
    - Avoid generic filler sentences — each paragraph must add specific, actionable information
 
-   **Product placement — follow all 5 Product Selection Rules provided above:**
+   **Product placement — follow all 6 Product Selection Rules provided above:**
    - Each `<AffiliateProductCard productId="..." />` must appear inside the specific section where that product is discussed
    - Introduce the product naturally: "If you're looking for [specific use case], [Product Name] delivers [specific reason]. Here's our pick:" — then place the card
    - NEVER place a card as a standalone block after an unrelated paragraph
