@@ -287,8 +287,39 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
 
 3. **Output contract** — the sub-agent must:
    - Write the MDX article to `content/drafts/<slug>.mdx` with `image: ""` initially. Follow the exact frontmatter + content structure in §Content Rules below. Match the target word count from the assignment.
-   - Run `node scripts/generate-thumbnail.mjs --slug "<slug>" --title "<title>" --category <category>` from the project root. The script pulls real stock photography from **Pexels** (requires `PEXELS_API_KEY` env var) and uses **Claude Haiku 4.5 vision** to pick the best of 4 candidates (requires `ANTHROPIC_API_KEY` env var). It writes hero/OG/Pinterest WebPs and updates frontmatter `image:`, `imageOg:`, `imagePinterest:`, plus `photoCredit:` / `photoCreditUrl:` for Pexels attribution.
-   - **Image generation is required.** If the command exits non-zero or returns `"ok": false`, retry up to **2 more times** (3 attempts total) before giving up. On final failure, set `"image_status": "missing"` in the returned JSON so the parent can flag it — but still complete the post. Do **not** proceed with an empty `image:` field without attempting all retries.
+   - **Select a hero image using the Visual Keyword Method (required — follow every rule below):**
+
+     **Step A — Identify the visual keyword.** Ask yourself: *"If someone searched for this topic on a stock photo site, what single noun or short phrase would show exactly what the article is about?"* Examples:
+     - Article about pre-workout supplements → keyword: `"pre-workout supplement powder"`
+     - Article about fish oil → keyword: `"fish oil capsules"`
+     - Article about HIIT → keyword: `"hiit workout burpees"` (show the exercise, not just someone running)
+     - Article about meal prep → keyword: `"meal prep containers food"`
+     - Article about sleep → keyword: `"sleeping bedroom"` or `"person sleeping"` (show a person actually sleeping)
+     - Article about creatine → keyword: `"creatine powder supplement"`
+     - Article about compound exercises → keyword: `"barbell squat"` or `"deadlift"`
+     - NEVER use generic keywords like `"fitness"`, `"health"`, `"gym"`, `"exercise"` — these return irrelevant results
+
+     **Step B — Search Pexels.** Use WebSearch with the query: `site:pexels.com/photo "<your visual keyword>"`. Browse the first 3–5 results. Note the photo IDs (the number in the URL, e.g. `pexels.com/photo/3838389`).
+
+     **Step C — Evaluate candidates using these rules:**
+     - The photo must show the ACTUAL SUBJECT of the article. A pre-workout article needs a photo of an actual pre-workout container/scoop — not a person drinking a shake. A food article needs actual food — not a person eating.
+     - For exercise/workout articles: show the specific exercise or workout style, not a generic gym shot
+     - **Gender balance rule:** Across the batch, roughly half of person-showing photos should feature men and half women. For any single article, use your judgment — but actively avoid choosing all-women or all-men photos across the batch.
+     - Prefer landscape-oriented, well-lit, high-resolution photos (≥1200px wide)
+     - If your first keyword returns nothing useful after 2 searches, try a more specific or different angle keyword
+
+     **Step D — Build the direct download URL.** Pexels direct URL format:
+     `https://images.pexels.com/photos/{ID}/pexels-photo-{ID}.jpeg?auto=compress&cs=tinysrgb&w=1920`
+     Replace `{ID}` with the photo ID you found.
+
+     **Step E — Apply the image.** Run from the project root:
+     ```
+     node --env-file=.env.local scripts/ensure-images.mjs --slug "<slug>" --url "<pexels-direct-url>" --force
+     ```
+     This downloads the image, converts to 1600×1000 WebP, saves to `public/images/articles/<slug>.webp`, and updates the `image:`, `imageOg:`, `imagePinterest:` frontmatter fields in both `content/drafts/<slug>.mdx` and `content/articles/<slug>.mdx`.
+
+     **Step F — Retry on failure.** If the command fails (non-zero exit, 404, download error), try a different photo from Step B or pick a new keyword and repeat. Attempt up to 3 different photos before giving up. On final failure, set `"image_status": "missing"` in the returned JSON — but still complete the post.
+
    - Copy `content/drafts/<slug>.mdx` to `content/articles/<slug>.mdx` (publish).
    - **Do NOT touch `data/queue.json`** — race-unsafe with 10 parallel agents.
    - **Return** (as the final message to the parent) a single JSON object with shape:
