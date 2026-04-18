@@ -42,6 +42,15 @@ const tools: Tool[] = [
     formulas: "Mifflin-St Jeor · Katch-McArdle",
     accent: "#059669",
   },
+  {
+    slug: "1rm-calculator",
+    title: "1RM Calculator",
+    description:
+      "Estimate your one-rep max from any rep set, plus a full training load table from 67% to 100%.",
+    inputs: "Weight lifted, reps completed · exercise optional",
+    formulas: "Epley · Brzycki · Lombardi · O'Conner",
+    accent: "#059669",
+  },
 ];
 
 export default function ToolsIndexPage() {
@@ -169,9 +178,8 @@ export default function ToolsIndexPage() {
               Coming soon
             </p>
             <p className="text-[#525252] leading-relaxed text-[15px]">
-              1RM calculator, body-fat estimator, and protein-per-meal
-              distribution planner are on deck. Subscribe to get notified when
-              they ship.
+              Body-fat estimator (US Navy tape method) and BMR calculator are
+              next on deck. Subscribe to get notified when they ship.
             </p>
           </div>
         </div>
