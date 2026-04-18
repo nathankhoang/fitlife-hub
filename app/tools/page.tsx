@@ -51,6 +51,15 @@ const tools: Tool[] = [
     formulas: "Epley · Brzycki · Lombardi · O'Conner",
     accent: "#059669",
   },
+  {
+    slug: "plate-calculator",
+    title: "Plate Calculator",
+    description:
+      "Target weight in, plate stack per side out. Visual bar diagram and custom plate sets for your gym.",
+    inputs: "Target weight, bar weight · available plates optional",
+    formulas: "Greedy plate selection · lb/kg conversion",
+    accent: "#059669",
+  },
 ];
 
 export default function ToolsIndexPage() {
