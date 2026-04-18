@@ -9,30 +9,40 @@ const categories = [
   { slug: "wellness", label: "Wellness" },
 ];
 
+const topReviews = [
+  { href: "/blog/best-protein-powders-2025", label: "Best Protein Powders" },
+  { href: "/blog/best-creatine-supplements", label: "Best Creatine" },
+  { href: "/blog/best-pre-workout-supplements", label: "Best Pre-Workouts" },
+  { href: "/blog/best-multivitamins-athletes", label: "Best Multivitamins" },
+  { href: "/blog/home-gym-setup-under-200", label: "Home Gym Guide" },
+];
+
 export default function Footer() {
   return (
-    <footer className="bg-[#0A0A0A] text-white mt-16">
+    <footer className="bg-[#0f172a] text-white mt-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-          <div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+          {/* Brand */}
+          <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
               <span className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white text-[11px] font-bold tracking-tight">LBE</span>
-              <span className="text-lg font-semibold tracking-tight">LeanBodyEngine</span>
+              <span className="text-lg font-bold tracking-tight">LeanBodyEngine</span>
             </div>
-            <p className="text-[#A3A3A3] text-sm leading-relaxed">
+            <p className="text-white/50 text-sm leading-relaxed">
               Honest, evidence-based guides on training, supplements, and
               nutrition. No fluff. No miracle promises.
             </p>
           </div>
 
+          {/* Categories */}
           <div>
-            <h3 className="font-semibold text-white mb-4 text-sm tracking-wide">CATEGORIES</h3>
+            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">Categories</h3>
             <ul className="space-y-2.5">
               {categories.map((cat) => (
                 <li key={cat.slug}>
                   <Link
                     href={`/category/${cat.slug}`}
-                    className="text-[#A3A3A3] hover:text-white text-sm transition-colors"
+                    className="text-white/50 hover:text-white text-sm transition-colors"
                   >
                     {cat.label}
                   </Link>
@@ -41,22 +51,34 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Top Reviews */}
           <div>
-            <h3 className="font-semibold text-white mb-4 text-sm tracking-wide">EXPLORE</h3>
+            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">Top Reviews</h3>
+            <ul className="space-y-2.5">
+              {topReviews.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-white/50 hover:text-white text-sm transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Explore */}
+          <div>
+            <h3 className="font-semibold text-white mb-4 text-sm uppercase tracking-wide">Explore</h3>
             <ul className="space-y-2.5">
               <li>
-                <Link
-                  href="/blog"
-                  className="text-[#A3A3A3] hover:text-white text-sm transition-colors"
-                >
+                <Link href="/blog" className="text-white/50 hover:text-white text-sm transition-colors">
                   All Articles
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/about"
-                  className="text-[#A3A3A3] hover:text-white text-sm transition-colors"
-                >
+                <Link href="/about" className="text-white/50 hover:text-white text-sm transition-colors">
                   About Us
                 </Link>
               </li>
@@ -64,15 +86,14 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-[#262626] mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
-          <p className="text-[#737373] text-xs">
+        <div className="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
+          <p className="text-white/30 text-xs">
             © {new Date().getFullYear()} LeanBodyEngine. All rights reserved.
           </p>
-          <p className="text-[#737373] text-xs text-center md:text-right max-w-xl">
-            <strong className="text-[#A3A3A3]">Affiliate disclosure:</strong>{" "}
-            LeanBodyEngine participates in Amazon Associates and other affiliate
-            programs. We may earn a commission on purchases made through our
-            links at no extra cost to you.
+          <p className="text-white/30 text-xs text-center md:text-right max-w-xl">
+            <strong className="text-white/50">Affiliate disclosure:</strong>{" "}
+            LeanBodyEngine participates in Amazon Associates. We may earn a commission
+            on purchases made through our links at no extra cost to you.
           </p>
         </div>
       </div>

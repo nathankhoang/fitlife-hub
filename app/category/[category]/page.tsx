@@ -6,9 +6,41 @@ import {
   type Category,
 } from "@/lib/articles";
 import ArticleCard from "@/components/ArticleCard";
-import CategoryBadge from "@/components/CategoryBadge";
 
 type Props = { params: Promise<{ category: string }> };
+
+const categoryMeta: Record<Category, { gradient: string; description: string }> = {
+  "home-workouts": {
+    gradient: "from-[#1e3a8a] to-[#0891b2]",
+    description:
+      "Effective routines you can do anywhere — no gym membership required. Build strength, endurance, and flexibility at home.",
+  },
+  supplements: {
+    gradient: "from-[#064e3b] to-[#059669]",
+    description:
+      "Unbiased reviews of protein powders, creatine, pre-workouts, vitamins, and more. Find out what actually works.",
+  },
+  "diet-nutrition": {
+    gradient: "from-[#92400e] to-[#d97706]",
+    description:
+      "Practical nutrition strategies backed by science. Macros, meal planning, and evidence-based eating for real results.",
+  },
+  "weight-loss": {
+    gradient: "from-[#581c87] to-[#7c3aed]",
+    description:
+      "Sustainable fat loss without crash diets. The science of caloric deficit, metabolism, and keeping the weight off long-term.",
+  },
+  "muscle-building": {
+    gradient: "from-[#7f1d1d] to-[#dc2626]",
+    description:
+      "Training programs and nutrition protocols to maximize hypertrophy. From beginner gains to breaking plateaus.",
+  },
+  wellness: {
+    gradient: "from-[#134e4a] to-[#0f766e]",
+    description:
+      "Sleep optimization, stress management, and recovery techniques to support your training and overall health.",
+  },
+};
 
 export async function generateStaticParams() {
   return Object.keys(categoryLabels).map((category) => ({ category }));
@@ -32,42 +64,50 @@ export default async function CategoryPage({ params }: Props) {
   const cat = category as Category;
   const articles = await getArticlesByCategory(cat);
   const label = categoryLabels[cat];
+  const meta = categoryMeta[cat];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-      {/* Category hero strip */}
-      <div className="aspect-[16/5] rounded-2xl overflow-hidden bg-[#F5F5F5] mb-10 border border-[#E5E5E5]">
+    <div>
+      {/* Photo hero */}
+      <section className={`relative overflow-hidden bg-gradient-to-br ${meta.gradient}`}>
         <img
-          src={`/images/categories/${cat}.svg`}
+          src={`/images/categories/${cat}.jpg`}
           alt=""
-          className="w-full h-full object-cover"
+          className="absolute inset-0 w-full h-full object-cover"
+          aria-hidden
         />
-      </div>
-
-      <div className="mb-10">
-        <div className="mb-3">
-          <CategoryBadge category={cat} linkable={false} />
+        <div className="absolute inset-0 pointer-events-none" aria-hidden>
+          <div className="absolute inset-0 bg-black/45" />
         </div>
-        <h1 className="text-3xl md:text-4xl font-semibold text-[#0A0A0A] mb-2 tracking-tight">
-          {label}
-        </h1>
-        <p className="text-[#525252]">
-          {articles.length} article{articles.length !== 1 ? "s" : ""} on{" "}
-          {label.toLowerCase()}.
-        </p>
-      </div>
-
-      {articles.length === 0 ? (
-        <p className="text-[#525252] text-center py-20">
-          No articles in this category yet. Check back soon!
-        </p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.map((article) => (
-            <ArticleCard key={article.slug} article={article} />
-          ))}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/60 mb-3">
+            Category
+          </p>
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 tracking-tight">
+            {label}
+          </h1>
+          <p className="text-white/70 text-lg max-w-2xl leading-relaxed mb-5">
+            {meta.description}
+          </p>
+          <p className="text-white/50 text-sm">
+            {articles.length} article{articles.length !== 1 ? "s" : ""}
+          </p>
         </div>
-      )}
+      </section>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        {articles.length === 0 ? (
+          <p className="text-[#525252] text-center py-20">
+            No articles in this category yet. Check back soon!
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {articles.map((article) => (
+              <ArticleCard key={article.slug} article={article} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

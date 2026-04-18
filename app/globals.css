@@ -11,20 +11,30 @@
   --color-primary-dark: #047857;
   --color-accent: #F97316;
   --color-accent-dark: #EA580C;
+  --color-navy: #0f172a;
+  --color-warm-bg: #fafaf8;
 }
 
 body {
   background-color: #ffffff;
   color: #0A0A0A;
+  font-family: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.8;
   font-feature-settings: "ss01", "cv11";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
 }
 
 .prose h1,
 .prose h2,
 .prose h3,
 .prose h4 {
+  font-family: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
   color: #0A0A0A;
   font-weight: 700;
   line-height: 1.2;
@@ -38,7 +48,7 @@ body {
 
 .prose p {
   margin-bottom: 1.25rem;
-  line-height: 1.75;
+  line-height: 1.8;
   color: #404040;
 }
 
@@ -53,7 +63,7 @@ body {
 
 .prose li {
   margin-bottom: 0.4rem;
-  line-height: 1.75;
+  line-height: 1.8;
   color: #404040;
 }
 
