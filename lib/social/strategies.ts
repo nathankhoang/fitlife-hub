@@ -27,11 +27,19 @@ export type CaptionSpec = {
   styleHint: string;
 };
 
+/**
+ * Which image template the runtime worker should emit for this platform.
+ * "stat-callout" is typography-forward (big number, no photo) and matches
+ * evidence-based peer brands. "hero-photo" is photo-led with a title overlay.
+ */
+export type DefaultImageVariant = "hero-photo" | "stat-callout";
+
 export type PlatformStrategy = {
   platform: Platform;
   label: string;
   image: ImageSpec;
   caption: CaptionSpec;
+  defaultImageVariant: DefaultImageVariant;
 };
 
 const LANDSCAPE_IMAGE: Omit<ImageSpec, "width" | "height"> = {
@@ -59,6 +67,8 @@ export const STRATEGIES: Record<Platform, PlatformStrategy> = {
     platform: "twitter",
     label: "Twitter/X",
     image: { width: 1600, height: 900, ...LANDSCAPE_IMAGE },
+    // Hero-photo cuts through the fast-scroll Twitter feed better than text-only.
+    defaultImageVariant: "hero-photo",
     caption: {
       maxChars: 270,
       hashtagCount: [0, 2],
@@ -73,6 +83,9 @@ export const STRATEGIES: Record<Platform, PlatformStrategy> = {
     platform: "linkedin",
     label: "LinkedIn",
     image: { width: 1200, height: 627, ...LANDSCAPE_IMAGE },
+    // Editorial/professional register — stat cards match what SBS, Barbell
+    // Medicine, and Examine.com run on LinkedIn.
+    defaultImageVariant: "stat-callout",
     caption: {
       maxChars: 1300,
       hashtagCount: [2, 4],
@@ -87,6 +100,9 @@ export const STRATEGIES: Record<Platform, PlatformStrategy> = {
     platform: "instagram",
     label: "Instagram",
     image: { width: 1080, height: 1350, ...PORTRAIT_IMAGE },
+    // Evidence-based peers have largely abandoned hero-photo on IG; stat
+    // callouts stop the scroll with a number instead of a gym scene.
+    defaultImageVariant: "stat-callout",
     caption: {
       maxChars: 2000,
       hashtagCount: [4, 6],
@@ -101,6 +117,9 @@ export const STRATEGIES: Record<Platform, PlatformStrategy> = {
     platform: "facebook",
     label: "Facebook",
     image: { width: 1200, height: 630, ...LANDSCAPE_IMAGE },
+    // FB auto-generates a link preview card from the URL, so the post image
+    // is competing with the article's own hero — a photo is the stronger bet.
+    defaultImageVariant: "hero-photo",
     caption: {
       maxChars: 600,
       hashtagCount: [0, 0],

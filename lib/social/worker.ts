@@ -17,6 +17,8 @@ import { put } from "@vercel/blob";
 import { getArticleBySlug } from "../articles";
 import { generateSocialImage } from "./generate-image";
 import { generateCaption } from "./generate-caption";
+import { extractHeroStat } from "./extract-stat";
+import { STRATEGIES } from "./strategies";
 import {
   getPendingSocialEntries,
   getSocialQueue,
@@ -57,16 +59,22 @@ async function processEntry(entry: SocialPostEntry): Promise<"ok" | "failed"> {
   }
 
   const heroImage = resolveHeroImage(article.image, entry.articleSlug);
+  const variant = STRATEGIES[entry.platform].defaultImageVariant;
 
   try {
-    // Image + caption can run in parallel — they're independent.
-    const [imageBuf, caption] = await Promise.all([
-      generateSocialImage({
-        title: article.title,
-        categoryLabel: entry.articleCategoryLabel,
-        heroImage,
-        platform: entry.platform,
-      }),
+    // For stat-callout, we need a stat before rendering. Extract in parallel
+    // with caption generation, then render.
+    const statPromise =
+      variant === "stat-callout"
+        ? extractHeroStat({
+            title: article.title,
+            description: article.description,
+            body: article.content,
+          })
+        : Promise.resolve(null);
+
+    const [stat, caption] = await Promise.all([
+      statPromise,
       generateCaption({
         article: {
           slug: article.slug,
@@ -79,6 +87,16 @@ async function processEntry(entry: SocialPostEntry): Promise<"ok" | "failed"> {
         platform: entry.platform,
       }),
     ]);
+
+    const imageBuf = await generateSocialImage({
+      title: article.title,
+      categoryLabel: entry.articleCategoryLabel,
+      heroImage: variant === "hero-photo" ? heroImage : undefined,
+      statValue: stat?.value,
+      statContext: stat?.context,
+      platform: entry.platform,
+      variant,
+    });
 
     const imgKey = `${SOCIAL_IMAGES_PREFIX}/${entry.id}.webp`;
     const uploaded = await put(imgKey, imageBuf, {
