@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 
 type Sex = "male" | "female";
 type Units = "imperial" | "metric";
@@ -222,17 +222,6 @@ export default function MacroCalculator() {
   const [goal, setGoal] = useState<Goal>("maintain");
   const [bodyFat, setBodyFat] = useState("");
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    const saved = typeof window !== "undefined" ? localStorage.getItem("lbe-units") : null;
-    if (saved === "metric" || saved === "imperial") setUnits(saved);
-  }, []);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("lbe-units", units);
-    }
-  }, [units]);
 
   const result = useMemo<Result | null>(() => {
     const ageN = Number(age);
@@ -568,7 +557,7 @@ export default function MacroCalculator() {
                 {result.belowBmr && !result.floorApplied && (
                   <p>
                     Target calories are below your BMR. Holding this long term
-                    isn't advisable — consider a smaller deficit or higher
+                    isn&apos;t advisable — consider a smaller deficit or higher
                     activity.
                   </p>
                 )}

@@ -219,12 +219,12 @@ export default function MacroCalculatorPage() {
               through +20% aggressive bulk). Protein is set per pound of
               bodyweight — scaling up for cuts (~1.1 g/lb) and down for bulks
               (~0.7 g/lb) — and fat takes the greater of a 0.35 g/lb floor or
-              25% of calories. Carbs fill whatever's left.
+              25% of calories. Carbs fill whatever&apos;s left.
             </p>
             <p>
               Calories are clamped to a safe floor ({" "}
               1,500 kcal for men, 1,200 kcal for women) so aggressive cuts
-              can't return unsafely low numbers, and the tool warns you if
+              can&apos;t return unsafely low numbers, and the tool warns you if
               protein plus fat already exhaust your calorie target.
             </p>
           </div>
@@ -240,13 +240,13 @@ export default function MacroCalculatorPage() {
               This is where most people overshoot. The activity multiplier
               already includes non-exercise movement — fidgeting, walking to
               the kitchen, errands — so if you work a desk job and lift 3x a
-              week, you're <strong>Moderate</strong>, not Heavy. Heavy is for
+              week, you&apos;re <strong>Moderate</strong>, not Heavy. Heavy is for
               manual labor or serious daily training volume. Athlete is
               reserved for twice-daily training or a genuinely physical job
               (construction, moving, landscaping).
             </p>
             <p>
-              If you're unsure, start one tier lower than you think. It's
+              If you&apos;re unsure, start one tier lower than you think. It&apos;s
               easier to add calories when progress is too slow than to claw
               back from an unintentional surplus.
             </p>
@@ -298,9 +298,9 @@ export default function MacroCalculatorPage() {
         {/* Credibility footer */}
         <section className="mt-12 pt-8 border-t border-[#E5E5E5] text-sm text-[#A3A3A3]">
           <p>
-            This calculator is provided for educational purposes. It's a
+            This calculator is provided for educational purposes. It&apos;s a
             starting estimate, not medical advice — individuals vary, and
-            targets should be adjusted based on real-world progress. If you're
+            targets should be adjusted based on real-world progress. If you&apos;re
             under 18, pregnant, have an eating disorder history, or a
             diagnosed metabolic condition, work with a registered dietitian or
             physician rather than relying on any calculator.
