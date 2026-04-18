@@ -46,6 +46,19 @@ const organizationSchema = {
   description: siteDescription,
 };
 
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "LeanBodyEngine",
+  url: SITE_URL,
+  description: siteDescription,
+  publisher: {
+    "@type": "Organization",
+    name: "LeanBodyEngine",
+    url: SITE_URL,
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -55,6 +68,10 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
         <Navbar />
         <main className="flex-1">{children}</main>
