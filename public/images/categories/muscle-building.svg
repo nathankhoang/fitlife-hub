@@ -4,17 +4,25 @@
       <stop offset="0%" stop-color="#7F1D1D"/>
       <stop offset="100%" stop-color="#991B1B"/>
     </linearGradient>
-    <radialGradient id="glow" cx="20%" cy="50%" r="60%">
-      <stop offset="0%" stop-color="#F87171" stop-opacity="0.4"/>
-      <stop offset="100%" stop-color="#F87171" stop-opacity="0"/>
+    <radialGradient id="glow" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#EF4444" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#EF4444" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="800" height="500" fill="url(#bg)"/>
   <rect width="800" height="500" fill="url(#glow)"/>
-  <g transform="translate(400 250)" fill="#FAFAFA" opacity="0.95">
-    <path d="M -120 50 C -120 20, -100 -10, -70 -20 L -40 -30 C -20 -50, 20 -60, 50 -50 C 90 -40, 110 -10, 100 30 C 90 60, 60 80, 30 80 L -50 80 C -90 80, -120 70, -120 50 Z"/>
-    <ellipse cx="20" cy="0" rx="45" ry="35" fill="#7F1D1D"/>
-    <ellipse cx="20" cy="0" rx="35" ry="25" fill="#FAFAFA"/>
+  <!-- Dumbbell: bar + collars + plates, all connected -->
+  <g transform="translate(400, 242)" fill="#FAFAFA" opacity="0.95">
+    <!-- Bar -->
+    <rect x="-115" y="-13" width="230" height="26" rx="13"/>
+    <!-- Left inner collar -->
+    <rect x="-158" y="-33" width="43" height="66" rx="7"/>
+    <!-- Left outer plate -->
+    <rect x="-215" y="-60" width="57" height="120" rx="10"/>
+    <!-- Right inner collar -->
+    <rect x="115" y="-33" width="43" height="66" rx="7"/>
+    <!-- Right outer plate -->
+    <rect x="158" y="-60" width="57" height="120" rx="10"/>
   </g>
   <text x="40" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#FAFAFA" letter-spacing="3" opacity="0.85">MUSCLE BUILDING</text>
 </svg>

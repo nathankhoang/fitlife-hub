@@ -1,19 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Diet & Nutrition">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Diet &amp; Nutrition">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#064E3B"/>
       <stop offset="100%" stop-color="#065F46"/>
     </linearGradient>
-    <radialGradient id="glow" cx="20%" cy="80%" r="60%">
-      <stop offset="0%" stop-color="#34D399" stop-opacity="0.4"/>
+    <radialGradient id="glow" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#34D399" stop-opacity="0.45"/>
       <stop offset="100%" stop-color="#34D399" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="800" height="500" fill="url(#bg)"/>
   <rect width="800" height="500" fill="url(#glow)"/>
-  <g transform="translate(400 250)" fill="#FAFAFA" opacity="0.95">
-    <path d="M -90 -60 C -90 -130, 0 -150, 80 -110 C 110 -90, 110 -50, 90 -10 C 60 50, 0 100, -50 110 C -100 110, -120 60, -110 0 C -105 -25, -95 -50, -90 -60 Z"/>
-    <path d="M 30 -60 C 0 -20, -30 30, -60 80" stroke="#064E3B" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- Apple: bilobed top, rounded bottom, stem, leaf, highlight -->
+  <g transform="translate(400, 262)">
+    <path d="M 0,-55 C -12,-75 -42,-92 -70,-86 C -98,-80 -115,-52 -114,-12 C -112,32 -92,80 -55,102 C -32,114 -10,108 0,108 C 10,108 32,114 55,102 C 92,80 112,32 114,-12 C 115,-52 98,-80 70,-86 C 42,-92 12,-75 0,-55 Z" fill="#FAFAFA" opacity="0.95"/>
+    <!-- Shine highlight -->
+    <ellipse cx="-38" cy="-42" rx="16" ry="24" fill="white" opacity="0.2" transform="rotate(-20,-38,-42)"/>
+    <!-- Stem -->
+    <path d="M 6,-58 C 14,-86 36,-106 34,-102" stroke="#34D399" stroke-width="10" fill="none" stroke-linecap="round"/>
+    <!-- Leaf -->
+    <path d="M 30,-103 C 60,-127 86,-112 72,-84 C 64,-68 28,-77 30,-103 Z" fill="#34D399"/>
   </g>
   <text x="40" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#FAFAFA" letter-spacing="3" opacity="0.85">DIET &amp; NUTRITION</text>
 </svg>
