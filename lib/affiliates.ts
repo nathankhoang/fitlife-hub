@@ -183,7 +183,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$15–$25",
     url: amz("B0013OQEO8"),
     source: "amazon",
-    imageUrl: img("ashwagandha-ksm66", "svg"),
+    imageUrl: img("ashwagandha-ksm66"),
   },
   "melatonin-natrol": {
     id: "melatonin-natrol",
@@ -194,7 +194,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$8–$14",
     url: amz("B07S38C5WW"),
     source: "amazon",
-    imageUrl: img("melatonin-natrol", "svg"),
+    imageUrl: img("melatonin-natrol"),
   },
   "collagen-vital-proteins": {
     id: "collagen-vital-proteins",
@@ -205,7 +205,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$25–$45",
     url: amz("B07H85ZDLG"),
     source: "amazon",
-    imageUrl: img("collagen-vital-proteins", "svg"),
+    imageUrl: img("collagen-vital-proteins"),
   },
   "turmeric-curcumin": {
     id: "turmeric-curcumin",
@@ -216,7 +216,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$18–$28",
     url: amz("B00A39MPNI"),
     source: "amazon",
-    imageUrl: img("turmeric-curcumin", "svg"),
+    imageUrl: img("turmeric-curcumin"),
   },
 
   // ── SLEEP ────────────────────────────────────────────────────────────────────
@@ -229,7 +229,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$8–$15",
     url: amz("B07L91H64N"),
     source: "amazon",
-    imageUrl: img("sleep-mask-alaska-bear", "svg"),
+    imageUrl: img("sleep-mask-alaska-bear"),
   },
   "white-noise-machine": {
     id: "white-noise-machine",
@@ -240,7 +240,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$45–$60",
     url: amz("B00E6D6LQY"),
     source: "amazon",
-    imageUrl: img("white-noise-machine", "svg"),
+    imageUrl: img("white-noise-machine"),
   },
 
   // ── CARDIO / FAT LOSS ────────────────────────────────────────────────────────
@@ -253,7 +253,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$10–$18",
     url: amz("B06XPH9TCZ"),
     source: "amazon",
-    imageUrl: img("jump-rope-wod-nation", "svg"),
+    imageUrl: img("jump-rope-wod-nation"),
   },
   "fitness-tracker-fitbit": {
     id: "fitness-tracker-fitbit",
@@ -264,7 +264,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$100–$160",
     url: amz("B0CBLKJ3KC"),
     source: "amazon",
-    imageUrl: img("fitness-tracker-fitbit", "svg"),
+    imageUrl: img("fitness-tracker-fitbit"),
   },
 
   // ── RECOVERY ────────────────────────────────────────────────────────────────
@@ -288,7 +288,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$40–$65",
     url: amz("B09TXCY8RW"),
     source: "amazon",
-    imageUrl: img("massage-gun-renpho", "svg"),
+    imageUrl: img("massage-gun-renpho"),
   },
   "compression-socks": {
     id: "compression-socks",
@@ -299,7 +299,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$14–$22",
     url: amz("B08N1HRWWQ"),
     source: "amazon",
-    imageUrl: img("compression-socks", "svg"),
+    imageUrl: img("compression-socks"),
   },
   "epsom-salt-dr-teals": {
     id: "epsom-salt-dr-teals",
@@ -310,7 +310,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$8–$16",
     url: amz("B00A9GNA3E"),
     source: "amazon",
-    imageUrl: img("epsom-salt-dr-teals", "svg"),
+    imageUrl: img("epsom-salt-dr-teals"),
   },
 
   // ── HOME GYM / EQUIPMENT ────────────────────────────────────────────────────
@@ -378,7 +378,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$25–$40",
     url: amz("B0DNNT8RXY"),
     source: "amazon",
-    imageUrl: img("ab-roller", "svg"),
+    imageUrl: img("ab-roller"),
   },
   "kettlebell-cap": {
     id: "kettlebell-cap",
@@ -389,7 +389,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$15–$60",
     url: amz("B00ACVQF34"),
     source: "amazon",
-    imageUrl: img("kettlebell-cap", "svg"),
+    imageUrl: img("kettlebell-cap"),
   },
   "push-up-handles": {
     id: "push-up-handles",
@@ -411,7 +411,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$140–$200",
     url: amz("B07DNYSJ8W"),
     source: "amazon",
-    imageUrl: img("weight-bench-flybird", "svg"),
+    imageUrl: img("weight-bench-flybird"),
   },
 
   // ── NUTRITION / KITCHEN ──────────────────────────────────────────────────────
@@ -424,7 +424,7 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$35–$50",
     url: amz("B07RL66KCF"),
     source: "amazon",
-    imageUrl: img("meal-prep-containers", "svg"),
+    imageUrl: img("meal-prep-containers"),
   },
   "food-scale-etekcity": {
     id: "food-scale-etekcity",
@@ -446,6 +446,6 @@ export const affiliateProducts: Record<string, AffiliateProduct> = {
     priceRange: "$60–$90",
     url: amz("B06Y3PS25W"),
     source: "amazon",
-    imageUrl: img("nutribullet-blender", "svg"),
+    imageUrl: img("nutribullet-blender"),
   },
 };

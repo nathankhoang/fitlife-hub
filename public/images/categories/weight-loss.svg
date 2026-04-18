@@ -4,23 +4,29 @@
       <stop offset="0%" stop-color="#7C2D12"/>
       <stop offset="100%" stop-color="#9A3412"/>
     </linearGradient>
-    <radialGradient id="glow" cx="80%" cy="80%" r="60%">
-      <stop offset="0%" stop-color="#FB923C" stop-opacity="0.4"/>
+    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FB923C" stop-opacity="0.45"/>
       <stop offset="100%" stop-color="#FB923C" stop-opacity="0"/>
     </radialGradient>
   </defs>
   <rect width="800" height="500" fill="url(#bg)"/>
   <rect width="800" height="500" fill="url(#glow)"/>
-  <g transform="translate(400 250)" stroke="#FAFAFA" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.95">
-    <rect x="-130" y="-70" width="260" height="140" rx="20" fill="#FAFAFA" opacity="0.9"/>
-    <circle cx="0" cy="0" r="55" fill="#7C2D12"/>
-    <line x1="0" y1="-30" x2="-25" y2="-10" stroke="#FAFAFA" stroke-width="6"/>
-    <line x1="-110" y1="-50" x2="-110" y2="-30"/>
-    <line x1="-80" y1="-50" x2="-80" y2="-30"/>
-    <line x1="-50" y1="-50" x2="-50" y2="-30"/>
-    <line x1="50" y1="-50" x2="50" y2="-30"/>
-    <line x1="80" y1="-50" x2="80" y2="-30"/>
-    <line x1="110" y1="-50" x2="110" y2="-30"/>
+  <!-- Running figure: thick rounded strokes create solid capsule limbs -->
+  <g transform="translate(400, 248)" stroke="#FAFAFA" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.95">
+    <!-- Head -->
+    <circle cx="42" cy="-95" r="26" fill="#FAFAFA" stroke="none"/>
+    <!-- Torso (leaning forward) -->
+    <line x1="36" y1="-68" x2="-12" y2="28" stroke-width="32"/>
+    <!-- Forward arm (swings ahead) -->
+    <line x1="22" y1="-45" x2="85" y2="-68" stroke-width="24"/>
+    <!-- Back arm (swings behind) -->
+    <line x1="10" y1="-52" x2="-58" y2="-18" stroke-width="24"/>
+    <!-- Forward leg (long stride) -->
+    <line x1="-12" y1="28" x2="58" y2="88" stroke-width="28"/>
+    <!-- Back leg (extends behind) -->
+    <line x1="-12" y1="28" x2="-72" y2="65" stroke-width="28"/>
+    <!-- Front foot -->
+    <line x1="58" y1="88" x2="88" y2="96" stroke-width="22"/>
   </g>
   <text x="40" y="460" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="600" fill="#FAFAFA" letter-spacing="3" opacity="0.85">WEIGHT LOSS</text>
 </svg>
