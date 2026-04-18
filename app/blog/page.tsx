@@ -25,56 +25,61 @@ export default async function BlogPage({
   const categories = Object.entries(categoryLabels) as [Category, string][];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-      <div className="mb-10">
-        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#A3A3A3] mb-2">
-          Library
-        </p>
-        <h1 className="text-3xl md:text-4xl font-semibold text-[#0A0A0A] mb-2 tracking-tight">
-          All articles
-        </h1>
-        <p className="text-[#525252]">
-          {filtered.length} article{filtered.length !== 1 ? "s" : ""} on
-          fitness, supplements, diet, and wellness.
-        </p>
-      </div>
+    <div>
+      {/* Page header */}
+      <section className="border-b border-[#E5E5E5] bg-[#FAFAFA]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#A3A3A3] mb-2">
+            Library
+          </p>
+          <h1 className="text-3xl md:text-4xl font-bold text-[#0A0A0A] mb-2 tracking-tight">
+            All articles
+          </h1>
+          <p className="text-[#525252]">
+            {filtered.length} article{filtered.length !== 1 ? "s" : ""} on
+            fitness, supplements, diet, and wellness.
+          </p>
+        </div>
+      </section>
 
-      {/* Category filter */}
-      <div className="flex flex-wrap gap-2 mb-10">
-        <Link
-          href="/blog"
-          className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors border ${
-            !category
-              ? "bg-[#0A0A0A] text-white border-[#0A0A0A]"
-              : "bg-white text-[#525252] border-[#E5E5E5] hover:border-[#0A0A0A] hover:text-[#0A0A0A]"
-          }`}
-        >
-          All
-        </Link>
-        {categories.map(([slug, label]) => (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        {/* Category filter */}
+        <div className="flex flex-wrap gap-2 mb-10">
           <Link
-            key={slug}
-            href={`/blog?category=${slug}`}
+            href="/blog"
             className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors border ${
-              category === slug
+              !category
                 ? "bg-[#0A0A0A] text-white border-[#0A0A0A]"
                 : "bg-white text-[#525252] border-[#E5E5E5] hover:border-[#0A0A0A] hover:text-[#0A0A0A]"
             }`}
           >
-            {label}
+            All
           </Link>
-        ))}
-      </div>
-
-      {filtered.length === 0 ? (
-        <p className="text-[#525252] text-center py-20">No articles found.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((article) => (
-            <ArticleCard key={article.slug} article={article} />
+          {categories.map(([slug, label]) => (
+            <Link
+              key={slug}
+              href={`/blog?category=${slug}`}
+              className={`px-3.5 py-1.5 rounded-full text-sm font-medium transition-colors border ${
+                category === slug
+                  ? "bg-[#0A0A0A] text-white border-[#0A0A0A]"
+                  : "bg-white text-[#525252] border-[#E5E5E5] hover:border-[#0A0A0A] hover:text-[#0A0A0A]"
+              }`}
+            >
+              {label}
+            </Link>
           ))}
         </div>
-      )}
+
+        {filtered.length === 0 ? (
+          <p className="text-[#525252] text-center py-20">No articles found.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map((article) => (
+              <ArticleCard key={article.slug} article={article} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
