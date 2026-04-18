@@ -20,7 +20,7 @@ export type ImageSpec = {
 export type CaptionSpec = {
   maxChars: number;
   hashtagCount: [min: number, max: number];
-  hashtagPlacement: "inline" | "trailing" | "first-comment-plus-trailing";
+  hashtagPlacement: "inline" | "trailing" | "first-comment-plus-trailing" | "none";
   linkPlacement: "inline" | "trailing" | "bio";
   emojiBudget: [min: number, max: number];
   /** Short style hint fed to the caption prompt */
@@ -66,7 +66,7 @@ export const STRATEGIES: Record<Platform, PlatformStrategy> = {
       linkPlacement: "trailing",
       emojiBudget: [0, 1],
       styleHint:
-        "Punchy, single tweet. Open with a claim or stat. Drop the link on its own line at the end.",
+        "Single tweet. Open with the specific finding (number, dose, effect size) — give the reader the answer, not a tease. Link on its own line at the end.",
     },
   },
   linkedin: {
@@ -78,9 +78,9 @@ export const STRATEGIES: Record<Platform, PlatformStrategy> = {
       hashtagCount: [2, 4],
       hashtagPlacement: "trailing",
       linkPlacement: "trailing",
-      emojiBudget: [0, 2],
+      emojiBudget: [0, 1],
       styleHint:
-        "2–3 short paragraphs, white space between them. First-person insight or contrarian take, not corporate. Hashtags on their own line at the bottom.",
+        "FIRST LINE must be the single most compelling stat or finding, standalone — that's the only line visible above the 'see more' fold. Blank line. Then 1–2 short paragraphs with mechanism/dosing/caveat. Plain line breaks — no emoji as bullets. Hashtags on their own line at the bottom, URL on the line after.",
     },
   },
   instagram: {
@@ -89,12 +89,12 @@ export const STRATEGIES: Record<Platform, PlatformStrategy> = {
     image: { width: 1080, height: 1350, ...PORTRAIT_IMAGE },
     caption: {
       maxChars: 2000,
-      hashtagCount: [15, 20],
-      hashtagPlacement: "first-comment-plus-trailing",
+      hashtagCount: [4, 6],
+      hashtagPlacement: "trailing",
       linkPlacement: "bio",
-      emojiBudget: [2, 5],
+      emojiBudget: [1, 3],
       styleHint:
-        "Hook in the first line (that's all that shows before 'more'). 3–4 short lines in the body. End with 'link in bio'. Include 2–4 inline trailing hashtags; the remaining 11–16 go as a first comment.",
+        "First line is the hook (only thing visible above 'more') — make it a specific stat or claim, not a tease. 3–4 short lines in the body with the actionable takeaways. End with 'Link in bio' on its own line. 4–6 relevant niche hashtags at the very end. Do NOT produce a first-comment hashtag dump — that's deprecated in 2026.",
     },
   },
   facebook: {
@@ -103,12 +103,12 @@ export const STRATEGIES: Record<Platform, PlatformStrategy> = {
     image: { width: 1200, height: 630, ...LANDSCAPE_IMAGE },
     caption: {
       maxChars: 600,
-      hashtagCount: [0, 2],
-      hashtagPlacement: "inline",
+      hashtagCount: [0, 0],
+      hashtagPlacement: "none",
       linkPlacement: "trailing",
-      emojiBudget: [0, 2],
+      emojiBudget: [0, 1],
       styleHint:
-        "Conversational single paragraph. The URL on its own line triggers Facebook's link preview card — don't embed it mid-sentence.",
+        "Conversational single paragraph. Open with the specific answer/stat. URL on its own line at the end to trigger the link preview card. No hashtags — they don't help on Facebook in 2026.",
     },
   },
 };

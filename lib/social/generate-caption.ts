@@ -1,8 +1,10 @@
 // Per-platform caption generator. One LLM call per platform using
-// Gemini 2.5 Flash (free tier) with structured output.
+// Groq gpt-oss-120b (free tier) with structured output.
 //
-// Returns a ready-to-post caption + (for Instagram only) a first-comment
-// hashtag dump.
+// Returns a ready-to-post caption. For Instagram we now keep a 4–6
+// inline hashtag budget and have dropped the first-comment hashtag
+// dump (first-comment hashtag bundles are deprecated for 2026 —
+// peer brands in this niche do NOT use them).
 
 import { groq } from "@ai-sdk/groq";
 import { generateObject } from "ai";
@@ -44,18 +46,18 @@ const ResponseSchema = z.object({
   hookLine: z
     .string()
     .describe(
-      "The first line of the caption, pulled out verbatim. Critical for Instagram where only this line shows above the 'more' fold.",
-    ),
-  firstCommentHashtags: z
-    .array(z.string())
-    .describe(
-      "Instagram only: 11-16 additional relevant hashtags (without the # prefix) to post as a first comment for hashtag-engagement. For other platforms return an empty array.",
+      "The first line of the caption, pulled out verbatim. Critical for Instagram and LinkedIn where only this line shows above the fold.",
     ),
 });
 
 function buildSystemPrompt(platform: Platform): string {
   const strategy = STRATEGIES[platform];
   const c = strategy.caption;
+  const hashtagLine =
+    c.hashtagCount[1] === 0
+      ? `- NO hashtags on this platform.`
+      : `- Include ${c.hashtagCount[0]}–${c.hashtagCount[1]} hashtags (placement: ${c.hashtagPlacement}). Hashtags must be niche-specific and directly relevant to the article content (e.g. "#CreatineMonohydrate" not "#FitnessMotivation"). Prefer fewer high-relevance tags over more generic ones.`;
+
   return [
     `You are writing a single social media post for LeanBodyEngine (https://leanbodyengine.com), a fitness, nutrition, and wellness blog.`,
     ``,
@@ -65,25 +67,31 @@ function buildSystemPrompt(platform: Platform): string {
     `Platform: ${strategy.label}.`,
     `Rules for this platform:`,
     `- HARD character limit: the ENTIRE caption — body + hashtags + URL + line breaks — must be AT MOST ${c.maxChars} characters. Count carefully. If you are close, drop adjectives before you drop the link.`,
-    `- Include ${c.hashtagCount[0]}–${c.hashtagCount[1]} hashtags (placement: ${c.hashtagPlacement}). Hashtags must be directly relevant to the article content, not generic (e.g. use "#CreatineMonohydrate" not "#FitnessMotivation" for a creatine article).`,
-    `- Emoji budget: ${c.emojiBudget[0]}–${c.emojiBudget[1]} total.`,
+    hashtagLine,
+    `- Emoji budget: ${c.emojiBudget[0]}–${c.emojiBudget[1]} total. Never use emoji as structural bullets on LinkedIn.`,
     `- Link placement: ${c.linkPlacement}.`,
     `- Style hint: ${c.styleHint}`,
     ``,
+    `CRITICAL — hook philosophy:`,
+    `- Lead with the ANSWER, not a tease. Open with the specific finding: a number, a dose, an effect size, or a contrarian fact. The reader should walk away from the post already informed — the link is for depth and citations, not for "finding out what we said".`,
+    `- Platforms actively suppress outbound links in 2026. Readers who already got value from the post are far more likely to click through. Hiding the punchline kills click-through, not boosts it.`,
+    `- BAD hook: "This changes everything about creatine." / "Most people get creatine wrong. Here's why."`,
+    `- GOOD hook: "Creatine monohydrate adds ~15% training volume (meta-analysis, n=200+ trials)." / "3–5 g creatine/day, any time. No loading phase needed."`,
+    ``,
     `Writing principles:`,
-    `- Hook the reader in the first line — a specific claim, stat, or contrarian take. Never open with a question unless it's pointed.`,
-    `- Specificity over generality: "3 sets of 8" beats "moderate reps".`,
+    `- Specificity over generality: "3 sets of 8" beats "moderate reps". "~15% volume increase" beats "significant gains".`,
     `- Write like a knowledgeable friend, not a corporate account.`,
-    `- Never write "click the link to read more" or "check out our blog"; give the reader a real insight, then let the link do its job.`,
-    `- Do not invent facts the article doesn't support.`,
+    `- Never write "click the link to read more", "check out our blog", or "link below". Those phrases read as spam and reduce trust.`,
+    `- Do not invent facts the article doesn't support. If the article gives a range, keep the range.`,
+    `- No clickbait curiosity gaps ("you won't believe what X actually does"). They erode the evidence-based trust the brand depends on.`,
     ``,
     platform === "instagram"
-      ? `Instagram specifics: The first line is the ONLY line visible before the "... more" fold, so it must do the whole work of earning a tap. End the caption body with "Link in bio" (no URL). Inline hashtags (2–4) go at the end of the caption AFTER "Link in bio". The remaining 11–16 relevant hashtags go into firstCommentHashtags, without the # prefix.`
+      ? `Instagram specifics: The first line is the ONLY line visible above "...more", so it must do the whole work of earning a tap — lead with the single most compelling stat or dose. End the caption body with "Link in bio" on its own line. Then 4–6 niche-specific inline hashtags at the very end. DO NOT output any first-comment hashtag dump — that pattern is deprecated for 2026.`
       : platform === "facebook"
-        ? `Facebook specifics: Put the article URL on its own line at the end — that's what triggers Facebook's link preview card. Do not embed the URL mid-sentence.`
+        ? `Facebook specifics: Put the article URL on its own line at the end — that's what triggers Facebook's link preview card. Do not embed the URL mid-sentence. Do NOT use hashtags; they don't help on Facebook in 2026.`
         : platform === "linkedin"
-          ? `LinkedIn specifics: Short paragraphs separated by blank lines; feels professional but personal. End with 2-4 hashtags on their own line, then the URL on the line after that.`
-          : `Twitter specifics: Single tweet. Aim under ${c.maxChars} characters. Put the URL on its own line at the end — Twitter auto-generates a card from it, so you don't need to mention "link below".`,
+          ? `LinkedIn specifics: FIRST LINE of the caption must be a standalone compelling stat or finding — a single sentence. Blank line. Then 1–2 short paragraphs with mechanism/dosing/caveat, each on its own paragraph separated by a blank line. End with 2–4 hashtags on their own line, then the URL on the line after.`
+          : `Twitter specifics: Single tweet. Aim under ${c.maxChars} characters. Lead with the specific finding. Put the URL on its own line at the end — Twitter auto-generates a card from it.`,
   ].join("\n");
 }
 
@@ -127,6 +135,11 @@ export async function generateCaption({
       system,
       prompt,
       temperature: 0.7,
+      // gpt-oss-120b uses reasoning tokens that count against the output
+      // budget. Give enough headroom for the LinkedIn 1300-char caption
+      // plus the JSON envelope plus reasoning scratch.
+      maxOutputTokens: 4000,
+      providerOptions: { groq: { reasoningEffort: "low" } },
     });
     object = result.object;
     const caption = object.caption.trim();
@@ -138,15 +151,10 @@ export async function generateCaption({
 
   if (!object) throw new Error("generateCaption: no result");
 
-  const firstComment =
-    platform === "instagram" && object.firstCommentHashtags.length > 0
-      ? object.firstCommentHashtags.map((t) => (t.startsWith("#") ? t : `#${t}`)).join(" ")
-      : null;
-
   return {
     platform,
     caption: object.caption.trim(),
     hookLine: object.hookLine.trim(),
-    firstComment,
+    firstComment: null,
   };
 }
