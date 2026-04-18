@@ -21,11 +21,16 @@ export type GenerateImageInput = {
   platform: Platform;
 };
 
-type FontData = Awaited<ReturnType<typeof loadFonts>>[number];
+type FontData = {
+  name: string;
+  data: Buffer;
+  weight: 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900;
+  style: "normal" | "italic";
+};
 
 let cachedFonts: FontData[] | null = null;
 
-async function loadFonts() {
+async function loadFonts(): Promise<FontData[]> {
   if (cachedFonts) return cachedFonts;
   const root = process.cwd();
   const fontsDir = path.join(root, "assets", "fonts");
@@ -34,8 +39,8 @@ async function loadFonts() {
     fs.readFile(path.join(fontsDir, "Geist-SemiBold.ttf")),
   ]);
   cachedFonts = [
-    { name: "Geist", data: bold, weight: 700 as const, style: "normal" as const },
-    { name: "Geist", data: semibold, weight: 600 as const, style: "normal" as const },
+    { name: "Geist", data: bold, weight: 700, style: "normal" },
+    { name: "Geist", data: semibold, weight: 600, style: "normal" },
   ];
   return cachedFonts;
 }

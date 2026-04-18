@@ -19,6 +19,7 @@ import { generateSocialImage } from "./generate-image";
 import { generateCaption } from "./generate-caption";
 import {
   getPendingSocialEntries,
+  getSocialQueue,
   updateSocialEntry,
 } from "./queue";
 import { notifyGenerationFailure } from "./notify";
@@ -115,6 +116,17 @@ async function recordFailure(entry: SocialPostEntry, error: string): Promise<voi
     `[social/worker] ${entry.platform} ${entry.articleSlug} ${terminal ? "FAILED (terminal)" : "retry"}: ${error}`,
   );
   if (terminal) await notifyGenerationFailure(updated);
+}
+
+/** Process a single entry by id. Used by the admin UI's "Regenerate" action. */
+export async function processEntryById(id: string): Promise<SocialPostEntry> {
+  const entries = await getSocialQueue();
+  const entry = entries.find((e) => e.id === id);
+  if (!entry) throw new Error(`Social entry not found: ${id}`);
+  await processEntry(entry);
+  const refreshed = (await getSocialQueue()).find((e) => e.id === id);
+  if (!refreshed) throw new Error(`Social entry vanished during processing: ${id}`);
+  return refreshed;
 }
 
 export async function processSocialQueue(opts?: { batch?: number }): Promise<WorkerResult> {
