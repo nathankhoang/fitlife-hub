@@ -98,12 +98,13 @@ async function processEntry(entry: SocialPostEntry): Promise<"ok" | "failed"> {
       variant,
     });
 
-    const imgKey = `${SOCIAL_IMAGES_PREFIX}/${entry.id}.webp`;
+    // JPEG — required by Instagram Graph API (WebP is rejected for publishing).
+    const imgKey = `${SOCIAL_IMAGES_PREFIX}/${entry.id}.jpg`;
     const uploaded = await put(imgKey, imageBuf, {
       access: "public",
       addRandomSuffix: false,
       allowOverwrite: true,
-      contentType: "image/webp",
+      contentType: "image/jpeg",
     });
 
     await updateSocialEntry(entry.id, {

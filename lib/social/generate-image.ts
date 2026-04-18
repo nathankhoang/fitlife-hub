@@ -374,7 +374,7 @@ async function renderHeroPhoto(input: GenerateImageInput, spec: ImageSpec, fonts
     .toFormat("png")
     .toBuffer();
 
-  return sharp(hero).composite([{ input: overlayPng, top: 0, left: 0 }]).webp({ quality: 85 }).toBuffer();
+  return sharp(hero).composite([{ input: overlayPng, top: 0, left: 0 }]).jpeg({ quality: 88 }).toBuffer();
 }
 
 async function renderStatCallout(input: GenerateImageInput, spec: ImageSpec, fonts: FontData[]): Promise<Buffer> {
@@ -395,7 +395,7 @@ async function renderStatCallout(input: GenerateImageInput, spec: ImageSpec, fon
     { width: spec.width, height: spec.height, fonts },
   );
   const png = new Resvg(svg, { background: "#0A0A0A" }).render().asPng();
-  return sharp(png).webp({ quality: 85 }).toBuffer();
+  return sharp(png).jpeg({ quality: 88 }).toBuffer();
 }
 
 export async function generateSocialImage(input: GenerateImageInput): Promise<Buffer> {
