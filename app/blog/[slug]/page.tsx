@@ -115,6 +115,18 @@ export default async function ArticlePage({ params }: Props) {
     ],
   };
 
+  const faqSchema = article.faq && article.faq.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: article.faq.map(({ question, answer }) => ({
+          "@type": "Question",
+          name: question,
+          acceptedAnswer: { "@type": "Answer", text: answer },
+        })),
+      }
+    : null;
+
   return (
     <>
       <script
@@ -125,6 +137,12 @@ export default async function ArticlePage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="max-w-3xl mx-auto">

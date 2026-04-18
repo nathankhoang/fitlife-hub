@@ -20,6 +20,8 @@ export const categoryLabels: Record<Category, string> = {
   wellness: "Wellness & Recovery",
 };
 
+export type FaqItem = { question: string; answer: string };
+
 export type Article = {
   slug: string;
   title: string;
@@ -32,6 +34,7 @@ export type Article = {
   imageOg: string;
   imagePinterest: string;
   content: string;
+  faq?: FaqItem[];
 };
 
 const LOCAL_ARTICLES_DIR = nodePath.join(process.cwd(), "content", "articles");
@@ -57,6 +60,22 @@ function readLocalMdx(dir: string, slug: string): string | null {
   return fs.readFileSync(p, "utf8");
 }
 
+function parseFaq(raw: unknown): FaqItem[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const items = raw
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") return null;
+      const { question, answer } = entry as { question?: unknown; answer?: unknown };
+      if (typeof question !== "string" || typeof answer !== "string") return null;
+      const q = question.trim();
+      const a = answer.trim();
+      if (!q || !a) return null;
+      return { question: q, answer: a };
+    })
+    .filter((item): item is FaqItem => item !== null);
+  return items.length > 0 ? items : undefined;
+}
+
 function parseMdx(slug: string, raw: string): Article {
   const { data, content } = matter(raw);
   return {
@@ -71,6 +90,7 @@ function parseMdx(slug: string, raw: string): Article {
     imageOg: (data.imageOg as string) ?? "",
     imagePinterest: (data.imagePinterest as string) ?? "",
     content,
+    faq: parseFaq(data.faq),
   };
 }
 
