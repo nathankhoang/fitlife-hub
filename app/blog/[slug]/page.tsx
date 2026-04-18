@@ -19,9 +19,30 @@ import ReadingProgress from "@/components/ReadingProgress";
 import TableOfContents, { type TocHeading } from "@/components/TableOfContents";
 import FaqSection from "@/components/FaqSection";
 import { buildProductListSchema } from "@/lib/product-schema";
+import {
+  buildLinkCandidates,
+  injectContextualLinks,
+} from "@/lib/contextual-links";
+
+type MdxAnchorProps = { href?: string; children?: React.ReactNode };
+function MdxAnchor({ href, children, ...rest }: MdxAnchorProps) {
+  if (href && href.startsWith("/")) {
+    return (
+      <Link href={href} {...rest}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} {...rest}>
+      {children}
+    </a>
+  );
+}
 
 const mdxComponents = {
   AffiliateProductCard,
+  a: MdxAnchor,
 };
 
 const mdxOptions = {
@@ -93,7 +114,12 @@ export default async function ArticlePage({ params }: Props) {
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
-  const related = await getRelatedArticles(slug, article.category);
+  const [related, allArticles] = await Promise.all([
+    getRelatedArticles(slug, article.category),
+    getAllArticles(),
+  ]);
+  const linkCandidates = buildLinkCandidates(allArticles, slug);
+  const linkedContent = injectContextualLinks(article.content, linkCandidates);
   const heroImage = article.image || `/images/categories/${article.category}.svg`;
   const absoluteHeroImage = heroImage.startsWith("http")
     ? heroImage
@@ -232,7 +258,7 @@ export default async function ArticlePage({ params }: Props) {
 
             {/* Article content */}
             <div className="prose max-w-none">
-              <MDXRemote source={article.content} components={mdxComponents} options={mdxOptions} />
+              <MDXRemote source={linkedContent} components={mdxComponents} options={mdxOptions} />
             </div>
 
             {/* Affiliate disclosure */}
