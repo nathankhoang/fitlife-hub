@@ -366,6 +366,17 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
      If the command fails (non-zero exit, 404, download error), pick your next highest-rated candidate and retry. Attempt up to 3 different photos before giving up. On final failure, set `"image_status": "missing"` in the returned JSON — but still complete the post.
 
    - Copy `content/drafts/<slug>.mdx` to `content/articles/<slug>.mdx` (publish).
+   - **Run the validator before returning.** From the project root:
+     ```
+     node scripts/validate-article.mjs <slug>
+     ```
+     The script exits 0 if all checks pass. If it exits 1, read the error list it prints and fix EVERY error before proceeding. Do not return the success JSON until the validator exits 0. Common fixes:
+     - Wrong component name → replace with `<AffiliateProductCard productId="..." />`
+     - Missing `productId` → add `productId="<id>"`
+     - `productId={...}` JSX expression → change to `productId="..."`
+     - Bare `<10%` in table cell → escape as `&lt;10%`
+     - Bare `>5` in table cell → escape as `&gt;5`
+     - Image not found → re-run `node --env-file=.env.local scripts/ensure-images.mjs --slug "<slug>" --url "<url>" --force`
    - **Do NOT touch `data/queue.json`** — race-unsafe with 10 parallel agents.
    - **Return** (as the final message to the parent) a single JSON object with shape:
      ```json
@@ -511,6 +522,54 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
 
    ---
 
+   ---
+
+   **CRITICAL: MDX Component Whitelist — the ONLY JSX you may use**
+
+   This MDX file is rendered by `next-mdx-remote`. The component registry contains EXACTLY TWO components. Using any other capitalised tag causes a runtime 500 error for the reader.
+
+   **ALLOWED (copy these exactly):**
+   ```
+   <AffiliateProductCard productId="some-product-id" />
+   <ComparisonTable rows={[{ productId: "id1", award: "Best Overall" }, { productId: "id2" }]} caption="Optional caption" />
+   ```
+
+   **Rules for `<AffiliateProductCard>`:**
+   - MUST be self-closing (`/>` at end — never `>...</AffiliateProductCard>`)
+   - MUST use `productId="..."` (a string in double quotes — never `id=`, never `productId={...}` JSX expression)
+   - The `productId` value MUST match one of the IDs in the Full Product Catalog section above
+
+   **FORBIDDEN — these do NOT exist and will crash the page:**
+   - `<AffiliateCard ...>` — wrong name
+   - `<AffiliateProduct ...>` — wrong name
+   - `<Callout>` — does not exist
+   - `<Note>` — does not exist
+   - `<Alert>` — does not exist
+   - `<Box>` — does not exist
+   - `<Tip>` — does not exist
+   - `<Info>` — does not exist
+   - `<Warning>` — does not exist
+   - Any other capitalised tag not in the two-item allowed list above
+
+   If you want a callout/note/highlight, use plain Markdown: `> **Key Point:** text` or `**Note:** text`.
+
+   ---
+
+   **CRITICAL: MDX Syntax Safety Rules**
+
+   MDX parses `<` and `>` as JSX tag openers/closers in certain contexts. Follow these rules to avoid syntax errors:
+
+   - **In table cells, ALWAYS escape bare `<` and `>` before numbers or text:**
+     - Write `&lt;10%` not `<10%`
+     - Write `&gt;50g` not `>50g`
+     - Write `≤` (unicode) or `&le;` not `<=`
+     - Write `≥` (unicode) or `&ge;` not `>=`
+   - **Inside prose paragraphs,** `<` is also risky if followed by a letter or number. Use `&lt;` in any comparison that appears inline: "take &lt;5g" not "take <5g"
+   - **Angle brackets in code blocks (backtick fences) are safe** — do not escape inside ` ``` ` blocks
+   - **HTML entities are always safe:** `&lt;` `&gt;` `&le;` `&ge;` `&amp;`
+
+   ---
+
    **Frontmatter:**
    - `title`, `description` (150–160 chars), `category`, `date` (today YYYY-MM-DD), `readTime`, `featured: false`, `image: ""`
    - Primary keyword in H1, first paragraph, ≥2 H2s, and meta description
@@ -609,6 +668,24 @@ The script exits cleanly if `BLOB_READ_WRITE_TOKEN` is not set (local-only mode 
 3. POSTs to `${SITE_URL}/api/revalidate` to invalidate the `queue` cache tag and flush `/` and `/blog`
 
 `SITE_URL` defaults to `http://localhost:3000`. Set it in `.env.local` to your Vercel deployment URL (e.g. `SITE_URL=https://leanbodyengine.com`) to revalidate the live site after each batch.
+
+---
+
+### Step 4.5c — Batch Validation (safety net for the whole batch)
+
+After Blob sync, run the validator across every slug in this batch to catch any issues sub-agents missed:
+
+```
+node scripts/validate-article.mjs <slug1> <slug2> ... <slugN>
+```
+
+If any article fails:
+1. Read the error output to understand what is wrong
+2. Fix the file(s) — the most common issues are wrong component names and unescaped `<`/`>` in table cells (see the MDX Component Whitelist and MDX Syntax Safety Rules sections above)
+3. Re-run `node --env-file=.env.local scripts/sync-batch-to-blob.mjs <failing-slug>` to re-upload the fixed file
+4. Re-run the validator to confirm exit 0 before proceeding
+
+Do NOT mark the batch complete until every slug passes validation.
 
 ---
 
