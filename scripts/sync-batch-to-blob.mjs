@@ -71,7 +71,7 @@ async function main() {
     const res = await fetch(`${SITE_URL}/api/revalidate`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ secret: process.env.REVALIDATE_SECRET }),
+      body: JSON.stringify({ secret: process.env.REVALIDATE_SECRET, slugs }),
     });
     const data = await res.json().catch(() => ({}));
     console.log(`  ${res.ok ? "✓" : "✗"} revalidate: ${JSON.stringify(data)}`);
