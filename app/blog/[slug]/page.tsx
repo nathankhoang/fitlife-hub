@@ -12,9 +12,24 @@ import ArticleCard from "@/components/ArticleCard";
 import AffiliateProductCard from "@/components/AffiliateProductCard";
 import NewsletterCTA from "@/components/NewsletterCTA";
 
+function Callout({ type, children }: { type?: string; children: React.ReactNode }) {
+  const styles: Record<string, string> = {
+    info: "bg-blue-50 border-blue-200 text-blue-900",
+    warning: "bg-amber-50 border-amber-200 text-amber-900",
+    success: "bg-emerald-50 border-emerald-200 text-emerald-900",
+  };
+  const cls = styles[type ?? "info"] ?? styles.info;
+  return (
+    <div className={`my-6 border-l-4 rounded-r-md px-4 py-3 ${cls}`}>
+      {children}
+    </div>
+  );
+}
+
 const mdxComponents = {
   AffiliateProductCard,
   AffiliateCard: AffiliateProductCard,
+  Callout,
 };
 
 type Props = { params: Promise<{ slug: string }> };
