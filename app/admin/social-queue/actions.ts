@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import {
   getSocialQueue,
   removeSocialEntry,
@@ -12,17 +13,14 @@ import { articleUrlFor, postToPlatform } from "@/lib/social/adapters";
 
 const PAGE_PATH = "/admin/social-queue";
 
-async function postApprovedEntry(entry: SocialPostEntry): Promise<void> {
-  if (!entry.imageBlobUrl) throw new Error(`No image URL on entry ${entry.id}`);
-
-  // Mark posting so the UI reflects the in-flight state; this also guards
-  // against a double-click re-posting.
-  await updateSocialEntry(entry.id, { status: "posting" });
-
+// Background-safe: runs inside `after()`, so errors must never reach the
+// response. Updates status to posted/failed so the UI can reflect the final
+// state on the next page refresh.
+async function postInBackground(entry: SocialPostEntry): Promise<void> {
   try {
     const result = await postToPlatform({
       entry,
-      imageUrl: entry.imageBlobUrl,
+      imageUrl: entry.imageBlobUrl!,
       articleUrl: articleUrlFor(entry.articleSlug),
     });
     await updateSocialEntry(entry.id, {
@@ -38,7 +36,7 @@ async function postApprovedEntry(entry: SocialPostEntry): Promise<void> {
       status: "failed",
       lastError: `Post to ${entry.platform} failed: ${message}`,
     });
-    throw err;
+    console.error(`[social] post to ${entry.platform} failed:`, err);
   }
 }
 
@@ -49,24 +47,32 @@ export async function approvePostAction(id: string): Promise<void> {
   if (entry.status !== "awaiting_approval" && entry.status !== "failed") {
     throw new Error(`Entry ${id} is in status ${entry.status}, cannot approve`);
   }
-  await postApprovedEntry(entry);
+  if (!entry.imageBlobUrl) throw new Error(`No image URL on entry ${entry.id}`);
+
+  // Flip to "posting" synchronously so the card reflects the in-flight state
+  // immediately, then kick off the actual platform post in the background so
+  // the button returns without waiting on IG's ~10-30s polling loop.
+  await updateSocialEntry(id, { status: "posting" });
+  after(() => postInBackground(entry));
   revalidatePath(PAGE_PATH);
 }
 
 export async function approveAllForArticleAction(articleSlug: string): Promise<void> {
   const entries = await getSocialQueue();
   const targets = entries.filter(
-    (e) => e.articleSlug === articleSlug && e.status === "awaiting_approval",
+    (e) => e.articleSlug === articleSlug && e.status === "awaiting_approval" && e.imageBlobUrl,
   );
-  // Post sequentially so one platform failure doesn't abort the rest, and so
-  // we avoid hammering Meta's API with concurrent requests from the same token.
   for (const entry of targets) {
-    try {
-      await postApprovedEntry(entry);
-    } catch (err) {
-      console.error(`[social] batch approve: ${entry.platform} failed:`, err);
-    }
+    await updateSocialEntry(entry.id, { status: "posting" });
   }
+  // Posts run sequentially in the background so one platform failure can't
+  // abort the rest and so we don't hammer Meta's API with parallel calls on
+  // the same token.
+  after(async () => {
+    for (const entry of targets) {
+      await postInBackground(entry);
+    }
+  });
   revalidatePath(PAGE_PATH);
 }
 
