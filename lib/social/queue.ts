@@ -39,13 +39,13 @@ function writeLocal(entries: SocialPostEntry[]): void {
   fs.writeFileSync(LOCAL_FILE, JSON.stringify(entries, null, 2), "utf8");
 }
 
-/** Cached read for render paths. Invalidated by revalidateTag("social-queue"). */
+/** Always hits the origin (via the CDN's 60s cache). The queue mutates on
+ * every approve/generate cycle, so we can't rely on Next's Data Cache +
+ * revalidateTag — cross-region invalidation lags behind worker writes, which
+ * leaves the admin UI showing stale 'generating'/'posting' states. */
 export async function getSocialQueue(): Promise<SocialPostEntry[]> {
   if (!hasBlob()) return readLocal();
-  const res = await fetch(socialQueueUrl(), {
-    cache: "force-cache",
-    next: { tags: [CACHE_TAG] },
-  });
+  const res = await fetch(socialQueueUrl(), { cache: "no-store" });
   if (res.status === 404) return [];
   if (!res.ok) throw new Error(`Failed to fetch social queue: ${res.status}`);
   return (await res.json()) as SocialPostEntry[];
