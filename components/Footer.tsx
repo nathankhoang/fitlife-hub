@@ -102,9 +102,14 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
-          <p className="text-white/30 text-xs">
-            © {new Date().getFullYear()} LeanBodyEngine. All rights reserved.
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-white/30 text-xs">
+              © {new Date().getFullYear()} LeanBodyEngine. All rights reserved.
+            </p>
+            <Link href="/admin" className="text-white/20 hover:text-white/50 text-xs transition-colors">
+              Admin
+            </Link>
+          </div>
           <p className="text-white/30 text-xs text-center md:text-right max-w-xl">
             <strong className="text-white/50">Affiliate disclosure:</strong>{" "}
             LeanBodyEngine participates in Amazon Associates. We may earn a commission
