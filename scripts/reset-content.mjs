@@ -31,6 +31,7 @@ import fs from "node:fs";
 import path from "node:path";
 import url from "node:url";
 import { execSync } from "node:child_process";
+import { assertNotTemplateRepo } from "./_template-guard.mjs";
 
 const root = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), "..");
 const AFFILIATES_PATH = path.join(root, "lib", "affiliates.ts");
@@ -38,6 +39,12 @@ const COMPARISONS_PATH = path.join(root, "lib", "comparisons.ts");
 const QUEUE_PATH = path.join(root, "data", "queue.json");
 
 const YES = process.argv.includes("--yes") || process.argv.includes("-y");
+
+assertNotTemplateRepo({
+  cwd: root,
+  argv: process.argv,
+  scriptName: "reset-content",
+});
 
 function ok(msg) {
   console.log(`\u2713 ${msg}`);
