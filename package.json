@@ -11,6 +11,8 @@
     "ensure:images": "node --env-file=.env.local scripts/ensure-images.mjs",
     "rebrand": "node scripts/rebrand.mjs",
     "reset:content": "node scripts/reset-content.mjs",
+    "onboard:photo": "node scripts/onboarding/download-author-photo.mjs",
+    "onboard:affiliates": "node scripts/onboarding/seed-affiliates-from-form.mjs",
     "video:article": "node --env-file=.env.local scripts/video-to-article.mjs",
     "text:article": "node --env-file=.env.local scripts/text-to-article.mjs"
   },

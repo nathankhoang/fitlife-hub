@@ -125,10 +125,11 @@ function mapAnswersToConfig(a) {
       contentSources: getArr("How will you send us content?"),
       cadence: getStr("Expected posting cadence"),
       vercelEmail: getStr("Your Vercel account email"),
-      githubUsername: getStr("Your GitHub username"),
       ga4Id: getStr("Google Analytics 4 measurement ID (optional)"),
       newsletter: getStr("Do you want an email newsletter set up?"),
-      launchDate: getStr("Target launch date"),
+      launchDate: getStr(
+        "Target launch date (We will be able to get the website up and running within a week. Expedited times are not guaranteed)",
+      ),
       brandColor: getStr("Brand color preference (optional)"),
       notes: getStr("Anything else we should know?"),
       submittedAt: new Date().toISOString(),
