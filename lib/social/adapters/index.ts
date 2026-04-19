@@ -1,6 +1,5 @@
 // Dispatches a SocialPostEntry to the right platform adapter.
-// Currently wired: instagram + facebook.
-// Deferred: twitter (paid tier required), linkedin (user deferred).
+// Wired: instagram + facebook.
 
 import type { SocialPostEntry } from "../types";
 import { facebookAdapter } from "./facebook";

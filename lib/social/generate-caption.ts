@@ -87,11 +87,7 @@ function buildSystemPrompt(platform: Platform): string {
     ``,
     platform === "instagram"
       ? `Instagram specifics: The first line is the ONLY line visible above "...more", so it must do the whole work of earning a tap — lead with the single most compelling stat or dose. End the caption body with "Link in bio" on its own line. Then 4–6 niche-specific inline hashtags at the very end. DO NOT output any first-comment hashtag dump — that pattern is deprecated for 2026.`
-      : platform === "facebook"
-        ? `Facebook specifics: Put the article URL on its own line at the end — that's what triggers Facebook's link preview card. Do not embed the URL mid-sentence. Do NOT use hashtags; they don't help on Facebook in 2026.`
-        : platform === "linkedin"
-          ? `LinkedIn specifics: FIRST LINE of the caption must be a standalone compelling stat or finding — a single sentence. Blank line. Then 1–2 short paragraphs with mechanism/dosing/caveat, each on its own paragraph separated by a blank line. End with 2–4 hashtags on their own line, then the URL on the line after.`
-          : `Twitter specifics: Single tweet. Aim under ${c.maxChars} characters. Lead with the specific finding. Put the URL on its own line at the end — Twitter auto-generates a card from it.`,
+      : `Facebook specifics: Put the article URL on its own line at the end — that's what triggers Facebook's link preview card. Do not embed the URL mid-sentence. Do NOT use hashtags; they don't help on Facebook in 2026.`,
   ].join("\n");
 }
 

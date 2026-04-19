@@ -3,7 +3,7 @@
 // varies by platform (dimensions, caption rules, hashtag counts, link
 // placement, etc.).
 
-export type Platform = "twitter" | "linkedin" | "instagram" | "facebook";
+export type Platform = "instagram" | "facebook";
 
 export type ImageSpec = {
   width: number;
@@ -63,39 +63,6 @@ const PORTRAIT_IMAGE: Omit<ImageSpec, "width" | "height"> = {
 };
 
 export const STRATEGIES: Record<Platform, PlatformStrategy> = {
-  twitter: {
-    platform: "twitter",
-    label: "Twitter/X",
-    image: { width: 1600, height: 900, ...LANDSCAPE_IMAGE },
-    // Hero-photo cuts through the fast-scroll Twitter feed better than text-only.
-    defaultImageVariant: "hero-photo",
-    caption: {
-      maxChars: 270,
-      hashtagCount: [0, 2],
-      hashtagPlacement: "inline",
-      linkPlacement: "trailing",
-      emojiBudget: [0, 1],
-      styleHint:
-        "Single tweet. Open with the specific finding (number, dose, effect size) — give the reader the answer, not a tease. Link on its own line at the end.",
-    },
-  },
-  linkedin: {
-    platform: "linkedin",
-    label: "LinkedIn",
-    image: { width: 1200, height: 627, ...LANDSCAPE_IMAGE },
-    // Editorial/professional register — stat cards match what SBS, Barbell
-    // Medicine, and Examine.com run on LinkedIn.
-    defaultImageVariant: "stat-callout",
-    caption: {
-      maxChars: 1300,
-      hashtagCount: [2, 4],
-      hashtagPlacement: "trailing",
-      linkPlacement: "trailing",
-      emojiBudget: [0, 1],
-      styleHint:
-        "FIRST LINE must be the single most compelling stat or finding, standalone — that's the only line visible above the 'see more' fold. Blank line. Then 1–2 short paragraphs with mechanism/dosing/caveat. Plain line breaks — no emoji as bullets. Hashtags on their own line at the bottom, URL on the line after.",
-    },
-  },
   instagram: {
     platform: "instagram",
     label: "Instagram",
@@ -132,4 +99,4 @@ export const STRATEGIES: Record<Platform, PlatformStrategy> = {
   },
 };
 
-export const PLATFORMS: Platform[] = ["twitter", "linkedin", "instagram", "facebook"];
+export const PLATFORMS: Platform[] = ["instagram", "facebook"];
