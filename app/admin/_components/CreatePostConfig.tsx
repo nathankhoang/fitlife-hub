@@ -11,6 +11,9 @@ const CATEGORIES = [
   { id: "wellness", label: "Wellness" },
 ];
 
+const RANDOM = "__random__";
+const RANDOM_LABEL = "🎲 Randomize per article";
+
 const FORMATS = [
   "Review",
   "How-to Guide",
@@ -80,16 +83,22 @@ export default function CreatePostConfig({
   const [draftCategory, setDraftCategory] = useState("supplements");
   const [draftSlug, setDraftSlug] = useState("");
 
+  function encode(value: string): string {
+    // The /create-post slash command treats `random` as "pick a different
+    // value per iteration". The sentinel __random__ is purely UI-internal.
+    return value === RANDOM ? "random" : value;
+  }
+
   function buildTopicCommand() {
     const parts = ["/create-post"];
     if (topic.trim()) parts.push(topic.trim());
     if (primaryKeyword.trim())
       parts.push(`primary-keyword: ${primaryKeyword.trim()}`);
     if (categories.length) parts.push(`categories: ${categories.join(", ")}`);
-    if (format) parts.push(`format: ${format}`);
-    if (tone) parts.push(`tone: ${tone}`);
-    if (audience !== "Any") parts.push(`audience: ${audience}`);
-    parts.push(`length: ${length}`);
+    if (format) parts.push(`format: ${encode(format)}`);
+    if (tone) parts.push(`tone: ${encode(tone)}`);
+    if (audience !== "Any") parts.push(`audience: ${encode(audience)}`);
+    parts.push(`length: ${encode(length)}`);
     return parts.join(" — ");
   }
 
@@ -270,6 +279,7 @@ export default function CreatePostConfig({
                   {FORMATS.map((f) => (
                     <option key={f} value={f}>{f}</option>
                   ))}
+                  <option value={RANDOM}>{RANDOM_LABEL}</option>
                 </select>
               </Field>
               <Field label="Tone">
@@ -278,6 +288,7 @@ export default function CreatePostConfig({
                   {TONES.map((t) => (
                     <option key={t} value={t}>{t}</option>
                   ))}
+                  <option value={RANDOM}>{RANDOM_LABEL}</option>
                 </select>
               </Field>
             </div>
@@ -288,6 +299,7 @@ export default function CreatePostConfig({
                   {AUDIENCES.map((a) => (
                     <option key={a} value={a}>{a}</option>
                   ))}
+                  <option value={RANDOM}>{RANDOM_LABEL}</option>
                 </select>
               </Field>
               <Field label="Length">
@@ -295,9 +307,15 @@ export default function CreatePostConfig({
                   {LENGTHS.map((l) => (
                     <option key={l.id} value={l.id}>{l.label}</option>
                   ))}
+                  <option value={RANDOM}>{RANDOM_LABEL}</option>
                 </select>
               </Field>
             </div>
+
+            <p className="text-xs text-white/40 leading-relaxed">
+              Use <span className="text-white/60">🎲 Randomize</span> on any
+              field to have <code className="bg-white/10 px-1 rounded">/create-post</code> pick a different value per article across a multi-batch run — useful for varying the editorial mix without repeating the same angle.
+            </p>
           </div>
 
           <div>
