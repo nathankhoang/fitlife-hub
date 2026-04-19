@@ -51,9 +51,19 @@ export const facebookAdapter: PlatformAdapter = {
     const postId = json.post_id ?? json.id;
     if (!postId) throw new AdapterError("Facebook returned no post id", "facebook", res.status, json);
 
-    return {
-      platformPostId: postId,
-      platformPostUrl: `https://www.facebook.com/${postId.includes("_") ? postId.replace("_", "/posts/") : `${pageId}/posts/${postId}`}`,
-    };
+    // The "new Pages experience" rewrites post URLs under a separate public ID.
+    // Fetch the actual permalink_url so the link works for non-admin viewers.
+    let platformPostUrl = `https://www.facebook.com/${pageId}/posts/${postId.split("_").pop()}`;
+    try {
+      const detailRes = await fetch(
+        `https://graph.facebook.com/${GRAPH_VERSION}/${postId}?fields=permalink_url&access_token=${encodeURIComponent(token)}`,
+      );
+      const detail = (await detailRes.json()) as { permalink_url?: string };
+      if (detail.permalink_url) platformPostUrl = detail.permalink_url;
+    } catch {
+      // Fall back to constructed URL on any error.
+    }
+
+    return { platformPostId: postId, platformPostUrl };
   },
 };
