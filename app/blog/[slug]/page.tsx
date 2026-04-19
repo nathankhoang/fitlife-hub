@@ -14,6 +14,7 @@ import NewsletterCTA from "@/components/NewsletterCTA";
 
 const mdxComponents = {
   AffiliateProductCard,
+  AffiliateCard: AffiliateProductCard,
 };
 
 type Props = { params: Promise<{ slug: string }> };
