@@ -186,20 +186,18 @@ to this client's answers. Cover at minimum:
      has a key.
 4. **Domain / DNS** — point the domain at Vercel.
 5. **Vercel project access** — share the project with
-   `_operator.vercelEmail`.
-6. **GitHub repo access** — invite `_operator.githubUsername` as a
-   collaborator.
-7. **Starter articles** — paste the `/create-post` commands from Step 4
+   `_operator.vercelEmail` so the client can see deploy logs.
+6. **Starter articles** — paste the `/create-post` commands from Step 4
    (one or two at a time; don't overload).
-8. **Affiliate catalog** — add the seeded products from Step 4 once images
+7. **Affiliate catalog** — add the seeded products from Step 4 once images
    are sourced.
-9. **About page body** — `app/about/page.tsx` has editorial copy that
+8. **About page body** — `app/about/page.tsx` has editorial copy that
    may need light editing to fit the client's voice beyond the
    auto-substituted name.
-10. **Category pages** — default category descriptions in
+9. **Category pages** — default category descriptions in
     `app/category/[category]/page.tsx` → `categoryMeta` may need tweaks
     for the client's tone.
-11. **First deploy** — run `git add -A && git commit && git push`.
+10. **First deploy** — run `git add -A && git commit && git push`.
 
 At the very bottom of the checklist, also print:
 
