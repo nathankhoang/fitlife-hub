@@ -1,0 +1,147 @@
+// Posts an image + caption to the LeanBodyEngine Instagram Business account
+// using the Instagram Graph API.
+//
+// Two-step flow:
+//   1. POST /{ig-user-id}/media        → creates a media container (returns container id)
+//   2. POST /{ig-user-id}/media_publish → publishes the container (returns media id)
+//
+// Notes:
+//   - Uses an Instagram Login (IGAA…) token, NOT a Facebook Page token. The
+//     IGAA token comes from an Instagram-specific Meta app set up via
+//     "API setup with Instagram login", which grants the instagram_content_publish
+//     scope that Pages-API tokens cannot carry.
+//   - Instagram requires the image_url to be publicly reachable JPEG or PNG.
+//     WebP is NOT accepted (at time of writing). The worker uploads a JPEG
+//     version to Blob for this reason.
+//   - Host is graph.instagram.com (not graph.facebook.com) for IGAA tokens.
+//
+// Docs: https://developers.facebook.com/docs/instagram-platform/content-publishing
+
+import { AdapterError, type AdapterContext, type PlatformAdapter, type PostResult } from "./types";
+
+const GRAPH_VERSION = "v21.0";
+
+function requireEnv(name: string): string {
+  const v = process.env[name];
+  if (!v) throw new AdapterError(`${name} is not set`, "instagram");
+  return v;
+}
+
+async function createContainer(
+  igUserId: string,
+  token: string,
+  imageUrl: string,
+  caption: string,
+): Promise<string> {
+  const endpoint = `https://graph.instagram.com/${GRAPH_VERSION}/${igUserId}/media`;
+  // graph.instagram.com (Instagram Login API) requires media_type to be
+  // explicitly set. The older graph.facebook.com endpoint inferred IMAGE
+  // from the presence of image_url, but the IG Login endpoint does not.
+  const body = new URLSearchParams({
+    media_type: "IMAGE",
+    image_url: imageUrl,
+    caption,
+    access_token: token,
+  });
+  const res = await fetch(endpoint, { method: "POST", body });
+  const json = (await res.json()) as { id?: string; error?: { message: string } };
+  if (!res.ok || !json.id) {
+    throw new AdapterError(
+      json.error?.message ?? `IG create-container failed: ${res.status}`,
+      "instagram",
+      res.status,
+      json,
+    );
+  }
+  return json.id;
+}
+
+async function waitForContainerReady(
+  containerId: string,
+  token: string,
+): Promise<void> {
+  // IG processes the uploaded image asynchronously. Publishing before
+  // status_code=FINISHED returns "Media ID is not available" (code 9007).
+  // Poll for up to ~30s before giving up.
+  const endpoint = `https://graph.instagram.com/${GRAPH_VERSION}/${containerId}?fields=status_code,status&access_token=${encodeURIComponent(token)}`;
+  const delaysMs = [1500, 2000, 2500, 3000, 3500, 4000, 5000, 6000];
+  let last: { status_code?: string; status?: string } = {};
+  for (const delay of delaysMs) {
+    await new Promise((r) => setTimeout(r, delay));
+    const res = await fetch(endpoint);
+    if (!res.ok) continue;
+    last = (await res.json()) as { status_code?: string; status?: string };
+    if (last.status_code === "FINISHED") return;
+    if (last.status_code === "ERROR" || last.status_code === "EXPIRED") {
+      throw new AdapterError(
+        `IG container ${last.status_code}: ${last.status ?? "no detail"}`,
+        "instagram",
+        undefined,
+        last,
+      );
+    }
+  }
+  throw new AdapterError(
+    `IG container still ${last.status_code ?? "pending"} after polling`,
+    "instagram",
+    undefined,
+    last,
+  );
+}
+
+async function publishContainer(
+  igUserId: string,
+  token: string,
+  containerId: string,
+): Promise<string> {
+  const endpoint = `https://graph.instagram.com/${GRAPH_VERSION}/${igUserId}/media_publish`;
+  const body = new URLSearchParams({
+    creation_id: containerId,
+    access_token: token,
+  });
+  const res = await fetch(endpoint, { method: "POST", body });
+  const json = (await res.json()) as { id?: string; error?: { message: string } };
+  if (!res.ok || !json.id) {
+    throw new AdapterError(
+      json.error?.message ?? `IG publish failed: ${res.status}`,
+      "instagram",
+      res.status,
+      json,
+    );
+  }
+  return json.id;
+}
+
+async function getPermalink(mediaId: string, token: string): Promise<string | null> {
+  // Best-effort fetch of the public permalink. If this fails we still return a
+  // constructed URL from media id.
+  try {
+    const endpoint = `https://graph.instagram.com/${GRAPH_VERSION}/${mediaId}?fields=permalink&access_token=${encodeURIComponent(token)}`;
+    const res = await fetch(endpoint);
+    if (!res.ok) return null;
+    const json = (await res.json()) as { permalink?: string };
+    return json.permalink ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export const instagramAdapter: PlatformAdapter = {
+  async post({ entry, imageUrl }: AdapterContext): Promise<PostResult> {
+    const igUserId = requireEnv("IG_USER_ID");
+    // Prefer the Instagram-specific token when present (from an Instagram-login
+    // Meta app); fall back to Page token for legacy FB-linked setups.
+    const token = process.env.META_IG_ACCESS_TOKEN || requireEnv("META_PAGE_ACCESS_TOKEN");
+    if (!entry.caption) throw new AdapterError("caption missing", "instagram");
+
+    const containerId = await createContainer(igUserId, token, imageUrl, entry.caption);
+    await waitForContainerReady(containerId, token);
+    const mediaId = await publishContainer(igUserId, token, containerId);
+    const permalink = await getPermalink(mediaId, token);
+
+    return {
+      platformPostId: mediaId,
+      platformPostUrl: permalink ?? `https://www.instagram.com/p/${mediaId}/`,
+    };
+  },
+};
