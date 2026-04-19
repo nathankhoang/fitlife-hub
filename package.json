@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "seed:blob": "node --env-file=.env.local scripts/seed-blob.mjs",
-    "ensure:images": "node --env-file=.env.local scripts/ensure-images.mjs"
+    "ensure:images": "node --env-file=.env.local scripts/ensure-images.mjs",
+    "rebrand": "node scripts/rebrand.mjs",
+    "reset:content": "node scripts/reset-content.mjs"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.64",

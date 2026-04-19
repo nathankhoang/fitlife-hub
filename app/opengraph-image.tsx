@@ -1,10 +1,19 @@
 import { ImageResponse } from "next/og";
+import { brand } from "@/lib/brand";
+import { SITE_URL } from "@/lib/site";
 
-export const alt = "LeanBodyEngine — Fitness, Health & Wellness";
+export const alt = `${brand.name} — Fitness, Health & Wellness`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default function Image() {
+  const host = (() => {
+    try {
+      return new URL(SITE_URL).host;
+    } catch {
+      return SITE_URL;
+    }
+  })();
   return new ImageResponse(
     (
       <div
@@ -39,7 +48,7 @@ export default function Image() {
               marginRight: 14,
             }}
           />
-          leanbodyengine.com
+          {host}
         </div>
 
         <div style={{ display: "flex", flexDirection: "column" }}>
@@ -52,7 +61,7 @@ export default function Image() {
               color: "#FFFFFF",
             }}
           >
-            LeanBodyEngine
+            {brand.name}
           </div>
           <div
             style={{

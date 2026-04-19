@@ -2,10 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getAllArticles, categoryLabels, type Category } from "@/lib/articles";
 import ArticleCard from "@/components/ArticleCard";
+import { brand } from "@/lib/brand";
 
 const blogTitle = "All Articles";
-const blogDescription =
-  "Browse all fitness, supplement, diet, and wellness articles on LeanBodyEngine.";
+const blogDescription = `Browse all fitness, supplement, diet, and wellness articles on ${brand.name}.`;
 
 export const metadata: Metadata = {
   title: blogTitle,

@@ -11,6 +11,7 @@ import {
   categoryLabels,
 } from "@/lib/articles";
 import { SITE_URL } from "@/lib/site";
+import { brand } from "@/lib/brand";
 import CategoryBadge from "@/components/CategoryBadge";
 import ArticleCard from "@/components/ArticleCard";
 import AffiliateProductCard from "@/components/AffiliateProductCard";
@@ -19,6 +20,7 @@ import NewsletterCTA from "@/components/NewsletterCTA";
 import ReadingProgress from "@/components/ReadingProgress";
 import TableOfContents, { type TocHeading } from "@/components/TableOfContents";
 import FaqSection from "@/components/FaqSection";
+import AuthorCard from "@/components/AuthorCard";
 import Breadcrumb from "@/components/Breadcrumb";
 import { buildProductListSchema } from "@/lib/product-schema";
 import {
@@ -161,14 +163,43 @@ export default async function ArticlePage({ params }: Props) {
     dateModified: modifiedIso,
     image: absoluteHeroImage,
     mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
-    author: {
-      "@type": "Organization",
-      name: "LeanBodyEngine",
-      url: SITE_URL,
-    },
+    author: brand.author.emitPersonSchema
+      ? {
+          "@type": "Person",
+          "@id": `${SITE_URL}${brand.author.profileUrl}#author`,
+          name: brand.author.name,
+          url: `${SITE_URL}${brand.author.profileUrl}`,
+          ...(brand.author.photoUrl
+            ? {
+                image: brand.author.photoUrl.startsWith("http")
+                  ? brand.author.photoUrl
+                  : `${SITE_URL}${brand.author.photoUrl}`,
+              }
+            : {}),
+          ...(brand.author.credentials
+            ? { jobTitle: brand.author.credentials }
+            : {}),
+          ...(brand.socials.length > 0
+            ? { sameAs: brand.socials.map((s) => s.url) }
+            : {}),
+        }
+      : {
+          "@type": "Organization",
+          name: brand.name,
+          url: SITE_URL,
+        },
+    ...(brand.author.emitPersonSchema
+      ? {
+          reviewedBy: {
+            "@type": "Person",
+            "@id": `${SITE_URL}${brand.author.profileUrl}#author`,
+            name: brand.author.name,
+          },
+        }
+      : {}),
     publisher: {
       "@type": "Organization",
-      name: "LeanBodyEngine",
+      name: brand.name,
       url: SITE_URL,
       logo: {
         "@type": "ImageObject",
@@ -258,12 +289,17 @@ export default async function ArticlePage({ params }: Props) {
                 {article.description}
               </p>
               <div className="flex items-center gap-4 text-sm text-[#A3A3A3] border-t border-b border-[#F5F5F5] py-3 flex-wrap">
-                <div className="flex items-center gap-2">
+                <Link
+                  href={brand.author.profileUrl}
+                  className="flex items-center gap-2 group"
+                >
                   <span className="w-7 h-7 rounded-full bg-[#059669]/10 text-[#059669] text-[10px] font-bold flex items-center justify-center">
-                    LBE
+                    {brand.shortName}
                   </span>
-                  <span className="text-[#525252] font-medium text-sm">LeanBodyEngine Editorial Team</span>
-                </div>
+                  <span className="text-[#525252] font-medium text-sm group-hover:text-[#059669] transition-colors">
+                    {brand.author.name}
+                  </span>
+                </Link>
                 <span>·</span>
                 <span>Published {formatDate(article.date)}</span>
                 {article.updatedDate && (
@@ -274,6 +310,14 @@ export default async function ArticlePage({ params }: Props) {
                 )}
                 <span>·</span>
                 <span>{article.readTime} min read</span>
+                {brand.author.emitPersonSchema && (
+                  <>
+                    <span>·</span>
+                    <span className="text-xs text-[#A3A3A3]">
+                      Reviewed by {brand.author.name}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
 
@@ -310,6 +354,13 @@ export default async function ArticlePage({ params }: Props) {
             {article.faq && article.faq.length > 0 && (
               <FaqSection items={article.faq} />
             )}
+
+            {/* Author card — E-E-A-T signal */}
+            {brand.author.emitPersonSchema && (
+              <div className="mt-12">
+                <AuthorCard variant="compact" linkToProfile />
+              </div>
+            )}
           </div>
 
           {/* Sticky sidebar */}
@@ -323,7 +374,7 @@ export default async function ArticlePage({ params }: Props) {
                   About this site
                 </p>
                 <p className="text-sm text-white/70 leading-relaxed mb-4">
-                  LeanBodyEngine publishes evidence-based fitness guides — free to read, with no sponsored content.
+                  {brand.author.bio}
                 </p>
                 <Link
                   href="/#newsletter"
