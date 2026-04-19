@@ -28,6 +28,7 @@ export type Article = {
   description: string;
   category: Category;
   date: string;
+  updatedDate?: string;
   readTime: number;
   featured: boolean;
   image: string;

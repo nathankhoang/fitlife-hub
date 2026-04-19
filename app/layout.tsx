@@ -46,15 +46,46 @@ const organizationSchema = {
   description: siteDescription,
 };
 
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "LeanBodyEngine",
+  url: SITE_URL,
+  description: siteDescription,
+  publisher: {
+    "@type": "Organization",
+    name: "LeanBodyEngine",
+    url: SITE_URL,
+  },
+};
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${sora.variable} ${jakarta.variable}`}>
+      <head>
+        {GA_ID && (
+          <>
+            <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${GA_ID}',{link_attribution:true});`,
+              }}
+            />
+          </>
+        )}
+      </head>
       <body className="min-h-screen flex flex-col bg-white text-[#0A0A0A] antialiased">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
         <Navbar />
         <main className="flex-1">{children}</main>
