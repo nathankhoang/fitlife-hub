@@ -60,6 +60,15 @@ const tools: Tool[] = [
     formulas: "Greedy plate selection · lb/kg conversion",
     accent: "#059669",
   },
+  {
+    slug: "body-fat-calculator",
+    title: "Body Fat Calculator",
+    description:
+      "Estimate body fat percentage with a tape measure — no calipers needed. Includes category classification and lean mass.",
+    inputs: "Sex, height, neck, waist · hip (women) · weight optional",
+    formulas: "US Navy circumference method",
+    accent: "#059669",
+  },
 ];
 
 export default function ToolsIndexPage() {
@@ -187,7 +196,7 @@ export default function ToolsIndexPage() {
               Coming soon
             </p>
             <p className="text-[#525252] leading-relaxed text-[15px]">
-              Body-fat estimator (US Navy tape method) and BMR calculator are
+              Wilks/DOTS powerlifting calculator and FFMI calculator are
               next on deck. Subscribe to get notified when they ship.
             </p>
           </div>
