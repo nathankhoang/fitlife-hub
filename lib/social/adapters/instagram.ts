@@ -34,7 +34,11 @@ async function createContainer(
   caption: string,
 ): Promise<string> {
   const endpoint = `https://graph.instagram.com/${GRAPH_VERSION}/${igUserId}/media`;
+  // graph.instagram.com (Instagram Login API) requires media_type to be
+  // explicitly set. The older graph.facebook.com endpoint inferred IMAGE
+  // from the presence of image_url, but the IG Login endpoint does not.
   const body = new URLSearchParams({
+    media_type: "IMAGE",
     image_url: imageUrl,
     caption,
     access_token: token,
