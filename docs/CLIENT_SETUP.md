@@ -4,6 +4,22 @@ End-to-end guide for spinning up a new fitness-influencer site from this
 template. The goal: a working, rebranded, deployed site with initial
 content in **under 3 hours** of operator time.
 
+## TL;DR — the fast path
+
+1. Send the client the onboarding Google Form
+   (see [`docs/ONBOARDING_FORM.md`](ONBOARDING_FORM.md) for setup).
+2. When they submit, run the Apps Script exporter to get
+   `client.config.json`.
+3. Clone/fork this repo for the client, drop `client.config.json` at the
+   repo root.
+4. Open Claude Code in the repo and run `/onboard-client`. It handles
+   rebrand + content reset + prints the remaining manual steps
+   (DNS, env vars, photo upload, etc.).
+5. Work through that generated checklist — steps 3, 4, 6, 7 below.
+
+The prose guide below documents every step in detail. Use it when
+something doesn't fit the fast path.
+
 ---
 
 ## 0. Prerequisites (collect from the client up front)
@@ -31,6 +47,10 @@ single email or shared doc:
     approval takes 1–3 days and is required for affiliate links to work.
 
 Without all of this, don't start the setup — you'll be blocked halfway through.
+
+**Easier:** use the Google Form. [`docs/ONBOARDING_FORM.md`](ONBOARDING_FORM.md)
+has one-shot setup instructions and an Apps Script that exports the
+client's answers directly as `client.config.json`.
 
 ---
 
