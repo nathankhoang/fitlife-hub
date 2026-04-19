@@ -445,7 +445,7 @@ export default function CreatePostConfig({
 }
 
 const INPUT =
-  "w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-[#059669]";
+  "w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-[#059669] [&>option]:bg-[#0f172a] [&>option]:text-white";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
