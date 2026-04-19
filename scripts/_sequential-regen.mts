@@ -10,7 +10,9 @@ const { processEntryById } = await import("../lib/social/worker.ts");
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const q = await getSocialQueue();
-for (const e of q) {
+// Only regen entries that need it — don't clobber awaiting_approval ones.
+const pending = q.filter((e) => e.status === "pending" || e.status === "generating" || e.status === "failed");
+for (const e of pending) {
   console.log(`→ ${e.platform}`);
   await updateSocialEntry(e.id, {
     status: "pending",
@@ -21,7 +23,6 @@ for (const e of q) {
     hookLine: null,
     firstComment: null,
   });
-  // Let the Blob settle globally before the worker reads it back.
   await sleep(3000);
 
   try {
@@ -32,8 +33,10 @@ for (const e of q) {
     console.log(`  ERROR: ${(err as Error).message}`);
   }
 
-  // Pause between entries: Groq TPM limit is 8000/min and we've seen bursts.
-  await sleep(5000);
+  // 45s pause: Groq TPM is 8000/min. A stat-callout entry uses ~4000 tokens
+  // (extract-stat + generate-caption both use reasoning mode). 45s keeps us
+  // well under the burst limit.
+  await sleep(45000);
 }
 console.log("\nfinal:");
 for (const e of await getSocialQueue()) {

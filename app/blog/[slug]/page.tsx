@@ -1,16 +1,46 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MDXRemote } from "next-mdx-remote/rsc";
+import rehypeSlug from "rehype-slug";
 import {
   getArticleBySlug,
   getAllArticles,
   getRelatedArticles,
   formatDate,
+  categoryLabels,
 } from "@/lib/articles";
+import { SITE_URL } from "@/lib/site";
 import CategoryBadge from "@/components/CategoryBadge";
 import ArticleCard from "@/components/ArticleCard";
 import AffiliateProductCard from "@/components/AffiliateProductCard";
+import ComparisonTable from "@/components/ComparisonTable";
 import NewsletterCTA from "@/components/NewsletterCTA";
+import ReadingProgress from "@/components/ReadingProgress";
+import TableOfContents, { type TocHeading } from "@/components/TableOfContents";
+import FaqSection from "@/components/FaqSection";
+import Breadcrumb from "@/components/Breadcrumb";
+import { buildProductListSchema } from "@/lib/product-schema";
+import {
+  buildLinkCandidates,
+  injectContextualLinks,
+} from "@/lib/contextual-links";
+
+type MdxAnchorProps = { href?: string; children?: React.ReactNode };
+function MdxAnchor({ href, children, ...rest }: MdxAnchorProps) {
+  if (href && href.startsWith("/")) {
+    return (
+      <Link href={href} {...rest}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} {...rest}>
+      {children}
+    </a>
+  );
+}
 
 function Callout({ type, children }: { type?: string; children: React.ReactNode }) {
   const styles: Record<string, string> = {
@@ -31,6 +61,14 @@ const mdxComponents = {
   AffiliateCard: AffiliateProductCard,
   AffiliateProduct: AffiliateProductCard,
   Callout,
+  ComparisonTable,
+  a: MdxAnchor,
+};
+
+const mdxOptions = {
+  mdxOptions: {
+    rehypePlugins: [rehypeSlug],
+  },
 };
 
 type Props = { params: Promise<{ slug: string }> };
@@ -69,11 +107,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: [ogImage],
     },
     other: article.imagePinterest
-      ? {
-          "pinterest:image": article.imagePinterest,
-        }
+      ? { "pinterest:image": article.imagePinterest }
       : undefined,
   };
+}
+
+function extractHeadings(content: string): TocHeading[] {
+  const headingRegex = /^(#{2,3})\s+(.+)$/gm;
+  const headings: TocHeading[] = [];
+  let match;
+  while ((match = headingRegex.exec(content)) !== null) {
+    const level = match[1].length;
+    const text = match[2].trim().replace(/\*\*/g, "").replace(/`/g, "");
+    const id = text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-");
+    headings.push({ level, text, id });
+  }
+  return headings;
 }
 
 export default async function ArticlePage({ params }: Props) {
@@ -81,77 +134,212 @@ export default async function ArticlePage({ params }: Props) {
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
-  const related = await getRelatedArticles(slug, article.category);
+  const [related, allArticles] = await Promise.all([
+    getRelatedArticles(slug, article.category),
+    getAllArticles(),
+  ]);
+  const linkCandidates = buildLinkCandidates(allArticles, slug);
+  const linkedContent = injectContextualLinks(article.content, linkCandidates);
   const heroImage = article.image || `/images/categories/${article.category}.svg`;
+  const absoluteHeroImage = heroImage.startsWith("http")
+    ? heroImage
+    : `${SITE_URL}${heroImage.startsWith("/") ? "" : "/"}${heroImage}`;
+  const pageUrl = `${SITE_URL}/blog/${article.slug}`;
+  const publishedIso = new Date(article.date).toISOString();
+  const headings = extractHeadings(article.content);
 
-  const jsonLd = {
+  const modifiedIso = article.updatedDate
+    ? new Date(article.updatedDate).toISOString()
+    : publishedIso;
+
+  const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: article.title,
     description: article.description,
-    datePublished: article.date,
-    image: heroImage,
+    datePublished: publishedIso,
+    dateModified: modifiedIso,
+    image: absoluteHeroImage,
+    mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
+    author: {
+      "@type": "Organization",
+      name: "LeanBodyEngine",
+      url: SITE_URL,
+    },
     publisher: {
       "@type": "Organization",
       name: "LeanBodyEngine",
-      url: "https://fitbodyengine.com",
+      url: SITE_URL,
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/opengraph-image`,
+      },
     },
   };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: categoryLabels[article.category],
+        item: `${SITE_URL}/category/${article.category}`,
+      },
+      { "@type": "ListItem", position: 3, name: article.title },
+    ],
+  };
+
+  const faqSchema = article.faq && article.faq.length > 0
+    ? {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: article.faq.map(({ question, answer }) => ({
+          "@type": "Question",
+          name: question,
+          acceptedAnswer: { "@type": "Answer", text: answer },
+        })),
+      }
+    : null;
+
+  const productListSchema = buildProductListSchema(
+    article.content,
+    pageUrl,
+    SITE_URL,
+  );
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
+      {productListSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productListSchema) }}
+        />
+      )}
+      <ReadingProgress />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        <div className="max-w-3xl mx-auto">
-          {/* Article header */}
-          <div className="mb-8">
-            <div className="mb-4">
-              <CategoryBadge category={article.category} />
+        {/* Two-column layout on desktop */}
+        <div className="lg:grid lg:grid-cols-[1fr_280px] lg:gap-12 xl:grid-cols-[1fr_300px]">
+          {/* Main content */}
+          <div className="min-w-0">
+            {/* Article header */}
+            <div className="mb-8">
+              <Breadcrumb
+                items={[
+                  { label: "Home", href: "/" },
+                  { label: categoryLabels[article.category], href: `/category/${article.category}` },
+                  { label: article.title },
+                ]}
+              />
+              <div className="mb-4">
+                <CategoryBadge category={article.category} />
+              </div>
+              <h1 className="text-3xl md:text-5xl font-bold text-[#0A0A0A] leading-[1.1] tracking-tight mb-5">
+                {article.title}
+              </h1>
+              <p className="text-lg text-[#525252] leading-relaxed mb-6">
+                {article.description}
+              </p>
+              <div className="flex items-center gap-4 text-sm text-[#A3A3A3] border-t border-b border-[#F5F5F5] py-3 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <span className="w-7 h-7 rounded-full bg-[#059669]/10 text-[#059669] text-[10px] font-bold flex items-center justify-center">
+                    LBE
+                  </span>
+                  <span className="text-[#525252] font-medium text-sm">LeanBodyEngine Editorial Team</span>
+                </div>
+                <span>·</span>
+                <span>Published {formatDate(article.date)}</span>
+                {article.updatedDate && (
+                  <>
+                    <span>·</span>
+                    <span className="text-[#059669] font-medium">Updated {formatDate(article.updatedDate)}</span>
+                  </>
+                )}
+                <span>·</span>
+                <span>{article.readTime} min read</span>
+              </div>
             </div>
-            <h1 className="text-3xl md:text-5xl font-semibold text-[#0A0A0A] leading-[1.1] tracking-tight mb-5">
-              {article.title}
-            </h1>
-            <p className="text-lg text-[#525252] leading-relaxed mb-6">
-              {article.description}
-            </p>
-            <div className="flex items-center gap-4 text-sm text-[#A3A3A3] border-t border-b border-[#F5F5F5] py-3">
-              <span>{formatDate(article.date)}</span>
-              <span>·</span>
-              <span>{article.readTime} min read</span>
+
+            {/* Hero image */}
+            <div className="aspect-[16/10] rounded-2xl overflow-hidden bg-[#F5F5F5] mb-10 border border-[#E5E5E5]">
+              <img
+                src={heroImage}
+                alt=""
+                className="w-full h-full object-cover"
+              />
             </div>
+
+            {/* Mobile TOC */}
+            {headings.length > 0 && (
+              <div className="lg:hidden mb-8">
+                <TableOfContents headings={headings} />
+              </div>
+            )}
+
+            {/* Article content */}
+            <div className="prose max-w-none">
+              <MDXRemote source={linkedContent} components={mdxComponents} options={mdxOptions} />
+            </div>
+
+            {/* Affiliate disclosure */}
+            <div className="mt-12 p-4 bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl text-xs text-[#525252]">
+              <strong className="text-[#0A0A0A]">Affiliate disclosure:</strong>{" "}
+              Some links in this article are affiliate links. If you purchase
+              through them, we may earn a small commission at no extra cost to
+              you. We only recommend products we genuinely believe in.
+            </div>
+
+            {/* FAQ section (visible content required for FAQPage schema) */}
+            {article.faq && article.faq.length > 0 && (
+              <FaqSection items={article.faq} />
+            )}
           </div>
 
-          {/* Hero image */}
-          <div className="aspect-[16/10] rounded-2xl overflow-hidden bg-[#F5F5F5] mb-10 border border-[#E5E5E5]">
-            <img
-              src={heroImage}
-              alt=""
-              className="w-full h-full object-cover"
-            />
-          </div>
+          {/* Sticky sidebar */}
+          <aside className="hidden lg:block">
+            <div className="sticky top-24 space-y-6">
+              {headings.length > 0 && <TableOfContents headings={headings} />}
 
-          {/* Article content */}
-          <div className="prose max-w-none">
-            <MDXRemote source={article.content} components={mdxComponents} />
-          </div>
-
-          {/* Affiliate disclosure */}
-          <div className="mt-12 p-4 bg-[#FAFAFA] border border-[#E5E5E5] rounded-xl text-xs text-[#525252]">
-            <strong className="text-[#0A0A0A]">Affiliate disclosure:</strong>{" "}
-            Some links in this article are affiliate links. If you purchase
-            through them, we may earn a small commission at no extra cost to
-            you. We only recommend products we genuinely believe in.
-          </div>
+              {/* Quick info card */}
+              <div className="bg-[#0f172a] rounded-xl p-5 text-white">
+                <p className="text-xs font-semibold uppercase tracking-wider text-white/50 mb-3">
+                  About this site
+                </p>
+                <p className="text-sm text-white/70 leading-relaxed mb-4">
+                  LeanBodyEngine publishes evidence-based fitness guides — free to read, with no sponsored content.
+                </p>
+                <Link
+                  href="/#newsletter"
+                  className="block text-center text-sm font-semibold bg-[#059669] hover:bg-[#047857] text-white px-4 py-2.5 rounded-lg transition-colors"
+                >
+                  Get new articles →
+                </Link>
+              </div>
+            </div>
+          </aside>
         </div>
 
         {/* Related articles */}
         {related.length > 0 && (
-          <div className="max-w-7xl mx-auto mt-20">
-            <h2 className="text-2xl font-semibold text-[#0A0A0A] mb-7 tracking-tight">
+          <div className="mt-20">
+            <h2 className="text-2xl font-bold text-[#0A0A0A] mb-7 tracking-tight">
               Related articles
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

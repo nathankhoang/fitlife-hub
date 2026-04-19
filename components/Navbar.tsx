@@ -16,15 +16,15 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-[#E5E5E5]">
+    <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#E5E5E5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
             <span className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white text-[11px] font-bold tracking-tight">LBE</span>
-            <span className="text-lg font-semibold text-[#0A0A0A] tracking-tight">LeanBodyEngine</span>
+            <span className="text-lg font-bold text-[#0A0A0A] tracking-tight">LeanBodyEngine</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-0.5">
             {categories.map((cat) => (
               <Link
                 key={cat.slug}
@@ -44,10 +44,22 @@ export default function Navbar() {
               All Articles
             </Link>
             <Link
+              href="/tools"
+              className="text-sm font-medium text-[#525252] hover:text-[#0A0A0A] transition-colors"
+            >
+              Tools
+            </Link>
+            <Link
               href="/about"
               className="text-sm font-medium text-[#525252] hover:text-[#0A0A0A] transition-colors"
             >
               About
+            </Link>
+            <Link
+              href="/#newsletter"
+              className="text-sm font-semibold bg-[#059669] hover:bg-[#047857] text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Subscribe
             </Link>
           </div>
 
@@ -87,11 +99,25 @@ export default function Navbar() {
                 All Articles
               </Link>
               <Link
+                href="/tools"
+                onClick={() => setMenuOpen(false)}
+                className="px-3 py-2 text-sm font-medium text-[#525252] hover:text-[#0A0A0A] hover:bg-[#FAFAFA] rounded-md transition-colors"
+              >
+                Tools
+              </Link>
+              <Link
                 href="/about"
                 onClick={() => setMenuOpen(false)}
                 className="px-3 py-2 text-sm font-medium text-[#525252] hover:text-[#0A0A0A] hover:bg-[#FAFAFA] rounded-md transition-colors"
               >
                 About
+              </Link>
+              <Link
+                href="/#newsletter"
+                onClick={() => setMenuOpen(false)}
+                className="mx-3 mt-2 text-sm font-semibold text-center bg-[#059669] hover:bg-[#047857] text-white px-4 py-2 rounded-lg transition-colors"
+              >
+                Subscribe
               </Link>
             </div>
           </div>

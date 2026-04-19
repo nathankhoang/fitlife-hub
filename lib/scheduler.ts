@@ -41,8 +41,8 @@ export async function publishSlug(slug: string): Promise<void> {
     publishedDate: new Date().toISOString(),
   });
 
-  revalidateTag(`article:${slug}`, "max");
-  revalidateTag(`draft:${slug}`, "max");
+  revalidateTag(`article:v2:${slug}`, "max");
+  revalidateTag(`draft:v2:${slug}`, "max");
 
   // Social autoposting: enqueue 4 pending drafts (one per platform). The
   // generation worker picks these up from /api/cron/generate-social. Wrapped

@@ -20,18 +20,22 @@ export const categoryLabels: Record<Category, string> = {
   wellness: "Wellness & Recovery",
 };
 
+export type FaqItem = { question: string; answer: string };
+
 export type Article = {
   slug: string;
   title: string;
   description: string;
   category: Category;
   date: string;
+  updatedDate?: string;
   readTime: number;
   featured: boolean;
   image: string;
   imageOg: string;
   imagePinterest: string;
   content: string;
+  faq?: FaqItem[];
 };
 
 const LOCAL_ARTICLES_DIR = nodePath.join(process.cwd(), "content", "articles");
@@ -57,6 +61,22 @@ function readLocalMdx(dir: string, slug: string): string | null {
   return fs.readFileSync(p, "utf8");
 }
 
+function parseFaq(raw: unknown): FaqItem[] | undefined {
+  if (!Array.isArray(raw)) return undefined;
+  const items = raw
+    .map((entry) => {
+      if (!entry || typeof entry !== "object") return null;
+      const { question, answer } = entry as { question?: unknown; answer?: unknown };
+      if (typeof question !== "string" || typeof answer !== "string") return null;
+      const q = question.trim();
+      const a = answer.trim();
+      if (!q || !a) return null;
+      return { question: q, answer: a };
+    })
+    .filter((item): item is FaqItem => item !== null);
+  return items.length > 0 ? items : undefined;
+}
+
 function parseMdx(slug: string, raw: string): Article {
   const { data, content } = matter(raw);
   return {
@@ -71,14 +91,17 @@ function parseMdx(slug: string, raw: string): Article {
     imageOg: (data.imageOg as string) ?? "",
     imagePinterest: (data.imagePinterest as string) ?? "",
     content,
+    faq: parseFaq(data.faq),
   };
 }
+
+const MDX_CACHE_BUST = "3";
 
 async function fetchMdx(
   blobPath: string,
   tag: string,
 ): Promise<string | null> {
-  const res = await fetch(`${blobBase()}/${blobPath}`, {
+  const res = await fetch(`${blobBase()}/${blobPath}?v=${MDX_CACHE_BUST}`, {
     cache: "force-cache",
     next: { tags: [tag] },
   });
@@ -109,7 +132,7 @@ export async function getAllArticles(): Promise<Article[]> {
 
   const results = await Promise.all(
     slugs.map(async (slug) => {
-      const raw = await fetchMdx(`articles/${slug}.mdx`, `article:${slug}`);
+      const raw = await fetchMdx(`articles/${slug}.mdx`, `article:v2:${slug}`);
       return raw ? parseMdx(slug, raw) : null;
     }),
   );
@@ -124,7 +147,7 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
     const raw = readLocalMdx(LOCAL_ARTICLES_DIR, slug);
     return raw ? parseMdx(slug, raw) : null;
   }
-  const raw = await fetchMdx(`articles/${slug}.mdx`, `article:${slug}`);
+  const raw = await fetchMdx(`articles/${slug}.mdx`, `article:v2:${slug}`);
   return raw ? parseMdx(slug, raw) : null;
 }
 
@@ -133,7 +156,7 @@ export async function getDraftBySlug(slug: string): Promise<Article | null> {
     const raw = readLocalMdx(LOCAL_DRAFTS_DIR, slug);
     return raw ? parseMdx(slug, raw) : null;
   }
-  const raw = await fetchMdx(`drafts/${slug}.mdx`, `draft:${slug}`);
+  const raw = await fetchMdx(`drafts/${slug}.mdx`, `draft:v2:${slug}`);
   return raw ? parseMdx(slug, raw) : null;
 }
 

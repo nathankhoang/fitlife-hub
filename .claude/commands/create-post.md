@@ -23,33 +23,213 @@ Print a single-line header: `=== create-post iteration N/10 (mode) — dispatchi
 
 ---
 
-## Step 1 — Plan 10 Distinct Assignments
+## Step 0.5 — Queue Reconciliation (runs every invocation, before Step 1)
 
-Read `data/queue.json`. For the current batch, plan **10 distinct (topic, category, format) assignments** that:
+Ensure every published MDX file is registered in `queue.json` — including articles that predate the queue system or were committed directly to git.
+
+Run this Node snippet from the project root:
+
+```
+node --env-file=.env.local -e "
+const fs = require('fs');
+const path = require('path');
+const matter = require('gray-matter');
+const { put } = require('@vercel/blob');
+
+const ARTICLES_DIR = path.join(process.cwd(), 'content', 'articles');
+const QUEUE_PATH = path.join(process.cwd(), 'data', 'queue.json');
+
+const queue = JSON.parse(fs.readFileSync(QUEUE_PATH, 'utf8'));
+const existingSlugs = new Set(queue.map(e => e.slug));
+
+const mdxFiles = fs.readdirSync(ARTICLES_DIR).filter(f => f.endsWith('.mdx'));
+const added = [];
+
+for (const file of mdxFiles) {
+  const slug = file.replace(/\.mdx$/, '');
+  if (existingSlugs.has(slug)) continue;
+  const raw = fs.readFileSync(path.join(ARTICLES_DIR, file), 'utf8');
+  const { data } = matter(raw);
+  if (!data.title || !data.category) continue;
+  const entry = {
+    id: slug,
+    slug,
+    title: data.title,
+    description: data.description || '',
+    category: data.category,
+    status: 'published',
+    scheduledDate: null,
+    publishedDate: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
+    createdAt: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
+    featured: !!data.featured,
+    readTime: data.readTime || 5,
+    affiliateProductIds: []
+  };
+  queue.push(entry);
+  existingSlugs.add(slug);
+  added.push(slug);
+}
+
+if (added.length > 0) {
+  fs.writeFileSync(QUEUE_PATH, JSON.stringify(queue, null, 2));
+  console.log('Reconciled', added.length, 'unregistered articles:', added.join(', '));
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    put('queue.json', JSON.stringify(queue, null, 2), {
+      access: 'public', addRandomSuffix: false, allowOverwrite: true,
+      contentType: 'application/json; charset=utf-8'
+    }).then(() => console.log('queue.json synced to Blob')).catch(e => console.error('Blob sync failed:', e.message));
+  }
+} else {
+  console.log('Queue reconciliation: all articles already registered, nothing to do.');
+}
+"
+```
+
+If any articles were reconciled, print a summary line: `→ reconciled N unregistered articles: <slug1>, <slug2>, ...`
+
+This step is idempotent — running it when nothing is missing takes under 1 second.
+
+---
+
+## Step 1 — Research Trends, Then Plan 10 Distinct Assignments
+
+### Step 1a — Trend Research (do this BEFORE planning topics)
+
+Before picking any topics, spend time researching what is currently trending and gaining traction in the fitness, health, and wellness space. Use WebSearch and WebFetch to:
+
+1. **Check what major fitness/health sites are publishing right now.** Search for recent articles (last 30–90 days) on sites like:
+   - Healthline (`site:healthline.com fitness OR supplements OR workout 2025`)
+   - Men's Health / Women's Health
+   - Examine.com (supplement research summaries — fetch their human effect matrix pages)
+   - Barbend, Garage Gym Reviews, T-Nation (strength/training)
+   - PubMed / NIH for recent studies (`site:pubmed.ncbi.nlm.nih.gov 2024 2025`)
+
+2. **Search for trending fitness topics broadly:**
+   - "fitness trends 2025 2026"
+   - "best supplements 2025"
+   - "trending workouts 2025"
+   - "new research [topic] 2025"
+   - Check Reddit (r/fitness, r/strength_training, r/nutrition, r/supplements) for what practitioners are actively debating
+
+3. **Note what's gaining traction:** new training methodologies (e.g. zone 2 cardio, Norwegian 4×4, blood flow restriction training, RIR-based programming, HIIT vs LISS debates), emerging supplements (e.g. tongkat ali, fadogia agrestis, NMN/NR for longevity, creatine HCl vs monohydrate, berberine), trending diets (e.g. protein-sparing modified fasts, carnivore refinements, GLP-1 diet adjustments), recovery modalities, longevity/healthspan topics.
+
+Summarize the top 10–15 trending topic opportunities you discovered, then use that list to inform your assignment plan below.
+
+### Step 1b — Plan 10 Distinct Assignments
+
+Read `data/queue.json`. Using your trend research from Step 1a, plan **10 distinct (topic, category, format) assignments** that:
 - Do NOT duplicate any existing `slug` or `title` in `data/queue.json`
 - Collectively cover as many of the 6 categories as possible (home-workouts, supplements, diet-nutrition, weight-loss, muscle-building, wellness) — aim for ~2 per category across the batch if feasible
-- Use varied formats (Review, How-to Guide, Listicle, Comparison, Beginner Guide)
+- **Prioritize trending, advanced, and timely topics** from your Step 1a research — avoid generic beginner topics that are already widely covered everywhere
+- **Target an intermediate-to-advanced audience by default.** Assume the reader has been training or following their diet for 1+ years. Skip "what is X" basics. Go deep: advanced programming concepts, nuanced supplement science, performance optimization, research-backed specificity, edge cases, and common mistakes made by experienced trainees
+- Use varied formats (Deep Dive, Advanced Guide, Research Breakdown, Protocol Guide, Data-Driven Comparison, Myth-Busting) — avoid generic "Beginner Guide" framing unless the topic itself is genuinely niche or emerging
+- Mix article lengths: ~4 posts at 1,500–2,000 words (8–10 min read), ~4 posts at 2,500–3,500 words (12–18 min), ~2 posts at 4,000+ words (20+ min deep dives)
 
-For each assignment, pre-decide: **topic, slug, category, format, audience (default Beginner), tone (default Balanced), 3–5 affiliate product IDs**.
+For each assignment, pre-decide: **topic, slug, category, format, audience, tone, target word count, trending angle (why this topic now / what makes it timely), and 3–5 affiliate product IDs**.
 
-Print the full 10-row plan as a numbered list so the run is auditable before dispatch.
+**Product IDs MUST be chosen AFTER reasoning about what the specific article topic needs** — see the Product Selection Rules section below.
 
-**Valid productId values** (copy this into each sub-agent briefing):
-- `optimum-nutrition-gold-standard`, `myprotein-impact-whey`, `creatine-monohydrate-bulk`, `cellucor-c4-preworkout`, `legion-pulse-preworkout`, `thorne-multivitamin`, `garden-of-life-multivitamin`, `resistance-bands-set`, `adjustable-dumbbells`, `pull-up-bar`, `yoga-mat`, `foam-roller`
+Print the full 10-row plan as a numbered list (include target word count, trending angle, and chosen product IDs) so the run is auditable before dispatch.
 
-**Product-to-topic scoring guide** (also copy into each sub-agent briefing):
-- ON Gold Standard Whey → protein intake, muscle building, post-workout recovery, supplements
-- Dymatize ISO100 (`myprotein-impact-whey` slot) → lean muscle, cutting, protein isolate
-- BulkSupplements Creatine → creatine, strength, power, muscle building
-- Cellucor C4 → pre-workout, energy, performance, supplements
-- Legion Pulse → pre-workout, clean ingredients, natural, performance
-- Thorne Multivitamin → overall health, vitamins, athlete nutrition, wellness
-- Garden of Life Multivitamin → organic, whole food, wellness
-- Fit Simplify Bands → home workouts, resistance training, bodyweight, rehab
-- Bowflex Dumbbells → home gym, strength training, upper body
-- Iron Gym Pull-Up Bar → pull-ups, back, upper body, bodyweight
-- Manduka Yoga Mat → yoga, stretching, flexibility, floor workouts
-- TriggerPoint Foam Roller → recovery, muscle soreness, mobility
+---
+
+## Product Selection Rules — MUST follow for every post
+
+**Copy this entire section into every sub-agent briefing.**
+
+### Rule 1 — Research the topic first
+Before selecting any products, think through the article's key sections. Ask: *"If a reader finished this article and took action, what exact products would they realistically buy?"* A sleep article reader buys a magnesium supplement, sleep mask, or white noise machine — not protein powder. A pre-workout article reader buys a pre-workout — not a yoga mat.
+
+### Rule 2 — Direct relevance only
+Every `<AffiliateProductCard>` in the post MUST be mentioned naturally within the surrounding content. If you cannot write a sentence like "this is exactly what we recommend for [specific reason tied to the section]," the product does not belong in that post.
+
+### Rule 3 — Price range diversity (required)
+Every post MUST include:
+- At least **one product under $25**
+- At least **one product over $60**
+- The rest can be mid-range
+
+Do not use all mid-range products. Readers have different budgets.
+
+**Premium vs Budget pairing (strongly preferred):** Where two products serve the same purpose at different price points, feature them as an explicit pair — a **"Best Overall"** (flagship/premium) and a **"Best Budget Pick"** (affordable alternative). Explain the trade-offs clearly so the reader can choose based on their budget. Example: Manduka PRO yoga mat (premium) paired with Gaiam Essentials mat (budget). This pairing approach should appear in at least one section per article.
+
+### Rule 4 — Brand diversity
+No more than **2 products from the same brand** per post. Vary brands across posts in the same batch.
+
+### Rule 5 — Placement is IN the content, not appended below it
+Place every `<AffiliateProductCard productId="..." />` component:
+- Inside a "Best X for Y" or "Our Pick" callout block
+- Inside a comparison or "What to Look For" section
+- After a specific recommendation sentence like "For this, we recommend [product name], which [specific reason]."
+- NEVER as a standalone block dropped below a generic paragraph that doesn't mention the product
+
+### Rule 6 — Product quality standards (required)
+Every product recommended in a post MUST be a high-quality, well-reviewed product:
+- **Minimum 4.0 stars** average rating (4.5+ stars strongly preferred)
+- **Minimum 500 customer reviews** (1,000+ preferred — high volume confirms the rating is reliable)
+- Only recommend products you can genuinely justify as "best in class" or "best value" for the use case — not just filler to hit a product count
+- When writing about the product, briefly mention WHY it is trusted (e.g. "with over 50,000 five-star reviews", "Amazon's #1 bestseller in creatine", "NSF Certified for sport") — this builds reader confidence
+- Do NOT recommend a product solely because it is in the catalog; if a catalog product has weak reviews or is a poor fit, skip it and use a better-matched alternative
+
+---
+
+## Full Product Catalog (copy into every sub-agent briefing)
+
+Organized by topic relevance. Choose products that match what the article actually covers.
+
+### Protein / Whey
+- `optimum-nutrition-gold-standard` — ON Gold Standard Whey, 24g protein, $30–$60 → post-workout, muscle building, protein intake
+- `myprotein-impact-whey` — Dymatize ISO100 isolate, 25g protein, $35–$60 → lean muscle, cutting, low-fat protein
+- `orgain-organic-protein` — Orgain plant-based protein, 21g, $20–$35 → vegan, dairy-free, plant protein
+- `quest-protein-bars` — Quest bars 20g protein, $20–$30 → on-the-go protein, snacking, meal replacement
+- `rxbar-protein-bars` — RXBAR whole food bars, 12g protein, $18–$28 → clean eating, whole food snacks
+
+### Creatine / Pre-Workout / BCAAs
+- `creatine-monohydrate-bulk` — BulkSupplements creatine, $20–$40 → strength, power, muscle building
+- `cellucor-c4-preworkout` — C4 pre-workout, $30–$45 → energy, performance, beginner-friendly pre-workout
+- `legion-pulse-preworkout` — Legion Pulse, 350mg caffeine, $45–$50 → clean pre-workout, experienced athletes
+- `bcaa-xtend` — Xtend BCAAs 7g, $25–$40 → intra-workout, muscle recovery, endurance
+
+### Vitamins / Health Supplements
+- `thorne-multivitamin` — Thorne NSF Certified multi, $35–$45 → athletes, bioavailable vitamins
+- `garden-of-life-multivitamin` — Garden of Life organic multi, $30–$40 → organic, whole food, general wellness
+- `fish-oil-nordic-naturals` — Nordic Naturals Omega-3, 1280mg EPA+DHA, $30–$55 → inflammation, heart health, joint health
+- `vitamin-d3-sports-research` — Vitamin D3+K2 5000IU, $15–$22 → bone density, immunity, testosterone, general health
+- `magnesium-glycinate` — Doctor's Best magnesium glycinate, $12–$22 → sleep quality, muscle relaxation, recovery, stress
+- `ashwagandha-ksm66` — Jarrow KSM-66 ashwagandha, $15–$25 → cortisol, stress, sleep, strength gains
+- `melatonin-natrol` — Natrol melatonin 5mg, $8–$14 → sleep onset, jet lag, sleep cycle
+- `collagen-vital-proteins` — Vital Proteins collagen peptides, $25–$45 → joint health, connective tissue, skin, recovery
+- `turmeric-curcumin` — Sports Research turmeric+BioPerine, $18–$28 → inflammation, joint pain, recovery
+
+### Sleep
+- `sleep-mask-alaska-bear` — Alaska Bear silk sleep mask, $8–$15 → light blocking, sleep quality, travel
+- `white-noise-machine` — LectroFan white noise machine, $45–$60 → sound masking, deep sleep, sleep environment
+
+### Cardio / Fat Loss
+- `jump-rope-wod-nation` — WOD Nation speed jump rope, $10–$18 → HIIT, cardio, fat loss, beginner-friendly
+- `fitness-tracker-fitbit` — Fitbit Charge 6, $100–$160 → calorie tracking, heart rate, step counting, fat loss
+
+### Recovery
+- `foam-roller` — TriggerPoint GRID, $30–$40 → myofascial release, soreness, mobility
+- `massage-gun-renpho` — RENPHO R3 mini massage gun, $40–$65 → deep tissue, recovery speed, post-workout
+- `compression-socks` — Physix Gear compression socks 3-pack, $14–$22 → blood flow, soreness, endurance sports
+- `epsom-salt-dr-teals` — Dr Teal's Epsom Salt, $8–$16 → magnesium soak, muscle soak, post-workout bath
+
+### Home Gym / Equipment
+- `resistance-bands-set` — Fit Simplify bands 5-pack, $10–$15 → home workouts, rehab, activation, budget-friendly
+- `adjustable-dumbbells` — Bowflex SelectTech 552, 5–52.5 lbs, $300–$400 → home gym, strength training
+- `pull-up-bar` — Iron Gym pull-up bar, $25–$35 → bodyweight, back, upper body
+- `yoga-mat` — Manduka PRO yoga mat, $80–$120 → yoga, floor work, premium option
+- `yoga-mat-budget` — Gaiam Essentials 10mm mat, $20–$30 → yoga, stretching, budget option
+- `ab-roller` — Perfect Fitness Ab Carver Pro, $25–$40 → core, abs, home gym
+- `kettlebell-cap` — CAP Cast Iron kettlebell, $15–$60 → full-body, functional strength, budget-friendly
+- `push-up-handles` — Perfect Fitness push-up handles, $15–$25 → chest, upper body, calisthenics
+- `weight-bench-flybird` — Flybird adjustable bench, $140–$200 → home gym, dumbbell press, upper body
+
+### Nutrition / Kitchen
+- `meal-prep-containers` — Prep Naturals glass containers 10-pack, $35–$50 → meal prep, diet adherence, food storage
+- `food-scale-etekcity` — Etekcity digital food scale, $10–$16 → macro tracking, calorie counting, precision
+- `nutribullet-blender` — NutriBullet Pro 900W, $60–$90 → protein shakes, smoothies, meal prep
 
 ---
 
@@ -75,7 +255,7 @@ In **a single message**, issue 10 `Agent` tool calls (`subagent_type: "general-p
 
 Each sub-agent prompt must be fully self-contained (sub-agents start with no conversation context). Include in every prompt:
 
-1. **Assignment:** topic, slug, category, format, audience, tone, and the 3–5 product IDs selected.
+1. **Assignment:** topic, slug, category, format, audience, tone, target word count, trending angle, and the 3–5 product IDs selected.
 
 2. **Scope restrictions — HARD RULES. Violating any of these fails the task.**
 
@@ -86,6 +266,8 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
    **You MAY read (but NOT modify) these files when needed:**
    - `lib/affiliates.ts` — to confirm the productIds in your assignment are valid
    - `data/queue.json` — if you need to confirm your slug doesn't collide
+
+   **You MAY use WebSearch and WebFetch freely** to research your topic before writing. This is required — see Content Rules (Sub-step D). Fetch real studies, authoritative health sites, examine.com summaries, Reddit threads, and recent articles from major fitness publications.
 
    **You MAY execute ONLY this command:**
    - `node scripts/generate-thumbnail.mjs --slug "<slug>" --title "<title>" --category <category>` from the project root. This script itself writes to `public/images/articles/<slug>*.webp` and rewrites the frontmatter of your own draft — that is allowed because it's scoped to your slug.
@@ -104,9 +286,40 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
    The parent will escalate to the user. Do NOT attempt the out-of-scope edit.
 
 3. **Output contract** — the sub-agent must:
-   - Write the MDX article (1,000–2,000 words) to `content/drafts/<slug>.mdx` with `image: ""` initially. Follow the exact frontmatter + content structure in §Sub-step D below.
-   - Run `node scripts/generate-thumbnail.mjs --slug "<slug>" --title "<title>" --category <category>` from the project root. The script pulls real stock photography from **Pexels** (requires `PEXELS_API_KEY` env var) and uses **Claude Haiku 4.5 vision** to pick the best of 4 candidates (requires `ANTHROPIC_API_KEY` env var). It writes hero/OG/Pinterest WebPs and updates frontmatter `image:`, `imageOg:`, `imagePinterest:`, plus `photoCredit:` / `photoCreditUrl:` for Pexels attribution.
-   - **Image generation is required.** If the command exits non-zero or returns `"ok": false`, retry up to **2 more times** (3 attempts total) before giving up. On final failure, set `"image_status": "missing"` in the returned JSON so the parent can flag it — but still complete the post. Do **not** proceed with an empty `image:` field without attempting all retries.
+   - Write the MDX article to `content/drafts/<slug>.mdx` with `image: ""` initially. Follow the exact frontmatter + content structure in §Content Rules below. Match the target word count from the assignment.
+   - **Select a hero image using the Visual Keyword Method (required — follow every rule below):**
+
+     **Step A — Identify the visual keyword.** Ask yourself: *"If someone searched for this topic on a stock photo site, what single noun or short phrase would show exactly what the article is about?"* Examples:
+     - Article about pre-workout supplements → keyword: `"pre-workout supplement powder"`
+     - Article about fish oil → keyword: `"fish oil capsules"`
+     - Article about HIIT → keyword: `"hiit workout burpees"` (show the exercise, not just someone running)
+     - Article about meal prep → keyword: `"meal prep containers food"`
+     - Article about sleep → keyword: `"sleeping bedroom"` or `"person sleeping"` (show a person actually sleeping)
+     - Article about creatine → keyword: `"creatine powder supplement"`
+     - Article about compound exercises → keyword: `"barbell squat"` or `"deadlift"`
+     - NEVER use generic keywords like `"fitness"`, `"health"`, `"gym"`, `"exercise"` — these return irrelevant results
+
+     **Step B — Search Pexels.** Use WebSearch with the query: `site:pexels.com/photo "<your visual keyword>"`. Browse the first 3–5 results. Note the photo IDs (the number in the URL, e.g. `pexels.com/photo/3838389`).
+
+     **Step C — Evaluate candidates using these rules:**
+     - The photo must show the ACTUAL SUBJECT of the article. A pre-workout article needs a photo of an actual pre-workout container/scoop — not a person drinking a shake. A food article needs actual food — not a person eating.
+     - For exercise/workout articles: show the specific exercise or workout style, not a generic gym shot
+     - **Gender balance rule:** Across the batch, roughly half of person-showing photos should feature men and half women. For any single article, use your judgment — but actively avoid choosing all-women or all-men photos across the batch.
+     - Prefer landscape-oriented, well-lit, high-resolution photos (≥1200px wide)
+     - If your first keyword returns nothing useful after 2 searches, try a more specific or different angle keyword
+
+     **Step D — Build the direct download URL.** Pexels direct URL format:
+     `https://images.pexels.com/photos/{ID}/pexels-photo-{ID}.jpeg?auto=compress&cs=tinysrgb&w=1920`
+     Replace `{ID}` with the photo ID you found.
+
+     **Step E — Apply the image.** Run from the project root:
+     ```
+     node --env-file=.env.local scripts/ensure-images.mjs --slug "<slug>" --url "<pexels-direct-url>" --force
+     ```
+     This downloads the image, converts to 1600×1000 WebP, saves to `public/images/articles/<slug>.webp`, and updates the `image:`, `imageOg:`, `imagePinterest:` frontmatter fields in both `content/drafts/<slug>.mdx` and `content/articles/<slug>.mdx`.
+
+     **Step F — Retry on failure.** If the command fails (non-zero exit, 404, download error), try a different photo from Step B or pick a new keyword and repeat. Attempt up to 3 different photos before giving up. On final failure, set `"image_status": "missing"` in the returned JSON — but still complete the post.
+
    - Copy `content/drafts/<slug>.mdx` to `content/articles/<slug>.mdx` (publish).
    - **Do NOT touch `data/queue.json`** — race-unsafe with 10 parallel agents.
    - **Return** (as the final message to the parent) a single JSON object with shape:
@@ -115,13 +328,42 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
      ```
      and nothing else (no prose, no markdown fences).
 
-4. **Content rules (Sub-step D):**
-   - Frontmatter fields: `title`, `description` (150–160 chars), `category`, `date` (today YYYY-MM-DD), `readTime`, `featured: false`, `image: ""`.
-   - Primary keyword in H1, first paragraph, ≥2 H2s, and meta description.
-   - Place `<AffiliateProductCard productId="..." />` only after a paragraph that naturally leads to it; never cold-drop.
-   - ≥1 comparison, statistic, or expert tip per major section.
-   - Use only productIds from the valid list (provided).
-   - End with `## Final Thoughts` + soft CTA to related LeanBodyEngine articles or the newsletter.
+4. **Content Rules (Sub-step D):**
+
+   **Research first — before writing a single word of the article.**
+
+   Use WebSearch and WebFetch to gather real, current information on your assigned topic:
+   - Search for recent studies or meta-analyses on PubMed/NIH. Fetch the abstract or summary and extract actual findings, effect sizes, dosages, and study populations.
+   - Fetch 2–3 recent articles from Healthline, Examine.com, Men's Health, Barbend, T-Nation, or similar authoritative sources. Note their coverage gaps — angle your article at what they missed or understated.
+   - Search Reddit (r/fitness, r/strength_training, r/nutrition, r/supplements) for practitioner debates and real-world nuance that academic sources miss.
+   - If the topic is a supplement, fetch the Examine.com page for that compound and pull their evidence summary and human effect matrix data.
+   - If the topic involves a training protocol, find the original program or study it derives from and pull the actual sets/reps/frequency/progression scheme.
+
+   Write the article FROM this research — not from memory. Every specific claim, statistic, dosage, or protocol must trace back to something you actually fetched, not something recalled from training data. If you can't find a real source for a claim, don't make it.
+
+   **Frontmatter:**
+   - `title`, `description` (150–160 chars), `category`, `date` (today YYYY-MM-DD), `readTime`, `featured: false`, `image: ""`
+   - Primary keyword in H1, first paragraph, ≥2 H2s, and meta description
+
+   **Audience & depth — intermediate to advanced:**
+   - Assume the reader has been training or following their diet for 1+ years. Skip all "what is X" and "why exercise matters" basics.
+   - Go deep: explain the mechanism (how does this work physiologically or biochemically?), give specific protocols (exact sets/reps/rest/frequency/progression), give specific dosages and timing windows from the research you fetched, address edge cases and common mistakes made by experienced trainees.
+   - Cite real studies inline using what you fetched: "A 2024 meta-analysis in the *British Journal of Sports Medicine* found…" — use real authors, journals, and years from actual fetched content, never fabricated citations.
+   - Include actual numbers throughout: effect sizes, percentage improvements, mg/kg dosages, rep ranges with rationale, sample sizes. Vague language ("studies suggest it may help") is not acceptable.
+   - Write to the target word count — do not truncate early.
+   - Include ≥1 comparison table, numbered protocol, or data-backed callout per major section.
+
+   **Product placement — follow all 6 Product Selection Rules provided above:**
+   - Each `<AffiliateProductCard productId="..." />` must appear inside the specific section where that product is discussed
+   - Introduce the product naturally: "If you're looking for [specific use case], [Product Name] delivers [specific reason]. Here's our pick:" — then place the card
+   - NEVER place a card as a standalone block after an unrelated paragraph
+   - NEVER recommend a product that isn't directly relevant to the article's topic
+
+   **Structure:**
+   - Open with a hook grounded in something you researched — a surprising study result, a practice being challenged by new data, a specific performance gap, or a real gap in mainstream advice
+   - Use H2s for major sections, H3s for subsections
+   - Include a "Key Takeaways" box near the top for skimmers — make these specific numbers and protocols, not vague platitudes (e.g. "5g creatine monohydrate daily increases 1RM by ~8% in trained athletes" not "creatine helps with strength")
+   - End with `## Final Thoughts` + soft CTA to related LeanBodyEngine articles or the newsletter
 
 ---
 
@@ -138,6 +380,25 @@ Each sub-agent returns one JSON object. Parse all 10 results.
 ## Step 4 — Append All 10 Entries to the Queue
 
 Read `data/queue.json` once, append all valid entries from Step 3 in one pass, and write the file back. This is the only write to `queue.json` in the entire batch.
+
+---
+
+## Step 4.5 — Sync to Blob and Revalidate Home Page
+
+After writing `data/queue.json`, sync the new posts to Vercel Blob and flush the Next.js cache so the home page "guides published" count updates immediately.
+
+Run from the project root, passing all successful batch slugs as arguments:
+
+```
+node --env-file=.env.local scripts/sync-batch-to-blob.mjs <slug1> <slug2> ... <slugN>
+```
+
+The script exits cleanly if `BLOB_READ_WRITE_TOKEN` is not set (local-only mode — in that case `getAllArticles()` reads from the filesystem and the count already reflects new articles on the next page load). When the token IS set the script:
+1. Uploads each article MDX to Blob at `articles/<slug>.mdx` (parallel)
+2. Uploads the updated `data/queue.json` to Blob
+3. POSTs to `${SITE_URL}/api/revalidate` to invalidate the `queue` cache tag and flush `/` and `/blog`
+
+`SITE_URL` defaults to `http://localhost:3000`. Set it in `.env.local` to your Vercel deployment URL (e.g. `SITE_URL=https://leanbodyengine.com`) to revalidate the live site after each batch.
 
 ---
 

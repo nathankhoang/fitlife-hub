@@ -45,13 +45,9 @@ function readLocalQueue(): QueueEntry[] {
   return JSON.parse(fs.readFileSync(LOCAL_QUEUE, "utf8")) as QueueEntry[];
 }
 
-// Cached read for render paths. Invalidated by revalidateTag('queue').
 export async function getQueue(): Promise<QueueEntry[]> {
   if (!hasBlob()) return readLocalQueue();
-  const res = await fetch(queueUrl(), {
-    cache: "force-cache",
-    next: { tags: ["queue"] },
-  });
+  const res = await fetch(queueUrl(), { cache: "no-store" });
   if (res.status === 404) return [];
   if (!res.ok) throw new Error(`Failed to fetch queue: ${res.status}`);
   return (await res.json()) as QueueEntry[];
