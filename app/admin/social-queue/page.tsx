@@ -63,7 +63,7 @@ export default async function SocialQueuePage() {
             {all.length} total · {counts.pending} generating · {counts.awaiting_approval} awaiting approval · {counts.approved} approved · {counts.posted} posted · {counts.failed} failed/expired
           </p>
           <p className="text-xs text-gray-400 mt-2">
-            Note: approving a post in this phase marks it <code>approved</code>. The real platform posting wires up in Phase 5.
+            Approving a post publishes it immediately to the platform via the Meta Graph API.
           </p>
         </div>
 
