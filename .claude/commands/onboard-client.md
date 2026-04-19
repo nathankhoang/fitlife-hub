@@ -227,29 +227,31 @@ deploy — the operator should still eyeball the dashboard first.
 
 Print a concise checklist of the remaining human-gated work, sourced
 from the specific client's answers. Env vars, the domain attachment,
-and the Blob store are already done by Step 7.5 — don't re-list them.
-Cover at minimum:
+the Blob store, and the team-member invite are already done by
+Step 7.5 — don't re-list them. Cover at minimum:
 
 1. **DNS forwarding** — paste the DNS records printed by Step 7.5 to
    the client's registrar (only human-gated piece of the domain setup).
-2. **Vercel project sharing** — invite `<_operator.vercelEmail>` via
-   Vercel dashboard → project → Settings → Members. The CLI can't do
-   this non-interactively today.
-3. **RESEND_API_KEY** — if newsletter was requested and the operator
+2. **RESEND_API_KEY** — if newsletter was requested and the operator
    didn't export the key before Step 7.5, add it now:
    `vercel env add RESEND_API_KEY production`
-4. **Starter articles** — paste the `/create-post` commands from Step 6
+3. **Starter articles** — paste the `/create-post` commands from Step 6
    (pace it: 1–2 batches a day max at first)
-5. **Product images** — for each product added in Step 5, drop a photo
+4. **Product images** — for each product added in Step 5, drop a photo
    at `public/images/products/<id>.webp` and update priceRange + rating
-6. **About page body** — `app/about/page.tsx` editorial copy may want
+5. **About page body** — `app/about/page.tsx` editorial copy may want
    light tweaks to match the client's voice
-7. **Category descriptions** — `app/category/[category]/page.tsx` →
+6. **Category descriptions** — `app/category/[category]/page.tsx` →
    `categoryMeta` may want tweaks
-8. **First push** — once DNS is propagating and the operator has
+7. **First push** — once DNS is propagating and the operator has
    eyeballed the Vercel dashboard: `git push`
-9. **Post-deploy** — submit sitemap to Google Search Console and Bing;
-   run Rich Results Test on a sample article
+8. **Post-deploy sitemap submission** — once the site is reachable:
+   `npm run onboard:submit-sitemap`. Pings Bing, submits to Bing
+   Webmaster + IndexNow if keys are exported, and prints the one-time
+   Google Search Console setup (OAuth verification, always human).
+9. **Rich Results Test** — drop a sample article URL into
+   https://search.google.com/test/rich-results to confirm schema
+   renders correctly.
 
 At the bottom, print the context block:
 
