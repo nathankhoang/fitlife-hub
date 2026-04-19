@@ -13,6 +13,7 @@ export type QueueEntry = {
   status: "draft" | "scheduled" | "published";
   scheduledDate: string | null;
   publishedDate: string | null;
+  broadcastId?: string | null;
   createdAt: string;
   featured: boolean;
   readTime: number;

@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 
-// Force this route to run server-side at request time. State lives in Resend
-// (HTTP API) — no local file mutations, so it's safe under any number of
-// concurrent invocations including the parallel /create-post sub-agent loop.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+const PUBLICATION_ID = "pub_bf0910d1-3e8b-4501-9fec-9547eacc1849";
 
 export async function POST(req: NextRequest) {
   let body: unknown;
@@ -28,33 +26,37 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "invalid_email" }, { status: 400 });
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const audienceId = process.env.RESEND_AUDIENCE_ID;
-  if (!apiKey || !audienceId) {
-    console.warn("[subscribe] RESEND_API_KEY or RESEND_AUDIENCE_ID missing");
-    return NextResponse.json(
-      { ok: false, error: "not_configured" },
-      { status: 503 },
-    );
+  const apiKey = process.env.BEEHIIV_API_KEY;
+  if (!apiKey) {
+    console.warn("[subscribe] BEEHIIV_API_KEY not set");
+    return NextResponse.json({ ok: false, error: "not_configured" }, { status: 503 });
   }
 
-  const resend = new Resend(apiKey);
-  const result = await resend.contacts.create({
-    email: email.trim().toLowerCase(),
-    audienceId,
-    unsubscribed: false,
-  });
+  const res = await fetch(
+    `https://api.beehiiv.com/v2/publications/${PUBLICATION_ID}/subscriptions`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email.trim().toLowerCase(),
+        reactivate_existing: true,
+        send_welcome_email: true,
+      }),
+    },
+  );
 
-  if (result.error) {
-    const msg = (result.error.message ?? "").toLowerCase();
-    // Resend returns 409-ish errors for duplicate contacts — treat as success
-    if (msg.includes("already") || msg.includes("exists") || msg.includes("contact_already_exists")) {
-      return NextResponse.json({ ok: true, alreadySubscribed: true }, { status: 200 });
-    }
-    console.error("[subscribe] resend error:", result.error);
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    console.error(`[subscribe] beehiiv error ${res.status}: ${text}`);
     return NextResponse.json({ ok: false, error: "provider_error" }, { status: 502 });
   }
 
-  console.log(`[subscribe] new contact: ${email}`);
-  return NextResponse.json({ ok: true }, { status: 200 });
+  const data = (await res.json()) as { data?: { status?: string } };
+  const alreadySubscribed = data?.data?.status === "active";
+
+  console.log(`[subscribe] subscribed: ${email}`);
+  return NextResponse.json({ ok: true, alreadySubscribed }, { status: 200 });
 }
