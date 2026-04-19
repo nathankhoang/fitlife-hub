@@ -1,4 +1,5 @@
 import { affiliateProducts, type AffiliateProduct } from "./affiliates";
+import { brand } from "./brand";
 
 const PRODUCT_ID_REGEX = /<AffiliateProductCard\s+[^>]*productId=["']([^"']+)["']/g;
 
