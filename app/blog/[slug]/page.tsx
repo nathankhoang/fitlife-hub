@@ -14,13 +14,38 @@ import { SITE_URL } from "@/lib/site";
 import CategoryBadge from "@/components/CategoryBadge";
 import ArticleCard from "@/components/ArticleCard";
 import AffiliateProductCard from "@/components/AffiliateProductCard";
+import ComparisonTable from "@/components/ComparisonTable";
 import NewsletterCTA from "@/components/NewsletterCTA";
 import ReadingProgress from "@/components/ReadingProgress";
 import TableOfContents, { type TocHeading } from "@/components/TableOfContents";
 import FaqSection from "@/components/FaqSection";
+import Breadcrumb from "@/components/Breadcrumb";
+import { buildProductListSchema } from "@/lib/product-schema";
+import {
+  buildLinkCandidates,
+  injectContextualLinks,
+} from "@/lib/contextual-links";
+
+type MdxAnchorProps = { href?: string; children?: React.ReactNode };
+function MdxAnchor({ href, children, ...rest }: MdxAnchorProps) {
+  if (href && href.startsWith("/")) {
+    return (
+      <Link href={href} {...rest}>
+        {children}
+      </Link>
+    );
+  }
+  return (
+    <a href={href} {...rest}>
+      {children}
+    </a>
+  );
+}
 
 const mdxComponents = {
   AffiliateProductCard,
+  ComparisonTable,
+  a: MdxAnchor,
 };
 
 const mdxOptions = {
@@ -92,7 +117,12 @@ export default async function ArticlePage({ params }: Props) {
   const article = await getArticleBySlug(slug);
   if (!article) notFound();
 
-  const related = await getRelatedArticles(slug, article.category);
+  const [related, allArticles] = await Promise.all([
+    getRelatedArticles(slug, article.category),
+    getAllArticles(),
+  ]);
+  const linkCandidates = buildLinkCandidates(allArticles, slug);
+  const linkedContent = injectContextualLinks(article.content, linkCandidates);
   const heroImage = article.image || `/images/categories/${article.category}.svg`;
   const absoluteHeroImage = heroImage.startsWith("http")
     ? heroImage
@@ -101,13 +131,17 @@ export default async function ArticlePage({ params }: Props) {
   const publishedIso = new Date(article.date).toISOString();
   const headings = extractHeadings(article.content);
 
+  const modifiedIso = article.updatedDate
+    ? new Date(article.updatedDate).toISOString()
+    : publishedIso;
+
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: article.title,
     description: article.description,
     datePublished: publishedIso,
-    dateModified: publishedIso,
+    dateModified: modifiedIso,
     image: absoluteHeroImage,
     mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
     author: {
@@ -153,6 +187,12 @@ export default async function ArticlePage({ params }: Props) {
       }
     : null;
 
+  const productListSchema = buildProductListSchema(
+    article.content,
+    pageUrl,
+    SITE_URL,
+  );
+
   return (
     <>
       <script
@@ -169,6 +209,12 @@ export default async function ArticlePage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
         />
       )}
+      {productListSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productListSchema) }}
+        />
+      )}
       <ReadingProgress />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -178,6 +224,13 @@ export default async function ArticlePage({ params }: Props) {
           <div className="min-w-0">
             {/* Article header */}
             <div className="mb-8">
+              <Breadcrumb
+                items={[
+                  { label: "Home", href: "/" },
+                  { label: categoryLabels[article.category], href: `/category/${article.category}` },
+                  { label: article.title },
+                ]}
+              />
               <div className="mb-4">
                 <CategoryBadge category={article.category} />
               </div>
@@ -187,15 +240,21 @@ export default async function ArticlePage({ params }: Props) {
               <p className="text-lg text-[#525252] leading-relaxed mb-6">
                 {article.description}
               </p>
-              <div className="flex items-center gap-4 text-sm text-[#A3A3A3] border-t border-b border-[#F5F5F5] py-3">
+              <div className="flex items-center gap-4 text-sm text-[#A3A3A3] border-t border-b border-[#F5F5F5] py-3 flex-wrap">
                 <div className="flex items-center gap-2">
                   <span className="w-7 h-7 rounded-full bg-[#059669]/10 text-[#059669] text-[10px] font-bold flex items-center justify-center">
                     LBE
                   </span>
-                  <span className="text-[#525252] font-medium text-sm">LeanBodyEngine</span>
+                  <span className="text-[#525252] font-medium text-sm">LeanBodyEngine Editorial Team</span>
                 </div>
                 <span>·</span>
-                <span>{formatDate(article.date)}</span>
+                <span>Published {formatDate(article.date)}</span>
+                {article.updatedDate && (
+                  <>
+                    <span>·</span>
+                    <span className="text-[#059669] font-medium">Updated {formatDate(article.updatedDate)}</span>
+                  </>
+                )}
                 <span>·</span>
                 <span>{article.readTime} min read</span>
               </div>
@@ -219,7 +278,7 @@ export default async function ArticlePage({ params }: Props) {
 
             {/* Article content */}
             <div className="prose max-w-none">
-              <MDXRemote source={article.content} components={mdxComponents} options={mdxOptions} />
+              <MDXRemote source={linkedContent} components={mdxComponents} options={mdxOptions} />
             </div>
 
             {/* Affiliate disclosure */}

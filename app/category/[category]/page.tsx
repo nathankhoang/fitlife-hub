@@ -82,13 +82,39 @@ export default async function CategoryPage({ params }: Props) {
   const label = categoryLabels[cat];
   const meta = categoryMeta[cat];
 
+  const pageUrl = `${SITE_URL}/category/${cat}`;
+
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
-      { "@type": "ListItem", position: 2, name: label },
+      { "@type": "ListItem", position: 2, name: label, item: pageUrl },
     ],
+  };
+
+  const collectionPageSchema = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": pageUrl,
+    url: pageUrl,
+    name: `${label} Articles`,
+    description: meta.description,
+    isPartOf: {
+      "@type": "WebSite",
+      name: "LeanBodyEngine",
+      url: SITE_URL,
+    },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: articles.length,
+      itemListElement: articles.map((article, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: `${SITE_URL}/blog/${article.slug}`,
+        name: article.title,
+      })),
+    },
   };
 
   return (
@@ -96,6 +122,10 @@ export default async function CategoryPage({ params }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionPageSchema) }}
       />
 
       {/* Photo hero */}

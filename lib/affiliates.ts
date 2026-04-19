@@ -3,10 +3,16 @@ export type AffiliateProduct = {
   name: string;
   description: string;
   rating: number;
+  reviewCount?: number;
   priceRange: string;
   url: string;
   source: "amazon" | "clickbank" | "shareasale";
   imageUrl?: string;
+  bestFor?: string;
+  pros?: string[];
+  cons?: string[];
+  secondaryUrl?: string;
+  secondaryLabel?: string;
 };
 
 const TAG = "leanbodyengin-20";
