@@ -144,6 +144,82 @@ not thin stubs.
 
 ---
 
+## 5b. Video-to-article pipeline (optional but recommended)
+
+For influencer clients, the biggest content-flow hurdle is getting them to
+type anything. The `video:article` script turns any of their existing
+TikTok / YouTube / Instagram Reel videos into an MDX draft in ~2 minutes —
+no typing required from them.
+
+**Workstation prereqs** (one-time install):
+
+- `yt-dlp` — https://github.com/yt-dlp/yt-dlp
+  - macOS: `brew install yt-dlp`
+  - Windows: `winget install yt-dlp`
+  - Python: `pip install yt-dlp`
+- `ffmpeg` — https://ffmpeg.org (optional, for hero-frame extraction)
+  - macOS: `brew install ffmpeg`
+  - Windows: `winget install ffmpeg`
+
+**Env vars** (add to `.env.local` in the client repo):
+
+- `OPENAI_API_KEY` — used for Whisper transcription (~$0.006/min of audio)
+- `ANTHROPIC_API_KEY` — used for Claude article structuring
+
+**Usage:**
+
+```bash
+# From a video URL
+npm run video:article -- \
+  https://www.youtube.com/watch?v=XXXX \
+  --category supplements \
+  --slug creatine-loading-explained
+
+# From a local file
+npm run video:article -- ./raw-video.mp4 --category home-workouts
+
+# From an existing transcript (skip transcription)
+npm run video:article -- \
+  --transcript ./transcript.txt \
+  --category supplements \
+  --slug my-topic
+```
+
+**What it produces:**
+
+- `content/drafts/<slug>.mdx` — MDX with frontmatter + body, ready for the
+  admin queue. Claude is prompted to preserve the creator's voice —
+  rearranges, doesn't rewrite. It'll remove filler and add SEO structure
+  (title, description, H2s, FAQ, hero image path) but won't put words in
+  their mouth.
+- `public/images/articles/<slug>.webp` — hero frame auto-extracted from
+  the video (3-second mark, scaled to 1600w) if ffmpeg is installed.
+  Otherwise the operator adds one manually.
+
+**Operator review checklist before publishing:**
+
+- [ ] Skim the transcript (left in the temp dir printed by the script) and
+      the MDX side-by-side — does the article stay faithful?
+- [ ] Check the frontmatter title and description — they're SEO-optimized
+      by Claude but may need tweaks
+- [ ] Verify the category is right
+- [ ] Confirm the hero image exists (or replace the auto-extracted frame)
+- [ ] Spot-check the FAQ — Claude only generates questions the transcript
+      actually addresses, but double-check for accuracy
+- [ ] Move the draft into the publish queue via admin panel OR commit to
+      `content/drafts/` and trigger a deploy
+
+**Typical flow for a client's week:**
+
+1. Client sends 2–3 video links (Slack, email, shared folder)
+2. Operator runs `npm run video:article` on each (< 5 min per video)
+3. Operator reviews + polishes each draft (~10 min per article)
+4. Batch-publishes via the admin queue
+
+Scales to 10+ articles/week per client without the client typing a word.
+
+---
+
 ## 6. First deploy
 
 ```bash
