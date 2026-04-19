@@ -158,18 +158,18 @@ export default function ToolsIndexPage() {
               <p className="text-[#525252] leading-relaxed text-[15px] mb-4">
                 {t.description}
               </p>
-              <dl className="space-y-1.5 text-xs">
-                <div className="flex gap-2">
-                  <dt className="font-semibold text-[#A3A3A3] uppercase tracking-[0.1em] flex-shrink-0 w-16">
+              <dl className="space-y-3 text-xs">
+                <div>
+                  <dt className="font-semibold text-[#A3A3A3] uppercase tracking-[0.1em] mb-1">
                     Inputs
                   </dt>
-                  <dd className="text-[#525252]">{t.inputs}</dd>
+                  <dd className="text-[#525252] leading-relaxed">{t.inputs}</dd>
                 </div>
-                <div className="flex gap-2">
-                  <dt className="font-semibold text-[#A3A3A3] uppercase tracking-[0.1em] flex-shrink-0 w-16">
+                <div>
+                  <dt className="font-semibold text-[#A3A3A3] uppercase tracking-[0.1em] mb-1">
                     Formulas
                   </dt>
-                  <dd className="text-[#525252]">{t.formulas}</dd>
+                  <dd className="text-[#525252] leading-relaxed">{t.formulas}</dd>
                 </div>
               </dl>
               <p className="mt-5 text-sm font-semibold text-[#059669] group-hover:text-[#047857] transition-colors">
