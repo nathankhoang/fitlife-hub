@@ -10,15 +10,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  revalidateTag("queue", "max");
+  revalidateTag("queue");
   revalidatePath("/", "layout");
   revalidatePath("/blog", "layout");
 
   // Flush individual article cache tags for newly uploaded slugs
   const slugs: string[] = Array.isArray(body.slugs) ? body.slugs : [];
   for (const slug of slugs) {
-    revalidateTag(`article:v2:${slug}`, "max");
-    revalidateTag(`draft:v2:${slug}`, "max");
+    revalidateTag(`article:v2:${slug}`);
+    revalidateTag(`draft:v2:${slug}`);
     revalidatePath(`/blog/${slug}`, "page");
   }
 
