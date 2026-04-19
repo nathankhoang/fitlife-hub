@@ -1,42 +1,33 @@
 # /onboard-client
 
 Run the end-to-end customization pipeline for a new fitness-influencer
-client. Use when the operator has a populated `client.config.json` at the
-repo root (usually pasted from the Google Form's Apps Script exporter —
-see `docs/ONBOARDING_FORM.md`).
+client. Use when the operator has a populated `client.config.json` at
+the repo root (usually pasted from the Apps Script exporter — see
+`docs/ONBOARDING_FORM.md`).
 
 **Default mode is autonomous** — don't ask the operator questions
-unless a required field is missing or something is ambiguous. The
-pipeline is deterministic: validate → rebrand → reset content → seed
-starter commands → report checklist.
+unless a required field is missing, the Amazon gate needs a decision,
+or something downstream fails. Run every automatable step without
+pausing, then hand back a short personalized checklist of the
+irreducibly-human items.
 
 ---
 
 ## Step 0a — Refuse to run against the template repo
 
-**Before touching anything**, run:
+Run:
 
 ```bash
 git remote get-url origin
 ```
 
-If the origin URL matches ANY of these patterns, **stop immediately** and
-refuse to proceed:
+If the origin URL matches any of `nathankhoang/fitlife-hub`,
+`nathankhoang/seo-articles`, or `nathankhoang/leanbodyengine` (with or
+without `.git`), **stop immediately**. Print:
 
-- `nathankhoang/fitlife-hub` (with or without `.git`)
-- `nathankhoang/seo-articles`
-- `nathankhoang/leanbodyengine`
-
-These are the flagship / template repositories. Running `/onboard-client`
-here would rebrand leanbodyengine.com to the client and clear its
-editorial content — catastrophic.
-
-When this check fails, print exactly this message and stop:
-
-> ⚠ You're about to onboard a client in the **template / flagship repo**.
-> That would rebrand leanbodyengine.com to the new client and clear its
-> content. Clone the template into a new directory for this client
-> first, then re-run `/onboard-client` there:
+> ⚠ You're about to onboard a client in the **template / flagship
+> repo**. That would rebrand leanbodyengine.com and clear its content.
+> Clone the template into a new directory for this client first:
 >
 > ```
 > gh repo fork nathankhoang/fitlife-hub --clone --fork-name <client-slug>
@@ -44,66 +35,51 @@ When this check fails, print exactly this message and stop:
 > # drop client.config.json, then /onboard-client
 > ```
 
-Only proceed past this step if the origin URL is clearly a client repo,
-or if there's no git origin at all (fresh clone / scratch repo).
-
-The destructive scripts (`rebrand`, `reset:content`) have their own
-hard-coded guard that will also refuse — but this pre-check catches the
-mistake before you invoke anything.
+The destructive scripts have their own guard, but this pre-check
+catches the mistake earlier.
 
 ---
 
 ## Step 0 — Locate and validate the config
 
-Read `client.config.json` from the repo root.
+Read `client.config.json` from the repo root. If missing, stop and tell
+the operator to paste the form exporter output there first.
 
-If the file is missing:
-- Tell the operator to either paste the form exporter's JSON output into
-  `client.config.json`, or walk them through filling out
-  `client.config.example.json` → `client.config.json` manually.
-- Stop.
+Validate that every required field has a value:
 
-If present, validate that every required field in `lib/brand.ts` has a
-value (the `Brand` / `BrandAuthor` / `BrandAffiliates` / `BrandContact`
-types). Specifically check:
-
-- `name`, `shortName`, `tagline`, `description`, `legalName` — all
-  non-empty strings
+- `name`, `shortName`, `tagline`, `description`, `legalName` — non-empty
 - `author.name`, `author.bio`, `author.profileUrl` — non-empty
 - `author.emitPersonSchema` — boolean
-- `contact.email` — valid email format
-- `affiliates.amazonTag` — non-empty string
+- `contact.email` — valid email shape
+- `affiliates.amazonTag` — non-empty
 - `socials` — array (may be empty)
 
-Also inspect the operator-only `_operator` block that the form exporter
-adds. Extract:
+Also inspect `_operator` — these aren't validated (the form's UI
+constraints handle that) but they drive the rest of the flow:
 
-- `_operator.domain` — will become `NEXT_PUBLIC_SITE_URL`
-- `_operator.amazonApproved` — gate; warn if not "Yes"
-- `_operator.starterTopics` — seeds initial `/create-post` commands
-- `_operator.starterProducts` — seeds `lib/affiliates.ts` additions
-- `_operator.activeCategories`, `_operator.audience`, `_operator.cadence`,
-  `_operator.newsletter`, `_operator.ga4Id`, `_operator.notes` — inform
-  the final checklist
+- `_operator.domain`, `_operator.amazonApproved`,
+  `_operator.headshotSourceUrl`, `_operator.audience`,
+  `_operator.activeCategories`, `_operator.starterTopics`,
+  `_operator.starterProducts`, `_operator.cadence`,
+  `_operator.vercelEmail`, `_operator.ga4Id`, `_operator.newsletter`,
+  `_operator.launchDate`, `_operator.notes`, `_operator.avoidTopics`
 
-If any required field is missing, report the exact field path and stop
-before making changes.
+Report the exact missing field if any required value is blank, and stop.
 
 ---
 
-## Step 1 — Check for Amazon Associates gate
+## Step 1 — Amazon Associates gate
 
-If `_operator.amazonApproved` is not "Yes, approved", warn loudly:
+If `_operator.amazonApproved` does not start with "Yes", show:
 
-> **Amazon Associates is not yet approved.** Setup can continue, but
-> affiliate links will earn nothing until approval (1–3 days typically).
-> Amazon also requires genuine traffic within 180 days of approval or
-> the account gets closed. Confirm the operator wants to proceed anyway,
-> or pause until approval lands.
+> ⚠ Amazon Associates is not yet approved. Setup can continue, but
+> affiliate links earn nothing until approval (1–3 days), and Amazon
+> requires real traffic within 180 days of approval.
+>
+> Proceed anyway? (yes / no)
 
-Ask the operator "Proceed with unapproved Amazon tag?" and wait for
-confirmation. This is the only question you're allowed to ask in the
-happy path.
+Wait for the operator's answer. This is the **only question you ask**
+in the normal path.
 
 ---
 
@@ -113,24 +89,15 @@ happy path.
 npm run rebrand
 ```
 
-The `rebrand.mjs` script reads `client.config.json` and writes
-`lib/brand.ts`. It will error out on missing fields — you already
-pre-validated, so this should succeed. If it errors, report the error
-and stop.
-
-After it succeeds, show the diff on `lib/brand.ts` for the operator to
+`rebrand.mjs` writes `lib/brand.ts`. Show the diff afterwards for
 sanity-check.
 
 ---
 
-## Step 3 — Decide on content reset
+## Step 3 — Reset editorial content
 
-Check whether this is a fresh site (the default assumption) or the
-operator is preserving the template seed content.
-
-- If `_operator.notes` or `_operator.existingContent` mentions keeping
-  existing content, skip the reset and tell the operator manually.
-- Otherwise run:
+Unless `_operator.notes` or `_operator.existingContent` explicitly says
+to keep the LeanBodyEngine seed content, run:
 
 ```bash
 npm run reset:content -- --yes
@@ -138,85 +105,137 @@ npm run reset:content -- --yes
 
 This clears `lib/affiliates.ts` to an empty products map,
 `lib/comparisons.ts` to an empty array, and `data/queue.json` to `[]`.
-The script also requires a clean git state, so commit the rebrand diff
-first if needed.
+
+The script requires a clean worktree for the `--yes` apply, so commit
+the rebrand diff first if needed:
+
+```bash
+git add lib/brand.ts && git commit -m "Apply brand config"
+```
 
 ---
 
-## Step 4 — Seed the initial content plan
+## Step 4 — Download author headshot
 
-Using `_operator.starterTopics` (one topic per line), output a batch of
-ready-to-paste `/create-post` commands — one per topic, using the
-client's declared audience (`_operator.audience`) and active categories
-(`_operator.activeCategories`). Do NOT run them automatically — the
-operator decides cadence.
-
-Format each as a separate code block so the operator can copy them
-one at a time:
-
-```
-/create-post <topic> — audience: <audience> — categories: <active categories joined>
+```bash
+node scripts/onboarding/download-author-photo.mjs
 ```
 
-Using `_operator.starterProducts`, output a list of affiliate catalog
-entries (parsing each line as `Product name · Amazon URL · reason`). For
-each, show the exact object the operator should paste into
-`lib/affiliates.ts`. Do not modify that file automatically — the
-operator needs to source images and decide IDs.
+Reads `_operator.headshotSourceUrl`, downloads through Drive/Dropbox
+auto-normalization, resizes to 600×600 webp, saves to the path in
+`author.photoUrl`.
+
+If the script fails (private Drive link, file too big, etc.), report
+the exact error message and add "operator downloads headshot manually"
+to the final checklist. Don't block on it.
 
 ---
 
-## Step 5 — Final checklist
+## Step 5 — Seed affiliate catalog
 
-Print a numbered checklist of the remaining manual steps, personalized
-to this client's answers. Cover at minimum:
+```bash
+node scripts/onboarding/seed-affiliates-from-form.mjs --apply
+```
 
-1. **Headshot** — if `author.photoUrl` is set, remind the operator to
-   download from `_operator.headshotSourceUrl` and save to the path in
-   `author.photoUrl` (normally `public/images/author/<slug>.webp`).
-2. **Favicon + icons** — `public/favicon.ico`, `apple-icon.png`,
-   `icon.png` — replace if the client sent branded assets.
-3. **Vercel env vars** — list each one from the `docs/CLIENT_SETUP.md`
-   step 3 table, populated with what we know:
-   - `NEXT_PUBLIC_SITE_URL = https://<domain>`
-   - `NEXT_PUBLIC_GA_ID = <_operator.ga4Id>` if provided
+Parses `_operator.starterProducts` line-by-line (format:
+`Name · Amazon URL · reason`), appends new entries to
+`lib/affiliates.ts`. Skips duplicates. Uses placeholder image paths —
+the catalog is live but will show `placeholder.svg` until the operator
+drops real product photos at `public/images/products/<id>.webp`.
+
+The script prints a summary of added / skipped / duplicate products —
+include that summary in your final report.
+
+---
+
+## Step 6 — Stage initial content
+
+Using `_operator.starterTopics` (one topic per line), produce a block
+of ready-to-paste `/create-post` commands — one per topic, using
+`_operator.audience` and `_operator.activeCategories`. Format each as
+its own line in a single fenced code block so the operator can paste a
+few at a time:
+
+```
+/create-post <topic> — audience: <audience> — categories: <active>
+```
+
+**Do NOT run `/create-post` automatically.** Each invocation generates
+10 posts via ScheduleWakeup — running several in sequence could spiral
+before the operator has reviewed any output. Staging the commands lets
+them pace.
+
+---
+
+## Step 7 — Commit the onboarding changes
+
+Collect the changes so far (brand config, content reset, headshot,
+affiliate seed) into a single clean commit:
+
+```bash
+git add -A
+git commit -m "Onboard <client-name>: apply brand config, seed content"
+```
+
+Report the commit SHA so the operator knows what got staged.
+
+**Do NOT push automatically.** Pushing kicks off a Vercel deploy and
+shows the site to the world — the operator needs to have the env vars
+and domain ready before they push. Tell them when they're ready:
+
+```bash
+git push
+```
+
+---
+
+## Step 8 — Personalized checklist
+
+Print a concise checklist of the remaining human-gated work, sourced
+from the specific client's answers. Cover at minimum:
+
+1. **Vercel env vars** — include the pre-filled values we know:
+   - `NEXT_PUBLIC_SITE_URL = https://<domain>` (from `_operator.domain`)
+   - `NEXT_PUBLIC_GA_ID = <ga4Id>` if provided
    - `BLOB_PUBLIC_BASE`, `BLOB_READ_WRITE_TOKEN`, `ADMIN_PASSWORD`,
-     `CRON_SECRET` — operator generates / pulls from Vercel.
-   - `RESEND_API_KEY` only if `_operator.newsletter` says yes and client
-     has a key.
-4. **Domain / DNS** — point the domain at Vercel.
-5. **Vercel project access** — share the project with
-   `_operator.vercelEmail` so the client can see deploy logs.
-6. **Starter articles** — paste the `/create-post` commands from Step 4
-   (one or two at a time; don't overload).
-7. **Affiliate catalog** — add the seeded products from Step 4 once images
-   are sourced.
-8. **About page body** — `app/about/page.tsx` has editorial copy that
-   may need light editing to fit the client's voice beyond the
-   auto-substituted name.
-9. **Category pages** — default category descriptions in
-    `app/category/[category]/page.tsx` → `categoryMeta` may need tweaks
-    for the client's tone.
-10. **First deploy** — run `git add -A && git commit && git push`.
+     `CRON_SECRET` — operator generates / pulls from Vercel
+   - `RESEND_API_KEY` if `_operator.newsletter` says yes
+2. **Vercel domain + DNS** — point `<domain>` at Vercel; forward the
+   DNS record to the client
+3. **Vercel project sharing** — invite `<_operator.vercelEmail>`
+4. **Starter articles** — paste the `/create-post` commands from Step 6
+   (pace it: 1–2 batches a day max at first)
+5. **Product images** — for each product added in Step 5, drop a photo
+   at `public/images/products/<id>.webp` and update priceRange + rating
+6. **About page body** — `app/about/page.tsx` editorial copy may want
+   light tweaks to match the client's voice
+7. **Category descriptions** — `app/category/[category]/page.tsx` →
+   `categoryMeta` may want tweaks
+8. **First push** — when env vars + domain are ready: `git push`
+9. **Post-deploy** — submit sitemap to Google Search Console and Bing;
+   run Rich Results Test on a sample article
 
-At the very bottom of the checklist, also print:
+At the bottom, print the context block:
 
-- Client's target launch date (`_operator.launchDate`)
-- Expected cadence (`_operator.cadence`)
-- Anything flagged in `_operator.notes` or `_operator.avoidTopics`
+- Launch date target: `_operator.launchDate`
+- Cadence: `_operator.cadence`
+- Avoid topics: `_operator.avoidTopics`
+- Client notes: `_operator.notes`
+
+If the headshot download failed in Step 4, add "manually download from
+`<_operator.headshotSourceUrl>`" at the top of the checklist.
 
 ---
 
 ## Rules
 
-- **Don't ask questions unless a required field is missing** or the
-  Amazon approval gate needs a decision. Every other choice defaults as
-  described above.
-- **Don't push to git, don't deploy, don't run `/create-post`** on
-  behalf of the operator. Stage everything; let them execute.
-- **Preserve `_operator` block in `client.config.json`.** It's metadata
-  for later reference — scripts ignore it, but we might need it to
-  re-run pieces of onboarding if things change.
-- **Report clearly.** The operator is about to hand the site to a
-  customer — a sloppy handoff erodes trust. Every action you take or
-  skip must be visible in the session output.
+- **Don't ask questions unless genuinely blocked.** The Amazon gate is
+  the one exception — every other decision defaults as specified.
+- **Don't push, deploy, or run `/create-post` autonomously.** These
+  have external consequences (the public site, 10-post generation).
+- **Preserve `_operator` in `client.config.json`.** It's metadata the
+  flow reads multiple times. Scripts ignore it; keep it for
+  re-entrancy.
+- **Report crisply.** Show each step's outcome as you go. The operator
+  is about to hand this site to a customer — they need to trust what
+  ran.
