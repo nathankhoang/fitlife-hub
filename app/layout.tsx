@@ -44,6 +44,10 @@ const organizationSchema = {
   url: SITE_URL,
   logo: `${SITE_URL}/opengraph-image`,
   description: siteDescription,
+  sameAs: [
+    "https://www.facebook.com/LeanBodyEngine",
+    "https://www.instagram.com/leanbodyengine/",
+  ],
 };
 
 const websiteSchema = {

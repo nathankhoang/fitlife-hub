@@ -145,9 +145,16 @@ export default async function ArticlePage({ params }: Props) {
     image: absoluteHeroImage,
     mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
     author: {
-      "@type": "Organization",
-      name: "LeanBodyEngine",
-      url: SITE_URL,
+      "@type": "Person",
+      name: "Nathan K Hoang",
+      sameAs: [
+        "https://www.facebook.com/LeanBodyEngine",
+        "https://www.instagram.com/leanbodyengine/",
+      ],
+    },
+    reviewedBy: {
+      "@type": "Person",
+      name: "Nathan K Hoang",
     },
     publisher: {
       "@type": "Organization",
@@ -257,6 +264,8 @@ export default async function ArticlePage({ params }: Props) {
                 )}
                 <span>·</span>
                 <span>{article.readTime} min read</span>
+                <span>·</span>
+                <span className="text-xs text-[#A3A3A3]">Reviewed by Nathan K Hoang</span>
               </div>
             </div>
 
