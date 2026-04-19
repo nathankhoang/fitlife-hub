@@ -23,14 +23,27 @@ export type SocialLink = {
 export type BrandAuthor = {
   /** Name used in bylines, schema.org Person.name, and metadata. */
   name: string;
-  /** Short title shown under the name (e.g., "CSCS, RD"). Optional. */
+  /**
+   * Short title shown under the name (e.g., "CSCS, RD").
+   * Also mapped to schema.org Person.jobTitle when present.
+   */
   credentials?: string;
   /** 1–3 sentence bio used on the about page and article cards. */
   bio: string;
+  /**
+   * Extended multi-paragraph bio for the /about page hero. Optional.
+   * If absent, falls back to `bio` for that surface.
+   */
+  longBio?: string;
   /** Public URL for a square author photo, or null to hide. */
   photoUrl: string | null;
   /** URL to the author's canonical profile page on this site. */
   profileUrl: string;
+  /**
+   * Topics the author covers — maps to schema.org Person.knowsAbout.
+   * Reinforces topical authority for YMYL (fitness/health) content.
+   */
+  knowsAbout?: string[];
   /**
    * When true, articles render Person (influencer) as the schema.org author.
    * When false, Organization (the site) is the author — fallback for sites
@@ -81,9 +94,19 @@ export const brand: Brand = {
 
   author: {
     name: "Nathan K Hoang",
-    bio: "LeanBodyEngine publishes evidence-based fitness guides — free to read, with no sponsored content or supplement shilling.",
+    bio: "Nathan reviews the research, tests the tools, and writes the guides at LeanBodyEngine — evidence-first, no sponsored content, no supplement shilling.",
+    longBio:
+      "I built LeanBodyEngine because the fitness internet is loud and most of it is wrong. Every article here starts with the peer-reviewed literature, gets cross-checked against real-world practice, and ends with a recommendation I'd actually give a friend. No affiliate-driven rankings, no miracle claims, no fluff — just what works and what doesn't.",
     photoUrl: null,
     profileUrl: "/about",
+    knowsAbout: [
+      "Strength training",
+      "Hypertrophy",
+      "Nutrition and macronutrient planning",
+      "Dietary supplements",
+      "Fat loss programming",
+      "Recovery and sleep",
+    ],
     emitPersonSchema: true,
   },
 
