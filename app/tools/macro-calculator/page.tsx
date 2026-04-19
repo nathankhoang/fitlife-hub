@@ -117,7 +117,7 @@ export default function MacroCalculatorPage() {
       {
         "@type": "ListItem",
         position: 3,
-        name: "Macro Calculator`,
+        name: "Macro Calculator",
         item: pageUrl,
       },
     ],

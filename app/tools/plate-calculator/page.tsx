@@ -117,7 +117,7 @@ export default function PlateCalculatorPage() {
       {
         "@type": "ListItem",
         position: 3,
-        name: "Plate Calculator`,
+        name: "Plate Calculator",
         item: pageUrl,
       },
     ],

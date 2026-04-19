@@ -117,7 +117,7 @@ export default function OneRepMaxCalculatorPage() {
       {
         "@type": "ListItem",
         position: 3,
-        name: "1RM Calculator`,
+        name: "1RM Calculator",
         item: pageUrl,
       },
     ],

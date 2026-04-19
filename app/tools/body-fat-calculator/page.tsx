@@ -117,7 +117,7 @@ export default function BodyFatCalculatorPage() {
       {
         "@type": "ListItem",
         position: 3,
-        name: "Body Fat Calculator`,
+        name: "Body Fat Calculator",
         item: pageUrl,
       },
     ],
