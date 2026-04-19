@@ -58,3 +58,7 @@ next-env.d.ts
 
 # Social image preview artifacts (scripts/preview-social-images.mjs)
 /tmp-social-preview/
+
+# One-time brand asset uploads + broken-MDX debugging snapshots
+/tmp-brand/
+/tmp-broken-mdx/
