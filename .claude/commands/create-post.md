@@ -555,9 +555,47 @@ Read `data/queue.json` once, append all valid entries from Step 3 in one pass, a
 
 ---
 
-## Step 4.5 — Sync to Blob and Revalidate Home Page
+## Step 4.5 — Git Stage All New Files + Sync to Blob and Revalidate Home Page
 
-After writing `data/queue.json`, sync the new posts to Vercel Blob and flush the Next.js cache so the home page "guides published" count updates immediately.
+**IMPORTANT: Run git staging FIRST, before Blob sync.** Hero images and MDX files that are not git-tracked will 404 on production even if they exist on disk locally.
+
+### Step 4.5a — Stage all new files to git (REQUIRED every batch)
+
+Run from the project root, substituting the actual slugs from this batch:
+
+```
+git add \
+  public/images/articles/<slug1>.webp \
+  public/images/articles/<slug2>.webp \
+  ... (one line per slug) \
+  content/articles/<slug1>.mdx \
+  content/articles/<slug2>.mdx \
+  ... (one line per slug) \
+  content/drafts/<slug1>.mdx \
+  content/drafts/<slug2>.mdx \
+  ... (one line per slug) \
+  data/queue.json
+```
+
+Then commit on a new branch:
+```
+git checkout -b feat/articles-batch-<iteration>
+git commit -m "Add <N> new articles (batch <iteration>)"
+git push -u origin feat/articles-batch-<iteration>
+```
+
+Then open a PR:
+```
+gh pr create --title "Add <N> new articles (batch <iteration>)" --body "Batch <iteration>: <comma-separated titles>"
+```
+
+Print the PR URL so it's visible in the transcript.
+
+**Do NOT skip this step.** Images on disk but not in git will 404 on every Vercel deployment.
+
+### Step 4.5b — Sync to Blob and Revalidate Home Page
+
+After staging, sync the new posts to Vercel Blob and flush the Next.js cache so the home page "guides published" count updates immediately.
 
 Run from the project root, passing all successful batch slugs as arguments:
 
