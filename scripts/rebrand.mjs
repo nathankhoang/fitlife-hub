@@ -15,11 +15,18 @@
 import fs from "node:fs";
 import path from "node:path";
 import url from "node:url";
+import { assertNotTemplateRepo } from "./_template-guard.mjs";
 
 const root = path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), "..");
 const CONFIG_PATH = path.join(root, "client.config.json");
 const TARGET_PATH = path.join(root, "lib", "brand.ts");
 const EXAMPLE_PATH = path.join(root, "client.config.example.json");
+
+assertNotTemplateRepo({
+  cwd: root,
+  argv: process.argv,
+  scriptName: "rebrand",
+});
 
 const ALLOWED_PLATFORMS = new Set([
   "instagram",

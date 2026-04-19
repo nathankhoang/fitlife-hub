@@ -12,6 +12,47 @@ starter commands → report checklist.
 
 ---
 
+## Step 0a — Refuse to run against the template repo
+
+**Before touching anything**, run:
+
+```bash
+git remote get-url origin
+```
+
+If the origin URL matches ANY of these patterns, **stop immediately** and
+refuse to proceed:
+
+- `nathankhoang/fitlife-hub` (with or without `.git`)
+- `nathankhoang/seo-articles`
+- `nathankhoang/leanbodyengine`
+
+These are the flagship / template repositories. Running `/onboard-client`
+here would rebrand leanbodyengine.com to the client and clear its
+editorial content — catastrophic.
+
+When this check fails, print exactly this message and stop:
+
+> ⚠ You're about to onboard a client in the **template / flagship repo**.
+> That would rebrand leanbodyengine.com to the new client and clear its
+> content. Clone the template into a new directory for this client
+> first, then re-run `/onboard-client` there:
+>
+> ```
+> gh repo fork nathankhoang/fitlife-hub --clone --fork-name <client-slug>
+> cd <client-slug>
+> # drop client.config.json, then /onboard-client
+> ```
+
+Only proceed past this step if the origin URL is clearly a client repo,
+or if there's no git origin at all (fresh clone / scratch repo).
+
+The destructive scripts (`rebrand`, `reset:content`) have their own
+hard-coded guard that will also refuse — but this pre-check catches the
+mistake before you invoke anything.
+
+---
+
 ## Step 0 — Locate and validate the config
 
 Read `client.config.json` from the repo root.
