@@ -45,7 +45,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 py-8 px-8">
+      <main className="flex-1 min-w-0 py-8 px-4 lg:px-8">
         {children}
       </main>
     </div>

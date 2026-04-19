@@ -86,7 +86,7 @@ export default async function AdminPage() {
       {/* ── Overview ── */}
       <section id="overview">
         <h2 className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-4">Overview</h2>
-        <div className="grid grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard label="Total articles" value={queue.length} accent="border-white/10" />
           <StatCard label="Published" value={published.length} accent="border-green-500/20" />
           <StatCard label="Scheduled" value={scheduled.length} accent="border-blue-500/20" />
@@ -185,7 +185,7 @@ export default async function AdminPage() {
           </div>
 
           {/* Placeholder metric cards */}
-          <div className="grid grid-cols-4 divide-x divide-white/10">
+          <div className="grid grid-cols-2 lg:grid-cols-4 divide-x divide-white/10">
             {[
               { label: "Users (7d)", value: "—" },
               { label: "Sessions (7d)", value: "—" },
