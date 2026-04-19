@@ -3,6 +3,7 @@ import Link from "next/link";
 import MacroCalculator from "@/components/MacroCalculator";
 import FaqSection from "@/components/FaqSection";
 import { SITE_URL } from "@/lib/site";
+import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "Macro Calculator — Free TDEE & Macronutrient Tool",
@@ -74,7 +75,7 @@ export default function MacroCalculatorPage() {
   const appSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "LeanBodyEngine Macro Calculator",
+    name: `${brand.name} Macro Calculator`,
     url: pageUrl,
     applicationCategory: "HealthApplication",
     operatingSystem: "Web",
@@ -87,7 +88,7 @@ export default function MacroCalculatorPage() {
     },
     publisher: {
       "@type": "Organization",
-      name: "LeanBodyEngine",
+      name: brand.name,
       url: SITE_URL,
     },
   };
@@ -116,7 +117,7 @@ export default function MacroCalculatorPage() {
       {
         "@type": "ListItem",
         position: 3,
-        name: "Macro Calculator",
+        name: "Macro Calculator`,
         item: pageUrl,
       },
     ],

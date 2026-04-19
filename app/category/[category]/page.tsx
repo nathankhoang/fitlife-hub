@@ -7,6 +7,7 @@ import {
   type Category,
 } from "@/lib/articles";
 import { SITE_URL } from "@/lib/site";
+import { brand } from "@/lib/brand";
 import ArticleCard from "@/components/ArticleCard";
 
 type Props = { params: Promise<{ category: string }> };
@@ -53,7 +54,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!(category in categoryLabels)) return {};
   const label = categoryLabels[category as Category];
   const title = `${label} Articles`;
-  const description = `Browse all ${label.toLowerCase()} articles on LeanBodyEngine — expert tips, guides, and reviews.`;
+  const description = `Browse all ${label.toLowerCase()} articles on ${brand.name} — expert tips, guides, and reviews.`;
 
   return {
     title,
@@ -102,7 +103,7 @@ export default async function CategoryPage({ params }: Props) {
     description: meta.description,
     isPartOf: {
       "@type": "WebSite",
-      name: "LeanBodyEngine",
+      name: brand.name,
       url: SITE_URL,
     },
     mainEntity: {

@@ -68,7 +68,7 @@ function productSchema(product: AffiliateProduct, siteUrl: string) {
             },
             author: {
               "@type": "Organization",
-              name: "LeanBodyEngine",
+              name: brand.name,
               url: siteUrl,
             },
           },

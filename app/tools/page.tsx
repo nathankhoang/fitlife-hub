@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { SITE_URL } from "@/lib/site";
+import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "Free Fitness Tools & Calculators — LeanBodyEngine",
+  title: `Free Fitness Tools & Calculators — ${brand.name}`,
   description:
     "Free evidence-based fitness calculators and tools. TDEE, macros, and more — no email required, no paywall.",
   alternates: { canonical: "/tools" },
   openGraph: {
-    title: "Free Fitness Tools & Calculators — LeanBodyEngine",
+    title: `Free Fitness Tools & Calculators — ${brand.name}`,
     description:
       "Evidence-based fitness calculators — TDEE, macros, and more. Free, no email, no paywall.",
     type: "website",
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free Fitness Tools & Calculators — LeanBodyEngine",
+    title: `Free Fitness Tools & Calculators — ${brand.name}`,
     description:
       "Evidence-based fitness calculators — TDEE, macros, and more.",
   },
@@ -93,7 +94,7 @@ export default function ToolsIndexPage() {
       "Evidence-based fitness calculators and tools — TDEE, macros, and more.",
     isPartOf: {
       "@type": "WebSite",
-      name: "LeanBodyEngine",
+      name: brand.name,
       url: SITE_URL,
     },
     mainEntity: {

@@ -1,3 +1,5 @@
+import { brand } from "./brand";
+
 export type AffiliateProduct = {
   id: string;
   name: string;
@@ -15,9 +17,8 @@ export type AffiliateProduct = {
   secondaryLabel?: string;
 };
 
-const TAG = "leanbodyengin-20";
 const amz = (asin: string) =>
-  `https://www.amazon.com/dp/${asin}?tag=${TAG}`;
+  `https://www.amazon.com/dp/${asin}?tag=${brand.affiliates.amazonTag}`;
 const img = (id: string, ext: "webp" | "svg" = "webp") => `/images/products/${id}.${ext}`;
 
 export const affiliateProducts: Record<string, AffiliateProduct> = {

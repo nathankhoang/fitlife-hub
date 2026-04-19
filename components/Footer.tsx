@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { brand } from "@/lib/brand";
 
 const categories = [
   { slug: "home-workouts", label: "Home Workouts" },
@@ -25,12 +26,11 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white text-[11px] font-bold tracking-tight">LBE</span>
-              <span className="text-lg font-bold tracking-tight">LeanBodyEngine</span>
+              <span className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white text-[11px] font-bold tracking-tight">{brand.shortName}</span>
+              <span className="text-lg font-bold tracking-tight">{brand.name}</span>
             </div>
             <p className="text-white/50 text-sm leading-relaxed">
-              Honest, evidence-based guides on training, supplements, and
-              nutrition. No fluff. No miracle promises.
+              {brand.tagline}
             </p>
           </div>
 
@@ -104,7 +104,7 @@ export default function Footer() {
         <div className="border-t border-white/10 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center gap-3">
           <div className="flex items-center gap-4">
             <p className="text-white/30 text-xs">
-              © {new Date().getFullYear()} LeanBodyEngine. All rights reserved.
+              © {new Date().getFullYear()} {brand.legalName}. All rights reserved.
             </p>
             <Link href="/admin" className="text-white/20 hover:text-white/50 text-xs transition-colors">
               Admin
@@ -112,7 +112,7 @@ export default function Footer() {
           </div>
           <p className="text-white/30 text-xs text-center md:text-right max-w-xl">
             <strong className="text-white/50">Affiliate disclosure:</strong>{" "}
-            LeanBodyEngine participates in Amazon Associates. We may earn a commission
+            {brand.name} participates in Amazon Associates. We may earn a commission
             on purchases made through our links at no extra cost to you.
           </p>
         </div>

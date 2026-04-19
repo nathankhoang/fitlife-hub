@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { comparisons, getProduct } from "@/lib/comparisons";
 import { SITE_URL } from "@/lib/site";
+import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
-  title: "Fitness Supplement Comparisons — LeanBodyEngine",
+  title: `Fitness Supplement Comparisons — ${brand.name}`,
   description:
     "Head-to-head fitness supplement comparisons — whey vs isolate, whey vs plant, stim vs non-stim pre-workouts, and more. Honest verdicts, no hype.",
   alternates: { canonical: "/compare" },
   openGraph: {
-    title: "Fitness Supplement Comparisons — LeanBodyEngine",
+    title: `Fitness Supplement Comparisons — ${brand.name}`,
     description:
       "Whey vs plant, stim vs non-stim, concentrate vs isolate — head-to-head supplement comparisons with real verdicts.",
     type: "website",
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Fitness Supplement Comparisons — LeanBodyEngine",
+    title: `Fitness Supplement Comparisons — ${brand.name}`,
     description:
       "Head-to-head supplement comparisons with honest verdicts.",
   },
@@ -46,7 +47,7 @@ export default function CompareIndexPage() {
       "Head-to-head supplement comparisons with evidence-backed verdicts.",
     isPartOf: {
       "@type": "WebSite",
-      name: "LeanBodyEngine",
+      name: brand.name,
       url: SITE_URL,
     },
     mainEntity: {
