@@ -30,6 +30,7 @@ type Tool = {
   inputs: string;
   formulas: string;
   accent: string;
+  href?: string;
 };
 
 const tools: Tool[] = [
@@ -69,6 +70,16 @@ const tools: Tool[] = [
     formulas: "US Navy circumference method",
     accent: "#059669",
   },
+  {
+    slug: "supplement-stack-quiz",
+    title: "Supplement Stack Quiz",
+    description:
+      "Answer 5 questions about your goals, training, diet, sleep, and budget. Get an evidence-based supplement stack recommendation — no marketing fluff.",
+    inputs: "Goal, training, diet, sleep, budget",
+    formulas: "Evidence-based rules engine",
+    accent: "#059669",
+    href: "/quiz/supplement-stack",
+  },
 ];
 
 export default function ToolsIndexPage() {
@@ -102,7 +113,7 @@ export default function ToolsIndexPage() {
       itemListElement: tools.map((t, i) => ({
         "@type": "ListItem",
         position: i + 1,
-        url: `${SITE_URL}/tools/${t.slug}`,
+        url: `${SITE_URL}${t.href ?? `/tools/${t.slug}`}`,
         name: t.title,
       })),
     },
@@ -138,7 +149,7 @@ export default function ToolsIndexPage() {
           {tools.map((t) => (
             <Link
               key={t.slug}
-              href={`/tools/${t.slug}`}
+              href={t.href ?? `/tools/${t.slug}`}
               className="group rounded-2xl border border-[#E5E5E5] bg-white p-6 hover:border-[#A3A3A3] transition-colors"
             >
               <div
