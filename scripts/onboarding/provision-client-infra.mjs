@@ -20,14 +20,15 @@
  *                                    optionally RESEND_API_KEY)
  *   8. Attaches the custom domain   (vercel domains add <domain> <slug>)
  *   9. Prints DNS records the operator must set at their registrar
+ *  10. Invites _operator.vercelEmail to the team
+ *                                   (vercel teams invite <email>)
  *
  * What it intentionally does NOT do:
  *   - Create the GitHub repo (the operator forks the template before
  *     running /onboard-client; origin must already point at the client repo).
  *   - Update DNS at the registrar (always human).
- *   - Invite Vercel project members (Vercel REST API, out of scope here —
- *     added to the final checklist).
  *   - Push the code (Step 7 of /onboard-client is the explicit go-live gate).
+ *   - Submit the sitemap (separate post-deploy script: submit-sitemap.mjs).
  *
  * Usage:
  *   node scripts/onboarding/provision-client-infra.mjs            # dry-run preview
@@ -204,6 +205,11 @@ if (!APPLY) {
     );
   console.log(`  11. vercel domains add ${domain} ${projectSlug}`);
   console.log(`  12. vercel domains inspect ${domain}   (prints DNS records)`);
+  if (config?._operator?.vercelEmail) {
+    console.log(
+      `  13. vercel teams invite ${config._operator.vercelEmail}`,
+    );
+  }
   process.exit(0);
 }
 
@@ -402,6 +408,30 @@ if (inspect.status === 0) {
   );
 }
 
+// 13. Team member invite
+// `vercel teams invite` joins the member to the currently scoped team, which
+// grants access to every project in that team. In the intended factory model
+// each client has its own team scope, so this is exactly the right grain.
+// If the operator is on personal scope (no team) the CLI will surface that
+// as a no-op; we allow-fail and surface a checklist reminder instead.
+section("9. Invite operator/client");
+const inviteEmail = config?._operator?.vercelEmail?.trim();
+let inviteSent = false;
+if (inviteEmail) {
+  inviteSent = runAllowFail("vercel teams invite", "vercel", [
+    "teams",
+    "invite",
+    inviteEmail,
+  ]);
+  if (!inviteSent) {
+    console.warn(
+      `  ! Couldn't invite ${inviteEmail} from the CLI (personal scope or already a member). Invite via the Vercel dashboard.`,
+    );
+  }
+} else {
+  info("(no _operator.vercelEmail set — skipping)");
+}
+
 // ---- Summary ------------------------------------------------------------
 
 section("Summary");
@@ -413,12 +443,17 @@ console.log(`CRON_SECRET:       ${cronSecret}       (save this — shown once)`)
 console.log();
 console.log("Remaining human gates:");
 console.log("  - Forward the DNS records above to the client's registrar");
-console.log(
-  `  - Invite ${config?._operator?.vercelEmail || "<operator email>"} to the Vercel project (dashboard → settings → members)`,
-);
+if (!inviteSent && inviteEmail) {
+  console.log(
+    `  - Invite ${inviteEmail} to the Vercel team via dashboard (CLI invite failed)`,
+  );
+}
 if (wantsNewsletter && !process.env.RESEND_API_KEY) {
   console.log(
     "  - Add RESEND_API_KEY once the client forwards their Resend key",
   );
 }
 console.log("  - git push  (triggers the first Vercel deploy)");
+console.log(
+  "  - After deploy: npm run onboard:submit-sitemap  (pings Bing, prints GSC steps)",
+);

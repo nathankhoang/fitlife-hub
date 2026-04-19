@@ -14,6 +14,7 @@
     "onboard:photo": "node scripts/onboarding/download-author-photo.mjs",
     "onboard:affiliates": "node scripts/onboarding/seed-affiliates-from-form.mjs",
     "onboard:provision": "node scripts/onboarding/provision-client-infra.mjs",
+    "onboard:submit-sitemap": "node scripts/onboarding/submit-sitemap.mjs",
     "video:article": "node --env-file=.env.local scripts/video-to-article.mjs",
     "text:article": "node --env-file=.env.local scripts/text-to-article.mjs"
   },
