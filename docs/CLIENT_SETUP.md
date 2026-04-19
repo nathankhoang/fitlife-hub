@@ -125,17 +125,17 @@ niches. The client will replace articles over time via `create-post`.
 **Option B: Clear and re-seed** (recommended for clients with distinct voice).
 
 ```bash
-# Clear shipped articles
-# Delete or set "status": "deleted" on entries in data/queue.json
-# Clear drafts folder in Blob: drafts/*.mdx
-# Keep content/articles for initial seed if desired
-
-# Curate affiliate catalog — edit lib/affiliates.ts to remove/add products
-# that fit the client's audience
-
-# Curate comparisons — edit lib/comparisons.ts to keep only matchups
-# relevant to the client's niche
+# One-shot clean slate — clears affiliateProducts, comparisons, queue.json.
+# Preserves types, helpers, and everything framework/tools/schema-related.
+npm run reset:content          # dry-run — shows what'll change
+npm run reset:content -- --yes # actually apply
 ```
+
+Then manually:
+- Add the client's curated affiliate products to `lib/affiliates.ts`
+- Hand-curate 3–5 comparison matchups in `lib/comparisons.ts` using products the client stands behind
+- Delete or replace `content/articles/*.mdx` seeds
+- Clear `articles/` and `drafts/` folders in the Blob store if reusing an existing Blob (fresh stores start empty)
 
 Either way, generate the **first 5 cornerstone articles** with the client's
 voice using `create-post`. These anchor the site's topical authority — pick
