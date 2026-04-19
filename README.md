@@ -4,6 +4,8 @@ An opinionated, evidence-first fitness and wellness content site. Static-first M
 
 **Live:** [fitlife-hub-omega.vercel.app](https://fitlife-hub-omega.vercel.app)
 
+> **Spinning this up for a new client?** See [`docs/CLIENT_SETUP.md`](docs/CLIENT_SETUP.md) — the end-to-end onboarding checklist. Rebranding is driven by `client.config.json` + `npm run rebrand`; everything identity-related reads from `lib/brand.ts`.
+
 ## Stack
 
 - **Framework**: Next.js 16 (App Router) + React 19
