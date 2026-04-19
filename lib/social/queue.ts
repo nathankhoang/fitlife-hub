@@ -70,6 +70,12 @@ async function writeSocialQueue(entries: SocialPostEntry[]): Promise<void> {
     addRandomSuffix: false,
     allowOverwrite: true,
     contentType: "application/json; charset=utf-8",
+    // Vercel Blob's default Cache-Control is max-age=2592000 (30 days) on the
+    // CDN. That makes queue reads show stale state for long stretches even
+    // when we revalidateTag on the Next side. Minimum the SDK allows is 60s,
+    // which is good enough — workers write frequently and the admin UI
+    // auto-refreshes at a shorter interval than that anyway.
+    cacheControlMaxAge: 60,
   });
   // revalidateTag throws outside a Next.js request context (e.g. in CLI scripts).
   // Downgrade to a warning so ad-hoc worker runs aren't blocked; in-request
