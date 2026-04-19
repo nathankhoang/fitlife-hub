@@ -6,11 +6,14 @@
 //   2. POST /{ig-user-id}/media_publish → publishes the container (returns media id)
 //
 // Notes:
+//   - Uses an Instagram Login (IGAA…) token, NOT a Facebook Page token. The
+//     IGAA token comes from an Instagram-specific Meta app set up via
+//     "API setup with Instagram login", which grants the instagram_content_publish
+//     scope that Pages-API tokens cannot carry.
 //   - Instagram requires the image_url to be publicly reachable JPEG or PNG.
 //     WebP is NOT accepted (at time of writing). The worker uploads a JPEG
 //     version to Blob for this reason.
-//   - The IG Business account must be linked to the FB Page whose access
-//     token is in META_PAGE_ACCESS_TOKEN.
+//   - Host is graph.instagram.com (not graph.facebook.com) for IGAA tokens.
 //
 // Docs: https://developers.facebook.com/docs/instagram-platform/content-publishing
 
@@ -30,7 +33,7 @@ async function createContainer(
   imageUrl: string,
   caption: string,
 ): Promise<string> {
-  const endpoint = `https://graph.facebook.com/${GRAPH_VERSION}/${igUserId}/media`;
+  const endpoint = `https://graph.instagram.com/${GRAPH_VERSION}/${igUserId}/media`;
   const body = new URLSearchParams({
     image_url: imageUrl,
     caption,
@@ -54,7 +57,7 @@ async function publishContainer(
   token: string,
   containerId: string,
 ): Promise<string> {
-  const endpoint = `https://graph.facebook.com/${GRAPH_VERSION}/${igUserId}/media_publish`;
+  const endpoint = `https://graph.instagram.com/${GRAPH_VERSION}/${igUserId}/media_publish`;
   const body = new URLSearchParams({
     creation_id: containerId,
     access_token: token,
@@ -76,7 +79,7 @@ async function getPermalink(mediaId: string, token: string): Promise<string | nu
   // Best-effort fetch of the public permalink. If this fails we still return a
   // constructed URL from media id.
   try {
-    const endpoint = `https://graph.facebook.com/${GRAPH_VERSION}/${mediaId}?fields=permalink&access_token=${encodeURIComponent(token)}`;
+    const endpoint = `https://graph.instagram.com/${GRAPH_VERSION}/${mediaId}?fields=permalink&access_token=${encodeURIComponent(token)}`;
     const res = await fetch(endpoint);
     if (!res.ok) return null;
     const json = (await res.json()) as { permalink?: string };
@@ -89,7 +92,9 @@ async function getPermalink(mediaId: string, token: string): Promise<string | nu
 export const instagramAdapter: PlatformAdapter = {
   async post({ entry, imageUrl }: AdapterContext): Promise<PostResult> {
     const igUserId = requireEnv("IG_USER_ID");
-    const token = requireEnv("META_PAGE_ACCESS_TOKEN");
+    // Prefer the Instagram-specific token when present (from an Instagram-login
+    // Meta app); fall back to Page token for legacy FB-linked setups.
+    const token = process.env.META_IG_ACCESS_TOKEN || requireEnv("META_PAGE_ACCESS_TOKEN");
     if (!entry.caption) throw new AdapterError("caption missing", "instagram");
 
     const containerId = await createContainer(igUserId, token, imageUrl, entry.caption);
