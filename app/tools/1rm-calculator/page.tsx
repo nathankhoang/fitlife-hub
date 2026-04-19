@@ -75,7 +75,7 @@ export default function OneRepMaxCalculatorPage() {
   const appSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: `${brand.name} 1RM Calculator",
+    name: `${brand.name} 1RM Calculator`,
     url: pageUrl,
     applicationCategory: "HealthApplication",
     operatingSystem: "Web",
@@ -117,7 +117,7 @@ export default function OneRepMaxCalculatorPage() {
       {
         "@type": "ListItem",
         position: 3,
-        name: "1RM Calculator",
+        name: "1RM Calculator`,
         item: pageUrl,
       },
     ],

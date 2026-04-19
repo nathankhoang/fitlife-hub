@@ -75,7 +75,7 @@ export default function PlateCalculatorPage() {
   const appSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: `${brand.name} Barbell Plate Calculator",
+    name: `${brand.name} Barbell Plate Calculator`,
     url: pageUrl,
     applicationCategory: "HealthApplication",
     operatingSystem: "Web",
@@ -117,7 +117,7 @@ export default function PlateCalculatorPage() {
       {
         "@type": "ListItem",
         position: 3,
-        name: "Plate Calculator",
+        name: "Plate Calculator`,
         item: pageUrl,
       },
     ],

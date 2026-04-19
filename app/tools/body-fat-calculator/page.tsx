@@ -75,7 +75,7 @@ export default function BodyFatCalculatorPage() {
   const appSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: `${brand.name} Body Fat Calculator",
+    name: `${brand.name} Body Fat Calculator`,
     url: pageUrl,
     applicationCategory: "HealthApplication",
     operatingSystem: "Web",
@@ -117,7 +117,7 @@ export default function BodyFatCalculatorPage() {
       {
         "@type": "ListItem",
         position: 3,
-        name: "Body Fat Calculator",
+        name: "Body Fat Calculator`,
         item: pageUrl,
       },
     ],

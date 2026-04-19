@@ -75,7 +75,7 @@ export default function MacroCalculatorPage() {
   const appSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: `${brand.name} Macro Calculator",
+    name: `${brand.name} Macro Calculator`,
     url: pageUrl,
     applicationCategory: "HealthApplication",
     operatingSystem: "Web",
@@ -117,7 +117,7 @@ export default function MacroCalculatorPage() {
       {
         "@type": "ListItem",
         position: 3,
-        name: "Macro Calculator",
+        name: "Macro Calculator`,
         item: pageUrl,
       },
     ],
