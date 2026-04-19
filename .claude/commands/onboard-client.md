@@ -179,30 +179,65 @@ git commit -m "Onboard <client-name>: apply brand config, seed content"
 
 Report the commit SHA so the operator knows what got staged.
 
-**Do NOT push automatically.** Pushing kicks off a Vercel deploy and
-shows the site to the world — the operator needs to have the env vars
-and domain ready before they push. Tell them when they're ready:
+**Do NOT push yet.** The next step provisions Vercel so the domain
+and env vars are ready *before* the first deploy.
+
+---
+
+## Step 7.5 — Provision Vercel infrastructure
+
+Preview what the provisioner will do, then apply:
 
 ```bash
-git push
+npm run onboard:provision           # dry-run plan
+npm run onboard:provision -- --apply
 ```
+
+`provision-client-infra.mjs` wraps `gh` + `vercel` CLIs to:
+- create the Vercel project (`vercel project add <slug>`)
+- link this dir and connect the GitHub origin
+- create a Blob store (auto-wires `BLOB_READ_WRITE_TOKEN`)
+- upload a ping file to derive and push `BLOB_PUBLIC_BASE`
+- push `NEXT_PUBLIC_SITE_URL`, optional `NEXT_PUBLIC_GA_ID`,
+  a generated `CRON_SECRET`, a generated `ADMIN_PASSWORD`, and
+  `RESEND_API_KEY` (if exported and newsletter=yes)
+- attach the custom domain and print the DNS records the operator
+  must set at the registrar
+
+**Preconditions:** `gh auth login` and `vercel login` have both been
+run once on this machine. If either is missing, the script fails with
+a clear message — surface it to the operator and stop.
+
+Capture the printed `ADMIN_PASSWORD`, `CRON_SECRET`, and
+`BLOB_PUBLIC_BASE` in your final report — they are shown once.
+
+If the operator wants to supply their own `ADMIN_PASSWORD` or a real
+`RESEND_API_KEY`, they can export those before running:
+
+```bash
+ADMIN_PASSWORD='pick-your-own' RESEND_API_KEY='re_...' npm run onboard:provision -- --apply
+```
+
+**Do NOT push after this step.** Pushing triggers the first Vercel
+deploy — the operator should still eyeball the dashboard first.
 
 ---
 
 ## Step 8 — Personalized checklist
 
 Print a concise checklist of the remaining human-gated work, sourced
-from the specific client's answers. Cover at minimum:
+from the specific client's answers. Env vars, the domain attachment,
+and the Blob store are already done by Step 7.5 — don't re-list them.
+Cover at minimum:
 
-1. **Vercel env vars** — include the pre-filled values we know:
-   - `NEXT_PUBLIC_SITE_URL = https://<domain>` (from `_operator.domain`)
-   - `NEXT_PUBLIC_GA_ID = <ga4Id>` if provided
-   - `BLOB_PUBLIC_BASE`, `BLOB_READ_WRITE_TOKEN`, `ADMIN_PASSWORD`,
-     `CRON_SECRET` — operator generates / pulls from Vercel
-   - `RESEND_API_KEY` if `_operator.newsletter` says yes
-2. **Vercel domain + DNS** — point `<domain>` at Vercel; forward the
-   DNS record to the client
-3. **Vercel project sharing** — invite `<_operator.vercelEmail>`
+1. **DNS forwarding** — paste the DNS records printed by Step 7.5 to
+   the client's registrar (only human-gated piece of the domain setup).
+2. **Vercel project sharing** — invite `<_operator.vercelEmail>` via
+   Vercel dashboard → project → Settings → Members. The CLI can't do
+   this non-interactively today.
+3. **RESEND_API_KEY** — if newsletter was requested and the operator
+   didn't export the key before Step 7.5, add it now:
+   `vercel env add RESEND_API_KEY production`
 4. **Starter articles** — paste the `/create-post` commands from Step 6
    (pace it: 1–2 batches a day max at first)
 5. **Product images** — for each product added in Step 5, drop a photo
@@ -211,7 +246,8 @@ from the specific client's answers. Cover at minimum:
    light tweaks to match the client's voice
 7. **Category descriptions** — `app/category/[category]/page.tsx` →
    `categoryMeta` may want tweaks
-8. **First push** — when env vars + domain are ready: `git push`
+8. **First push** — once DNS is propagating and the operator has
+   eyeballed the Vercel dashboard: `git push`
 9. **Post-deploy** — submit sitemap to Google Search Console and Bing;
    run Rich Results Test on a sample article
 
