@@ -29,6 +29,7 @@ function Callout({ type, children }: { type?: string; children: React.ReactNode 
 const mdxComponents = {
   AffiliateProductCard,
   AffiliateCard: AffiliateProductCard,
+  AffiliateProduct: AffiliateProductCard,
   Callout,
 };
 
