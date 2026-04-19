@@ -124,6 +124,8 @@ Read `data/queue.json`. Using your trend research from Step 1a, plan **10 distin
 - **Target an intermediate-to-advanced audience by default.** Assume the reader has been training or following their diet for 1+ years. Skip "what is X" basics. Go deep: advanced programming concepts, nuanced supplement science, performance optimization, research-backed specificity, edge cases, and common mistakes made by experienced trainees
 - Use varied formats (Deep Dive, Advanced Guide, Research Breakdown, Protocol Guide, Data-Driven Comparison, Myth-Busting) — avoid generic "Beginner Guide" framing unless the topic itself is genuinely niche or emerging
 - Mix article lengths: ~4 posts at 1,500–2,000 words (8–10 min read), ~4 posts at 2,500–3,500 words (12–18 min), ~2 posts at 4,000+ words (20+ min deep dives)
+- **Assign a different structural pattern to each of the 10 posts** from this list: Contrarian Frame, Case Example First, Progressive Disclosure, Comparison Structure, Framework + Application, Data-Led / Research Breakdown. No pattern should repeat more than twice across the batch. Include this in each assignment as a `structuralPattern` field.
+- **Pre-assign a tone profile** for each article — one of: [Direct/No-Nonsense, Conversational/Relatable, Investigative/Skeptical, Authoritative/Coach-Voice, Measured/Research-First]. No tone should repeat more than twice across the batch. Include as a `toneProfile` field in each assignment.
 
 For each assignment, pre-decide: **topic, slug, category, format, audience, tone, target word count, trending angle (why this topic now / what makes it timely), and 3–5 affiliate product IDs**.
 
@@ -255,7 +257,7 @@ In **a single message**, issue 10 `Agent` tool calls (`subagent_type: "general-p
 
 Each sub-agent prompt must be fully self-contained (sub-agents start with no conversation context). Include in every prompt:
 
-1. **Assignment:** topic, slug, category, format, audience, tone, target word count, trending angle, and the 3–5 product IDs selected.
+1. **Assignment:** topic, slug, category, format, audience, tone profile, structural pattern, target word count, trending angle, and the 3–5 product IDs selected. Make sure `structuralPattern` and `toneProfile` are explicitly stated — sub-agents MUST follow them, not default to a generic structure.
 
 2. **Scope restrictions — HARD RULES. Violating any of these fails the task.**
 
@@ -287,38 +289,81 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
 
 3. **Output contract** — the sub-agent must:
    - Write the MDX article to `content/drafts/<slug>.mdx` with `image: ""` initially. Follow the exact frontmatter + content structure in §Content Rules below. Match the target word count from the assignment.
-   - **Select a hero image using the Visual Keyword Method (required — follow every rule below):**
+   - **Select a hero image using the Article-First Rating Method (required — follow EVERY step below without skipping):**
 
-     **Step A — Identify the visual keyword.** Ask yourself: *"If someone searched for this topic on a stock photo site, what single noun or short phrase would show exactly what the article is about?"* Examples:
-     - Article about pre-workout supplements → keyword: `"pre-workout supplement powder"`
-     - Article about fish oil → keyword: `"fish oil capsules"`
-     - Article about HIIT → keyword: `"hiit workout burpees"` (show the exercise, not just someone running)
-     - Article about meal prep → keyword: `"meal prep containers food"`
-     - Article about sleep → keyword: `"sleeping bedroom"` or `"person sleeping"` (show a person actually sleeping)
-     - Article about creatine → keyword: `"creatine powder supplement"`
-     - Article about compound exercises → keyword: `"barbell squat"` or `"deadlift"`
-     - NEVER use generic keywords like `"fitness"`, `"health"`, `"gym"`, `"exercise"` — these return irrelevant results
+     **Step A — Read and internalize the article topic deeply.**
+     Before searching for any image, answer these questions about your article:
+     1. What is the SINGLE most specific physical subject of this article? (not the category — the exact thing)
+        - "Zone 2 cardio" → the specific subject is a person cycling or running at a steady moderate pace, NOT a generic gym
+        - "Tongkat ali testosterone" → the specific subject is the actual herbal supplement root or capsules, NOT a person flexing
+        - "Blood flow restriction training" → the specific subject is someone using a BFR cuff/band on their arm while lifting
+        - "Cold plunge vs sauna" → the specific subject is a person in a cold plunge or a wooden sauna interior
+        - "Protein distribution" → the specific subject is food laid out in measured portions or a meal prep spread
+        - "GLP-1 muscle preservation" → the specific subject is high-protein healthy food or a person eating a structured meal
+     2. What would a reader expect to see when they click this article?
+     3. What image would make the article feel instantly credible and specific — not stock-generic?
 
-     **Step B — Search Pexels.** Use WebSearch with the query: `site:pexels.com/photo "<your visual keyword>"`. Browse the first 3–5 results. Note the photo IDs (the number in the URL, e.g. `pexels.com/photo/3838389`).
+     Write down your answers before searching. This defines your search target.
 
-     **Step C — Evaluate candidates using these rules:**
-     - The photo must show the ACTUAL SUBJECT of the article. A pre-workout article needs a photo of an actual pre-workout container/scoop — not a person drinking a shake. A food article needs actual food — not a person eating.
-     - For exercise/workout articles: show the specific exercise or workout style, not a generic gym shot
-     - **Gender balance rule:** Across the batch, roughly half of person-showing photos should feature men and half women. For any single article, use your judgment — but actively avoid choosing all-women or all-men photos across the batch.
-     - Prefer landscape-oriented, well-lit, high-resolution photos (≥1200px wide)
-     - If your first keyword returns nothing useful after 2 searches, try a more specific or different angle keyword
+     **Step B — Generate 3 distinct search queries.**
+     Based on Step A, create 3 different search queries that target the SPECIFIC subject, from most specific to more general:
+     - Query 1: most specific (e.g., `site:pexels.com/photo "blood flow restriction cuff arm"`)
+     - Query 2: moderately specific (e.g., `site:pexels.com/photo "bfr training bicep curl"`)
+     - Query 3: broadest fallback (e.g., `site:pexels.com/photo "resistance band arm workout"`)
 
-     **Step D — Build the direct download URL.** Pexels direct URL format:
+     NEVER use generic queries like `"fitness"`, `"gym"`, `"health"`, `"exercise"`, `"supplements"` alone — these always return irrelevant stock photos.
+
+     **Step C — Search and collect candidates.**
+     Run all 3 queries using WebSearch. For each result, note:
+     - The Pexels photo ID (number in the URL)
+     - A one-sentence description of what the photo actually shows
+     Collect at least 5 candidate photos total across all 3 queries.
+
+     **Step D — Rate EVERY candidate on this 1–10 scale.**
+     For each candidate photo, score it honestly:
+
+     | Score | Meaning |
+     |-------|---------|
+     | 10 | Photo shows EXACTLY the specific subject of the article. Zero ambiguity. A reader would instantly know what the article is about just from the image. |
+     | 8–9 | Photo is closely related but missing one specific element (e.g., shows the right exercise but wrong equipment) |
+     | 6–7 | Photo is thematically related but generic (e.g., "person working out" for a specific exercise article) |
+     | 4–5 | Photo is in the right category but doesn't represent the topic (e.g., running photo for a weightlifting article) |
+     | 1–3 | Photo is vaguely related or completely wrong |
+
+     Write out your rating AND your reasoning for each candidate. Example:
+     - Photo 3838389 (shows person cycling on road bike outdoors): **9/10** — shows the exact activity for zone 2 cardio; missing only the "steady pace" context
+     - Photo 1552242 (shows generic gym equipment): **4/10** — wrong subject entirely, doesn't represent zone 2 cardio
+
+     **Step E — Apply the 10/10 rule.**
+     Only select a photo rated **10/10**. If no candidate scores 10/10:
+     - Generate 2 new, more specific search queries and repeat Steps C–D
+     - You have up to 5 total search rounds to find a 10/10 image
+     - If after 5 rounds you still have no 10/10, select the highest-rated candidate (must be ≥8/10) and note why it was the best available
+     - NEVER select a photo rated below 8/10 under any circumstance — use `"image_status": "missing"` instead
+
+     **Step F — Triple-check before downloading.**
+     Before running the download command, verify:
+     1. Does the photo show the SPECIFIC thing described in Step A? (yes/no)
+     2. Would a reader who has NOT read the article understand what the article is about from this image alone? (yes/no)
+     3. Is this image meaningfully different from a generic stock photo someone would use for any fitness article? (yes/no)
+     All three answers must be YES. If any is NO, go back to Step D and pick a higher-rated candidate.
+
+     **Step G — Gender balance check.**
+     If the photo features a person: across the 10-article batch, aim for roughly equal gender representation. If the batch is running male-heavy, actively pick a female-featuring photo when both score equally. Note your choice.
+
+     **Step H — Build the direct download URL and apply.**
+     Pexels direct URL format:
      `https://images.pexels.com/photos/{ID}/pexels-photo-{ID}.jpeg?auto=compress&cs=tinysrgb&w=1920`
-     Replace `{ID}` with the photo ID you found.
+     Replace `{ID}` with your chosen photo ID.
 
-     **Step E — Apply the image.** Run from the project root:
+     Run from the project root:
      ```
      node --env-file=.env.local scripts/ensure-images.mjs --slug "<slug>" --url "<pexels-direct-url>" --force
      ```
      This downloads the image, converts to 1600×1000 WebP, saves to `public/images/articles/<slug>.webp`, and updates the `image:`, `imageOg:`, `imagePinterest:` frontmatter fields in both `content/drafts/<slug>.mdx` and `content/articles/<slug>.mdx`.
 
-     **Step F — Retry on failure.** If the command fails (non-zero exit, 404, download error), try a different photo from Step B or pick a new keyword and repeat. Attempt up to 3 different photos before giving up. On final failure, set `"image_status": "missing"` in the returned JSON — but still complete the post.
+     **Step I — Retry on download failure.**
+     If the command fails (non-zero exit, 404, download error), pick your next highest-rated candidate and retry. Attempt up to 3 different photos before giving up. On final failure, set `"image_status": "missing"` in the returned JSON — but still complete the post.
 
    - Copy `content/drafts/<slug>.mdx` to `content/articles/<slug>.mdx` (publish).
    - **Do NOT touch `data/queue.json`** — race-unsafe with 10 parallel agents.
@@ -341,6 +386,131 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
 
    Write the article FROM this research — not from memory. Every specific claim, statistic, dosage, or protocol must trace back to something you actually fetched, not something recalled from training data. If you can't find a real source for a claim, don't make it.
 
+   ---
+
+   **CRITICAL: Source Citations & Expert Voice**
+
+   Every article MUST cite real sources woven naturally into the prose — not just linked footnotes at the bottom. Follow these rules exactly:
+
+   - **Narrative citation format:** "A 2024 meta-analysis in the *British Journal of Sports Medicine* (n=1,247) found that…" or "Research published in *Nutrients* confirmed…" — put the journal name and year directly in the sentence.
+   - **Name experts with full context:** Never say "experts say." Say: "Dr. Stuart Phillips, a protein researcher at McMaster University, notes that…" or "According to exercise physiologist Andy Galpin, PhD, at Cal State Fullerton…" — the specificity signals real sourcing.
+   - **Embed limitations honestly:** "The catch: most of these studies ran for only 8 weeks. Long-term data on this is still limited." Acknowledging what the research CAN'T tell you is a human signal, not a weakness.
+   - **Integrate disagreement:** When experts or studies conflict, say so — "Not everyone agrees. A 2023 review in *JISSN* pushed back, arguing the effect size is too small to matter practically."
+   - **Cite Reddit/practitioner community for real-world nuance:** "In practice, experienced lifters on r/strength_training consistently report that…" — validates claims against real-world use.
+   - NEVER fabricate citations, author names, journals, or study findings. Only cite sources you actually fetched during research.
+
+   ---
+
+   **CRITICAL: Break the AI Formula — REQUIRED for every article**
+
+   Google's AI detection flags content that follows the same structure every time. Each article MUST use a DIFFERENT structural pattern from the list below. Your assignment specifies the format — follow it. Do NOT default to "Definition → Explanation → Plan."
+
+   **6 Available Structural Patterns (pick the one assigned, or if not assigned pick one that fits the topic):**
+
+   1. **Contrarian Frame** — Open by challenging the mainstream take. "Everyone says X. The research says something different." Then build toward the nuanced truth. Best for: supplement myths, popular-but-wrong training advice.
+
+   2. **Case Example First** — Open with a specific scenario or case. "Picture this: you've been training for 2 years, adding creatine, eating 200g protein, but your bench hasn't moved in 4 months. Here's what the data says about why." Build the explanation around the case. Best for: plateaus, troubleshooting, protocols.
+
+   3. **Progressive Disclosure** — Follow the reader's actual decision process: "First, figure out X. Once you know X, here's how to choose Y. Given Y, the right Z for you is…" Each step narrows to the next. Best for: program design, supplement stacks, diet plans.
+
+   4. **Comparison Structure** — Pit two or more approaches against each other with identical analysis for each. "Approach A: how it works / evidence / who it suits / trade-offs. Approach B: same treatment." Let the reader decide. Best for: creatine HCl vs monohydrate, HIIT vs LISS, diet comparisons.
+
+   5. **Framework + Application** — Create a named, numbered system for the topic (e.g., "The 3-Variable Hypertrophy Model"). Define the framework first, then apply it to real examples. Best for: training design, nutrition planning, recovery protocols.
+
+   6. **Data-Led / Research Breakdown** — Start with the most surprising finding from the research, then work outward to explain the full picture. "A 2024 review found that eating MORE protein than current guidelines actually increased lean mass retention by 23%. Here's the full picture." Best for: supplement science, nutrition research, emerging protocols.
+
+   **Additional pattern-breaking requirements (apply to ALL articles):**
+
+   - **Include ≥1 genuine contrarian take** — something that goes against standard advice. Back it with evidence. E.g., "Rest-pause sets may not be worth the joint stress for most lifters, despite the hype." Then explain your reasoning.
+   - **Include ≥1 concrete case example or scenario** — a specific person, situation, or training context that grounds the advice. Can be real ("a study's intervention group averaged 38-year-old males…") or illustrative ("for someone eating 160g/day who's plateaued…").
+   - **Include ≥1 explicit comparison** — two methods, products, approaches, or protocols side-by-side, with specific trade-off language.
+   - **Include ≥1 editorial opinion or directional recommendation** — not just "it depends." Say: "Honestly, for most intermediate lifters, option B is the better starting point. Here's why." Hedging every recommendation into oblivion signals AI, not expertise.
+
+   ---
+
+   **CRITICAL: Original Data & Assets — REQUIRED for every article**
+
+   Right now articles explain things. They don't CREATE anything. Every article MUST include at least TWO of the following:
+
+   **1. Named Custom Framework**
+   Create a branded mini-system for the article's main concept. Give it a name. Examples:
+   - "The LBE Protein Ladder" (a 4-step escalation system for protein intake)
+   - "The 3-Lever Hypertrophy Model" (volume, intensity, frequency as three adjustable levers)
+   - "The PRIME Stack Method" (a supplement prioritization framework: Proven → Research-backed → Individual → Meaningful → Evaluated)
+   The name makes it memorable and shareable. Define the framework clearly with numbered steps or tiers.
+
+   **2. Decision Table or Scoring Matrix**
+   Build a markdown table the reader can use to make a choice. Example for a creatine article:
+
+   | Your Goal | Best Form | Dose | Timing |
+   |-----------|-----------|------|--------|
+   | Max strength | Monohydrate | 5g/day | Post-workout |
+   | Low bloat priority | HCl | 1.5–2g/day | Pre-workout |
+   | Budget-conscious | Monohydrate bulk | 5g/day | Anytime |
+
+   Always include a "Best For" column so readers can self-select.
+
+   **3. Protocol Card (numbered, copy-pasteable)**
+   A specific, structured protocol the reader can screenshot and follow. Not explained in prose — formatted as a numbered list or table with exact values. Example:
+   ```
+   Zone 2 Base-Building Protocol (8-Week)
+   Week 1–2: 3×30 min @ 60–65% max HR
+   Week 3–4: 3×40 min @ 62–67% max HR
+   Week 5–6: 4×40 min @ 63–68% max HR
+   Week 7–8: 4×45 min @ 65–70% max HR
+   Recovery: 48hr min between sessions
+   Progress marker: Can hold conversation without breathlessness
+   ```
+
+   **4. Comparison Table with Original Analysis**
+   Not just copied specs. Add a "LBE Take" or "Our Verdict" column that adds editorial value. Example:
+
+   | Supplement | Evidence Grade | Effect Size | Best For | Skip If |
+   |-----------|---------------|-------------|----------|---------|
+   | Creatine | A (strong) | +5–8% strength | Everyone | Kidney disease Hx |
+   | Beta-alanine | B (moderate) | Reduces fatigue in 4+ min efforts | Endurance athletes | Sprint/power athletes |
+   | Citrulline | B (moderate) | Improved pump, -3% fatigue | Hypertrophy focus | Casual lifters |
+
+   **5. "Myth vs Reality" Callout Block**
+   Format as a clear MDX callout or blockquote section. Example:
+   > **Myth:** You need to eat within 30 minutes post-workout or you lose your gains.
+   > **Reality:** A 2013 meta-analysis found the anabolic window extends up to 4–6 hours around training. Total daily protein matters far more than timing for most people.
+
+   Include 2–3 myth/reality pairs per article where myths exist in the topic.
+
+   **6. Quick-Reference Cheat Sheet**
+   A table-formatted "cheat sheet" that functions as a standalone reference. Give it a heading like "Quick Reference: Dosing Cheat Sheet" so readers bookmark it. Keep it scannable — max 6 rows, 4 columns.
+
+   ---
+
+   **CRITICAL: Human Tone Variation — REQUIRED in every article**
+
+   Every article must shift tone AT LEAST 3 times across its length. These tones must appear in the same piece — not different articles having different tones:
+
+   - **Conversational opener** (relatable, direct address, no jargon)
+   - **Technical authority section** (precise, data-dense, mechanism-focused)
+   - **Honest/cautionary moment** ("Here's where most people go wrong…" or "I'll be direct: this won't work for everyone")
+   - **Motivational close** (action-oriented, confident, forward-looking)
+
+   **Specific language rules to signal human writing:**
+   - Use hedging where warranted: "may," "suggests," "the evidence points toward" — but only when the science actually is uncertain. Don't over-hedge confident findings.
+   - Use colloquialisms at transition points: "Here's the thing though," "The short answer is yes, but," "Let's cut through the noise on this."
+   - Use parenthetical asides for quick clarifications: "(that's roughly 0.7g per pound of bodyweight)" or "(think Romanian deadlifts or walking lunges)"
+   - Use "you" framing to personalize recommendations: "If you're training 4+ days a week, the math changes."
+   - Vary sentence length deliberately: mix short punchy sentences with longer technical explanations. A string of 8 identical-length sentences signals AI.
+   - Vary paragraph length: some 1–2 sentence paragraphs for emphasis, some longer explanatory ones. Never all the same length.
+
+   **What to AVOID (AI red flags):**
+   - Never start 3+ consecutive sections with the same sentence structure
+   - Never use "In conclusion," "In summary," or "It's important to note that"
+   - Never write "As mentioned earlier" or "As noted above"
+   - Never say "X is crucial for your fitness journey" or "your wellness goals"
+   - Never open every H2 section with a definition of the term in the heading
+   - Never end every paragraph with a one-line summary that restates the paragraph
+   - Avoid over-polished transitions that sound like transitions: "Now that we've covered X, let's turn to Y"
+
+   ---
+
    **Frontmatter:**
    - `title`, `description` (150–160 chars), `category`, `date` (today YYYY-MM-DD), `readTime`, `featured: false`, `image: ""`
    - Primary keyword in H1, first paragraph, ≥2 H2s, and meta description
@@ -351,7 +521,7 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
    - Cite real studies inline using what you fetched: "A 2024 meta-analysis in the *British Journal of Sports Medicine* found…" — use real authors, journals, and years from actual fetched content, never fabricated citations.
    - Include actual numbers throughout: effect sizes, percentage improvements, mg/kg dosages, rep ranges with rationale, sample sizes. Vague language ("studies suggest it may help") is not acceptable.
    - Write to the target word count — do not truncate early.
-   - Include ≥1 comparison table, numbered protocol, or data-backed callout per major section.
+   - Include ≥2 original data assets from the list above (framework, table, protocol, cheat sheet, etc.) per major section.
 
    **Product placement — follow all 6 Product Selection Rules provided above:**
    - Each `<AffiliateProductCard productId="..." />` must appear inside the specific section where that product is discussed
@@ -360,10 +530,12 @@ Each sub-agent prompt must be fully self-contained (sub-agents start with no con
    - NEVER recommend a product that isn't directly relevant to the article's topic
 
    **Structure:**
-   - Open with a hook grounded in something you researched — a surprising study result, a practice being challenged by new data, a specific performance gap, or a real gap in mainstream advice
+   - Use one of the 6 structural patterns above — NOT the default Definition → Explanation → Plan
+   - Open with a hook tied to something you researched: a surprising study result, a contrarian finding, a specific performance gap, a scenario that places the reader in the problem
    - Use H2s for major sections, H3s for subsections
-   - Include a "Key Takeaways" box near the top for skimmers — make these specific numbers and protocols, not vague platitudes (e.g. "5g creatine monohydrate daily increases 1RM by ~8% in trained athletes" not "creatine helps with strength")
-   - End with `## Final Thoughts` + soft CTA to related LeanBodyEngine articles or the newsletter
+   - Include a "Key Takeaways" box near the top — specific numbers and protocols only (e.g. "5g creatine monohydrate daily increases 1RM by ~8% in trained athletes" not "creatine helps with strength")
+   - Vary paragraph and sentence lengths deliberately throughout
+   - End with `## Final Thoughts` — write it as a genuine editorial opinion, not a summary. Take a stance.
 
 ---
 
