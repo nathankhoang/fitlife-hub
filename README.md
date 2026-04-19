@@ -4,7 +4,7 @@ An opinionated, evidence-first fitness and wellness content site. Static-first M
 
 **Live:** [fitlife-hub-omega.vercel.app](https://fitlife-hub-omega.vercel.app)
 
-> **Spinning this up for a new client?** See [`docs/CLIENT_SETUP.md`](docs/CLIENT_SETUP.md) — the end-to-end onboarding checklist. Rebranding is driven by `client.config.json` + `npm run rebrand`; everything identity-related reads from `lib/brand.ts`.
+> **Spinning this up for a new client?** See [`docs/CLIENT_SETUP.md`](docs/CLIENT_SETUP.md) — the end-to-end onboarding checklist. Fast path: client fills the [onboarding Google Form](docs/ONBOARDING_FORM.md), you run the Apps Script exporter to get `client.config.json`, then `/onboard-client` in Claude Code runs the rebrand + content reset + prints the remaining manual steps.
 >
 > **Turning creator videos into articles?** `npm run video:article -- <URL> --category <slug>` transcribes a YouTube/TikTok/Reel via Whisper and structures the result into an MDX draft with Claude — voice preserved, no typing required from the creator. Setup notes in `docs/CLIENT_SETUP.md` step 5b.
 
