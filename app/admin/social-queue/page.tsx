@@ -1,6 +1,7 @@
 import { getSocialQueue } from "@/lib/social/queue";
 import type { SocialPostEntry } from "@/lib/social/types";
 import { SocialPostCard } from "./_components/SocialPostCard";
+import { AutoRefresh } from "./_components/AutoRefresh";
 import { approveAllForArticleAction } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -53,9 +54,11 @@ export default async function SocialQueuePage() {
   const all = await getSocialQueue();
   const counts = statusCounts(all);
   const groups = groupByArticle(all);
+  const hasInFlight = all.some((e) => e.status === "pending" || e.status === "generating" || e.status === "posting");
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {hasInFlight && <AutoRefresh intervalMs={5000} />}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Social Queue</h1>
