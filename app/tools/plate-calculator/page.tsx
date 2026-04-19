@@ -3,6 +3,7 @@ import Link from "next/link";
 import PlateCalculator from "@/components/PlateCalculator";
 import FaqSection from "@/components/FaqSection";
 import { SITE_URL } from "@/lib/site";
+import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "Barbell Plate Calculator — Load Any Weight",
@@ -74,7 +75,7 @@ export default function PlateCalculatorPage() {
   const appSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "LeanBodyEngine Barbell Plate Calculator",
+    name: `${brand.name} Barbell Plate Calculator`,
     url: pageUrl,
     applicationCategory: "HealthApplication",
     operatingSystem: "Web",
@@ -87,7 +88,7 @@ export default function PlateCalculatorPage() {
     },
     publisher: {
       "@type": "Organization",
-      name: "LeanBodyEngine",
+      name: brand.name,
       url: SITE_URL,
     },
   };

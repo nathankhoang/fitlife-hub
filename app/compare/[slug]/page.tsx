@@ -11,6 +11,7 @@ import {
 import type { AffiliateProduct } from "@/lib/affiliates";
 import FaqSection from "@/components/FaqSection";
 import { SITE_URL } from "@/lib/site";
+import { brand } from "@/lib/brand";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -80,7 +81,7 @@ export default async function ComparisonPage({ params }: Props) {
         },
         author: {
           "@type": "Organization",
-          name: "LeanBodyEngine",
+          name: brand.name,
           url: SITE_URL,
         },
       },

@@ -3,6 +3,7 @@ import Link from "next/link";
 import OneRepMaxCalculator from "@/components/OneRepMaxCalculator";
 import FaqSection from "@/components/FaqSection";
 import { SITE_URL } from "@/lib/site";
+import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "1RM Calculator — Estimate Your One-Rep Max",
@@ -74,7 +75,7 @@ export default function OneRepMaxCalculatorPage() {
   const appSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "LeanBodyEngine 1RM Calculator",
+    name: `${brand.name} 1RM Calculator`,
     url: pageUrl,
     applicationCategory: "HealthApplication",
     operatingSystem: "Web",
@@ -87,7 +88,7 @@ export default function OneRepMaxCalculatorPage() {
     },
     publisher: {
       "@type": "Organization",
-      name: "LeanBodyEngine",
+      name: brand.name,
       url: SITE_URL,
     },
   };

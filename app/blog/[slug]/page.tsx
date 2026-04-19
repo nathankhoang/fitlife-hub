@@ -11,6 +11,7 @@ import {
   categoryLabels,
 } from "@/lib/articles";
 import { SITE_URL } from "@/lib/site";
+import { brand } from "@/lib/brand";
 import CategoryBadge from "@/components/CategoryBadge";
 import ArticleCard from "@/components/ArticleCard";
 import AffiliateProductCard from "@/components/AffiliateProductCard";
@@ -144,21 +145,30 @@ export default async function ArticlePage({ params }: Props) {
     dateModified: modifiedIso,
     image: absoluteHeroImage,
     mainEntityOfPage: { "@type": "WebPage", "@id": pageUrl },
-    author: {
-      "@type": "Person",
-      name: "Nathan K Hoang",
-      sameAs: [
-        "https://www.facebook.com/LeanBodyEngine",
-        "https://www.instagram.com/leanbodyengine/",
-      ],
-    },
-    reviewedBy: {
-      "@type": "Person",
-      name: "Nathan K Hoang",
-    },
+    author: brand.author.emitPersonSchema
+      ? {
+          "@type": "Person",
+          name: brand.author.name,
+          ...(brand.socials.length > 0
+            ? { sameAs: brand.socials.map((s) => s.url) }
+            : {}),
+        }
+      : {
+          "@type": "Organization",
+          name: brand.name,
+          url: SITE_URL,
+        },
+    ...(brand.author.emitPersonSchema
+      ? {
+          reviewedBy: {
+            "@type": "Person",
+            name: brand.author.name,
+          },
+        }
+      : {}),
     publisher: {
       "@type": "Organization",
-      name: "LeanBodyEngine",
+      name: brand.name,
       url: SITE_URL,
       logo: {
         "@type": "ImageObject",
@@ -250,9 +260,9 @@ export default async function ArticlePage({ params }: Props) {
               <div className="flex items-center gap-4 text-sm text-[#A3A3A3] border-t border-b border-[#F5F5F5] py-3 flex-wrap">
                 <div className="flex items-center gap-2">
                   <span className="w-7 h-7 rounded-full bg-[#059669]/10 text-[#059669] text-[10px] font-bold flex items-center justify-center">
-                    LBE
+                    {brand.shortName}
                   </span>
-                  <span className="text-[#525252] font-medium text-sm">LeanBodyEngine Editorial Team</span>
+                  <span className="text-[#525252] font-medium text-sm">{brand.author.name}</span>
                 </div>
                 <span>·</span>
                 <span>Published {formatDate(article.date)}</span>
@@ -315,7 +325,7 @@ export default async function ArticlePage({ params }: Props) {
                   About this site
                 </p>
                 <p className="text-sm text-white/70 leading-relaxed mb-4">
-                  LeanBodyEngine publishes evidence-based fitness guides — free to read, with no sponsored content.
+                  {brand.author.bio}
                 </p>
                 <Link
                   href="/#newsletter"

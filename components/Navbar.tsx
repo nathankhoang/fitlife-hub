@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { brand } from "@/lib/brand";
 
 const categories = [
   { slug: "home-workouts", label: "Workouts" },
@@ -24,10 +25,10 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 flex-shrink-0">
             <span className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white text-[11px] font-bold tracking-tight">
-              LBE
+              {brand.shortName}
             </span>
             <span className="text-lg font-bold text-[#0A0A0A] tracking-tight">
-              LeanBodyEngine
+              {brand.name}
             </span>
           </Link>
 

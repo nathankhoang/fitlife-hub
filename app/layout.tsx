@@ -4,23 +4,23 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { SITE_URL } from "@/lib/site";
+import { brand } from "@/lib/brand";
 
 const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
 const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], variable: "--font-jakarta", display: "swap" });
 
-const siteTitle = "LeanBodyEngine — Fitness, Health & Wellness";
-const siteDescription =
-  "Expert fitness tips, supplement reviews, workout guides, and diet plans to help you build a healthier life.";
+const siteTitle = `${brand.name} — Fitness, Health & Wellness`;
+const siteDescription = brand.description;
 
 export const metadata: Metadata = {
   title: {
     default: siteTitle,
-    template: "%s | LeanBodyEngine",
+    template: `%s | ${brand.name}`,
   },
   description: siteDescription,
   metadataBase: new URL(SITE_URL),
   openGraph: {
-    siteName: "LeanBodyEngine",
+    siteName: brand.name,
     title: siteTitle,
     description: siteDescription,
     url: "/",
@@ -40,25 +40,24 @@ export const metadata: Metadata = {
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  name: "LeanBodyEngine",
+  name: brand.name,
   url: SITE_URL,
   logo: `${SITE_URL}/opengraph-image`,
   description: siteDescription,
-  sameAs: [
-    "https://www.facebook.com/LeanBodyEngine",
-    "https://www.instagram.com/leanbodyengine/",
-  ],
+  ...(brand.socials.length > 0
+    ? { sameAs: brand.socials.map((s) => s.url) }
+    : {}),
 };
 
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "LeanBodyEngine",
+  name: brand.name,
   url: SITE_URL,
   description: siteDescription,
   publisher: {
     "@type": "Organization",
-    name: "LeanBodyEngine",
+    name: brand.name,
     url: SITE_URL,
   },
 };

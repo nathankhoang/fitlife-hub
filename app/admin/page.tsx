@@ -4,6 +4,7 @@ import Link from "next/link";
 import CreatePostConfig from "./_components/CreatePostConfig";
 import fs from "fs";
 import path from "path";
+import { brand } from "@/lib/brand";
 
 export const dynamic = "force-dynamic";
 
@@ -80,7 +81,7 @@ export default async function AdminPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-white mb-1">Dashboard</h1>
-        <p className="text-white/40 text-sm">LeanBodyEngine admin panel</p>
+        <p className="text-white/40 text-sm">{brand.name} admin panel</p>
       </div>
 
       {/* ── Overview ── */}

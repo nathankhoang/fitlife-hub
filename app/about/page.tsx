@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import NewsletterCTA from "@/components/NewsletterCTA";
+import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "About",
-  description:
-    "Learn about LeanBodyEngine — our mission to deliver honest, evidence-based fitness and wellness content.",
+  description: `Learn about ${brand.name} — our mission to deliver honest, evidence-based fitness and wellness content.`,
 };
 
 export default function AboutPage() {
@@ -31,7 +31,7 @@ export default function AboutPage() {
         <div className="prose max-w-none">
           <h2>Our mission</h2>
           <p>
-            LeanBodyEngine was built to cut through the noise in the fitness and
+            {brand.name} was built to cut through the noise in the fitness and
             wellness industry. There&apos;s a lot of misinformation out there —
             from overhyped supplements to extreme diets that don&apos;t work
             long-term. Our mission is simple: provide honest, practical, and
@@ -68,7 +68,7 @@ export default function AboutPage() {
 
           <h2>How we make money</h2>
           <p>
-            LeanBodyEngine participates in the Amazon Associates program. When
+            {brand.name} participates in the Amazon Associates program. When
             you click a product link and make a purchase, we may earn a small
             commission at no additional cost to you. This helps keep the site
             running and all content free to read.

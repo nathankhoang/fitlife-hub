@@ -3,6 +3,7 @@ import Link from "next/link";
 import BodyFatCalculator from "@/components/BodyFatCalculator";
 import FaqSection from "@/components/FaqSection";
 import { SITE_URL } from "@/lib/site";
+import { brand } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "Body Fat Calculator — US Navy Method",
@@ -74,7 +75,7 @@ export default function BodyFatCalculatorPage() {
   const appSchema = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    name: "LeanBodyEngine Body Fat Calculator",
+    name: `${brand.name} Body Fat Calculator`,
     url: pageUrl,
     applicationCategory: "HealthApplication",
     operatingSystem: "Web",
@@ -87,7 +88,7 @@ export default function BodyFatCalculatorPage() {
     },
     publisher: {
       "@type": "Organization",
-      name: "LeanBodyEngine",
+      name: brand.name,
       url: SITE_URL,
     },
   };
