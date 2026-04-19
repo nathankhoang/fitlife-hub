@@ -20,6 +20,7 @@ import NewsletterCTA from "@/components/NewsletterCTA";
 import ReadingProgress from "@/components/ReadingProgress";
 import TableOfContents, { type TocHeading } from "@/components/TableOfContents";
 import FaqSection from "@/components/FaqSection";
+import AuthorCard from "@/components/AuthorCard";
 import Breadcrumb from "@/components/Breadcrumb";
 import { buildProductListSchema } from "@/lib/product-schema";
 import {
@@ -148,7 +149,19 @@ export default async function ArticlePage({ params }: Props) {
     author: brand.author.emitPersonSchema
       ? {
           "@type": "Person",
+          "@id": `${SITE_URL}${brand.author.profileUrl}#author`,
           name: brand.author.name,
+          url: `${SITE_URL}${brand.author.profileUrl}`,
+          ...(brand.author.photoUrl
+            ? {
+                image: brand.author.photoUrl.startsWith("http")
+                  ? brand.author.photoUrl
+                  : `${SITE_URL}${brand.author.photoUrl}`,
+              }
+            : {}),
+          ...(brand.author.credentials
+            ? { jobTitle: brand.author.credentials }
+            : {}),
           ...(brand.socials.length > 0
             ? { sameAs: brand.socials.map((s) => s.url) }
             : {}),
@@ -162,6 +175,7 @@ export default async function ArticlePage({ params }: Props) {
       ? {
           reviewedBy: {
             "@type": "Person",
+            "@id": `${SITE_URL}${brand.author.profileUrl}#author`,
             name: brand.author.name,
           },
         }
@@ -258,12 +272,17 @@ export default async function ArticlePage({ params }: Props) {
                 {article.description}
               </p>
               <div className="flex items-center gap-4 text-sm text-[#A3A3A3] border-t border-b border-[#F5F5F5] py-3 flex-wrap">
-                <div className="flex items-center gap-2">
+                <Link
+                  href={brand.author.profileUrl}
+                  className="flex items-center gap-2 group"
+                >
                   <span className="w-7 h-7 rounded-full bg-[#059669]/10 text-[#059669] text-[10px] font-bold flex items-center justify-center">
                     {brand.shortName}
                   </span>
-                  <span className="text-[#525252] font-medium text-sm">{brand.author.name}</span>
-                </div>
+                  <span className="text-[#525252] font-medium text-sm group-hover:text-[#059669] transition-colors">
+                    {brand.author.name}
+                  </span>
+                </Link>
                 <span>·</span>
                 <span>Published {formatDate(article.date)}</span>
                 {article.updatedDate && (
@@ -274,8 +293,14 @@ export default async function ArticlePage({ params }: Props) {
                 )}
                 <span>·</span>
                 <span>{article.readTime} min read</span>
-                <span>·</span>
-                <span className="text-xs text-[#A3A3A3]">Reviewed by Nathan K Hoang</span>
+                {brand.author.emitPersonSchema && (
+                  <>
+                    <span>·</span>
+                    <span className="text-xs text-[#A3A3A3]">
+                      Reviewed by {brand.author.name}
+                    </span>
+                  </>
+                )}
               </div>
             </div>
 
@@ -311,6 +336,13 @@ export default async function ArticlePage({ params }: Props) {
             {/* FAQ section (visible content required for FAQPage schema) */}
             {article.faq && article.faq.length > 0 && (
               <FaqSection items={article.faq} />
+            )}
+
+            {/* Author card — E-E-A-T signal */}
+            {brand.author.emitPersonSchema && (
+              <div className="mt-12">
+                <AuthorCard variant="compact" linkToProfile />
+              </div>
             )}
           </div>
 
