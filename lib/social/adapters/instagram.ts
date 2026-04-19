@@ -56,6 +56,39 @@ async function createContainer(
   return json.id;
 }
 
+async function waitForContainerReady(
+  containerId: string,
+  token: string,
+): Promise<void> {
+  // IG processes the uploaded image asynchronously. Publishing before
+  // status_code=FINISHED returns "Media ID is not available" (code 9007).
+  // Poll for up to ~30s before giving up.
+  const endpoint = `https://graph.instagram.com/${GRAPH_VERSION}/${containerId}?fields=status_code,status&access_token=${encodeURIComponent(token)}`;
+  const delaysMs = [1500, 2000, 2500, 3000, 3500, 4000, 5000, 6000];
+  let last: { status_code?: string; status?: string } = {};
+  for (const delay of delaysMs) {
+    await new Promise((r) => setTimeout(r, delay));
+    const res = await fetch(endpoint);
+    if (!res.ok) continue;
+    last = (await res.json()) as { status_code?: string; status?: string };
+    if (last.status_code === "FINISHED") return;
+    if (last.status_code === "ERROR" || last.status_code === "EXPIRED") {
+      throw new AdapterError(
+        `IG container ${last.status_code}: ${last.status ?? "no detail"}`,
+        "instagram",
+        undefined,
+        last,
+      );
+    }
+  }
+  throw new AdapterError(
+    `IG container still ${last.status_code ?? "pending"} after polling`,
+    "instagram",
+    undefined,
+    last,
+  );
+}
+
 async function publishContainer(
   igUserId: string,
   token: string,
@@ -102,6 +135,7 @@ export const instagramAdapter: PlatformAdapter = {
     if (!entry.caption) throw new AdapterError("caption missing", "instagram");
 
     const containerId = await createContainer(igUserId, token, imageUrl, entry.caption);
+    await waitForContainerReady(containerId, token);
     const mediaId = await publishContainer(igUserId, token, containerId);
     const permalink = await getPermalink(mediaId, token);
 
