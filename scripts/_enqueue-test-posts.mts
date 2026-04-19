@@ -13,11 +13,14 @@ const base = process.env.BLOB_PUBLIC_BASE!;
 
 const SLUG = process.argv[2] ?? "zone-2-cardio-performance-science";
 
-const q = await (await fetch(`${base}/queue.json?ts=${Date.now()}`)).json();
-const article = q.find((e: any) => e.slug === SLUG);
+type ArticleQueueEntry = { slug: string; title: string; description: string; category: string };
+type SocialEntry = { id: string; platform: string; [k: string]: unknown };
+
+const q = (await (await fetch(`${base}/queue.json?ts=${Date.now()}`)).json()) as ArticleQueueEntry[];
+const article = q.find((e) => e.slug === SLUG);
 if (!article) { console.error(`article not found: ${SLUG}`); process.exit(1); }
 
-const current = await (await fetch(`${base}/social-queue.json?ts=${Date.now()}`)).json();
+const current = (await (await fetch(`${base}/social-queue.json?ts=${Date.now()}`)).json()) as SocialEntry[];
 
 const CATEGORY_LABELS: Record<string, string> = {
   "home-workouts": "Home Workouts", supplements: "Supplement Reviews",

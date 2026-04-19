@@ -9,8 +9,8 @@ process.loadEnvFile(path.join(ROOT, ".env.local"));
 const base = process.env.BLOB_PUBLIC_BASE;
 if (!base) throw new Error("BLOB_PUBLIC_BASE not set");
 
-const q = await (await fetch(`${base}/queue.json?ts=${Date.now()}`)).json();
-const pub = q.filter((e: any) => e.status === "published");
+const q = (await (await fetch(`${base}/queue.json?ts=${Date.now()}`)).json()) as { slug: string; status: string }[];
+const pub = q.filter((e) => e.status === "published");
 console.log(`Checking ${pub.length} published articles...\n`);
 
 const broken: { slug: string; msg: string; text: string }[] = [];

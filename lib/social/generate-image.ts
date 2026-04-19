@@ -381,19 +381,17 @@ async function renderStatCallout(input: GenerateImageInput, spec: ImageSpec, fon
   if (!input.statValue || !input.statContext) {
     throw new Error("generateSocialImage: statValue and statContext are required for variant=stat-callout");
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const svg = await satori(
-    statCalloutTree(
-      {
-        title: input.title,
-        categoryLabel: input.categoryLabel,
-        statValue: input.statValue,
-        statContext: input.statContext,
-      },
-      spec,
-    ) as any,
-    { width: spec.width, height: spec.height, fonts },
-  );
+  const tree = statCalloutTree(
+    {
+      title: input.title,
+      categoryLabel: input.categoryLabel,
+      statValue: input.statValue,
+      statContext: input.statContext,
+    },
+    spec,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ) as any;
+  const svg = await satori(tree, { width: spec.width, height: spec.height, fonts });
   const png = new Resvg(svg, { background: "#0A0A0A" }).render().asPng();
   return sharp(png).jpeg({ quality: 88 }).toBuffer();
 }
