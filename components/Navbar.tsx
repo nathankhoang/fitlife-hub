@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { brand } from "@/lib/brand";
 
 const categories = [
@@ -15,6 +15,91 @@ const categories = [
 
 const NAV_LINK =
   "text-sm font-medium text-[#525252] hover:text-[#0A0A0A] transition-colors";
+
+function SubscribePopover() {
+  const [open, setOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    if (open) document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [open]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("submitting");
+    setErrorMsg("");
+    try {
+      const res = await fetch("/api/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, hp: "" }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setStatus("success");
+        setEmail("");
+      } else {
+        setStatus("error");
+        setErrorMsg(data.error === "invalid_email" ? "Please enter a valid email." : "Something went wrong. Try again.");
+      }
+    } catch {
+      setStatus("error");
+      setErrorMsg("Network error. Try again.");
+    }
+  }
+
+  return (
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => { setOpen(!open); setStatus("idle"); setErrorMsg(""); }}
+        className="text-sm font-semibold bg-[#059669] hover:bg-[#047857] text-white px-4 py-2 rounded-lg transition-colors"
+      >
+        Subscribe
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-[#E5E5E5] rounded-xl shadow-lg p-4 z-50">
+          {status === "success" ? (
+            <div className="text-center py-2">
+              <div className="text-[#059669] font-semibold text-sm mb-1">You&apos;re in!</div>
+              <p className="text-[#525252] text-xs">Check your inbox for a welcome email.</p>
+            </div>
+          ) : (
+            <>
+              <p className="text-sm font-semibold text-[#0A0A0A] mb-1">Get free fitness tips</p>
+              <p className="text-xs text-[#525252] mb-3">Weekly workouts, nutrition guides & supplement reviews.</p>
+              <form onSubmit={handleSubmit} className="flex flex-col gap-2">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  required
+                  autoFocus
+                  className="w-full border border-[#E5E5E5] rounded-lg px-3 py-2 text-sm text-[#0A0A0A] placeholder:text-[#A3A3A3] focus:outline-none focus:ring-2 focus:ring-[#059669] focus:border-transparent"
+                />
+                {errorMsg && <p className="text-xs text-red-500">{errorMsg}</p>}
+                <button
+                  type="submit"
+                  disabled={status === "submitting"}
+                  className="w-full bg-[#059669] hover:bg-[#047857] text-white text-sm font-semibold py-2 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  {status === "submitting" ? "Subscribing…" : "Subscribe — it's free"}
+                </button>
+              </form>
+            </>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -94,12 +179,7 @@ export default function Navbar() {
             <Link href="/about" className={NAV_LINK}>
               About
             </Link>
-            <Link
-              href="/#newsletter"
-              className="text-sm font-semibold bg-[#059669] hover:bg-[#047857] text-white px-4 py-2 rounded-lg transition-colors"
-            >
-              Subscribe
-            </Link>
+            <SubscribePopover />
           </div>
 
           <button
