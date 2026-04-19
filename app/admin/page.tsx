@@ -1,5 +1,6 @@
 import { getQueue, QueueEntry } from "@/lib/queue";
 import { categoryLabels } from "@/lib/articles";
+import { getPublicationStats, listSubscribers } from "@/lib/beehiiv";
 import Link from "next/link";
 import CreatePostConfig from "./_components/CreatePostConfig";
 import fs from "fs";
@@ -68,7 +69,12 @@ function ArticleRow({ entry }: { entry: QueueEntry }) {
 }
 
 export default async function AdminPage() {
-  const queue = await getQueue();
+  const [queue, beehiivStats, beehiivPage] = await Promise.all([
+    getQueue(),
+    getPublicationStats(),
+    listSubscribers(),
+  ]);
+  const beehiivSubscribers = beehiivPage.subscribers;
   const state = readState();
 
   const drafts = queue.filter((e) => e.status === "draft");
@@ -216,21 +222,67 @@ export default async function AdminPage() {
 
       {/* ── CRM ── */}
       <section id="crm">
-        <h2 className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-4">CRM — Email Subscribers</h2>
-        <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center">
-          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3">
-            <span className="text-lg">✉️</span>
-          </div>
-          <h3 className="text-white font-semibold mb-1">CRM not yet connected</h3>
-          <p className="text-white/40 text-sm max-w-sm mx-auto">
-            Connect your CRM provider to view subscriber counts, segments, and campaign performance here.
-          </p>
-          <div className="mt-5 flex items-center justify-center gap-2">
-            <div className="text-xs text-white/30 border border-dashed border-white/20 rounded-lg px-4 py-2">
-              Recommended: ConvertKit · Mailchimp · Klaviyo · Resend
+        <h2 className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-4">CRM — Beehiiv Subscribers</h2>
+        {beehiivStats ? (
+          <div className="space-y-4">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                <div className="text-white/40 text-xs font-medium uppercase tracking-wide mb-1">Active Subscribers</div>
+                <div className="text-white text-3xl font-bold">{beehiivStats.activeSubscribers.toLocaleString()}</div>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                <div className="text-white/40 text-xs font-medium uppercase tracking-wide mb-1">Avg. Open Rate</div>
+                <div className="text-white text-3xl font-bold">{beehiivStats.averageOpenRate}%</div>
+              </div>
+              <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                <div className="text-white/40 text-xs font-medium uppercase tracking-wide mb-1">Avg. Click Rate</div>
+                <div className="text-white text-3xl font-bold">{beehiivStats.averageClickRate}%</div>
+              </div>
             </div>
+            {beehiivSubscribers.length > 0 && (
+              <div className="bg-white/5 border border-white/10 rounded-xl overflow-hidden">
+                <div className="px-4 py-3 border-b border-white/10 flex items-center justify-between">
+                  <span className="text-white/60 text-xs font-semibold uppercase tracking-widest">Recent Subscribers</span>
+                  <span className="text-white/30 text-xs">{beehiivSubscribers.length} shown</span>
+                </div>
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/5">
+                      <th className="text-left px-4 py-2 text-white/30 text-xs font-medium">Email</th>
+                      <th className="text-left px-4 py-2 text-white/30 text-xs font-medium">Status</th>
+                      <th className="text-left px-4 py-2 text-white/30 text-xs font-medium">Joined</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5">
+                    {beehiivSubscribers.map((sub) => (
+                      <tr key={sub.id}>
+                        <td className="px-4 py-2 text-white/70">{sub.email}</td>
+                        <td className="px-4 py-2">
+                          <span className="text-xs bg-green-500/10 text-green-400 px-2 py-0.5 rounded-full font-medium">{sub.status}</span>
+                        </td>
+                        <td className="px-4 py-2 text-white/40 text-xs">
+                          {typeof sub.created === "number"
+                            ? new Date(sub.created * 1000).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })
+                            : new Date(sub.created).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
-        </div>
+        ) : (
+          <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3">
+              <span className="text-lg">✉️</span>
+            </div>
+            <h3 className="text-white font-semibold mb-1">Beehiiv not connected</h3>
+            <p className="text-white/40 text-sm max-w-sm mx-auto">
+              Set <code className="bg-white/5 px-1 rounded">BEEHIIV_API_KEY</code> in your Vercel environment variables to see subscriber stats here.
+            </p>
+          </div>
+        )}
       </section>
 
       {/* ── Content Generation ── */}
