@@ -696,5 +696,255 @@
     "featured": false,
     "readTime": 7,
     "affiliateProductIds": []
+  },
+  {
+    "id": "7-day-meal-plan-weight-loss",
+    "slug": "7-day-meal-plan-weight-loss",
+    "title": "7-Day Meal Plan for Weight Loss (Simple & Effective)",
+    "description": "A realistic 7-day meal plan for weight loss with ~1,500 calories per day. Includes breakfast, lunch, dinner, and snacks with easy-to-find ingredients.",
+    "category": "weight-loss",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2025-03-20T00:00:00.000Z",
+    "createdAt": "2025-03-20T00:00:00.000Z",
+    "featured": false,
+    "readTime": 10,
+    "affiliateProductIds": []
+  },
+  {
+    "id": "hiit-vs-steady-state-cardio",
+    "slug": "hiit-vs-steady-state-cardio",
+    "title": "HIIT vs Steady-State Cardio: Which Burns More Fat?",
+    "description": "The HIIT vs steady-state cardio debate explained with research. Find out which is better for fat loss, heart health, and your specific goals.",
+    "category": "weight-loss",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2025-03-10T00:00:00.000Z",
+    "createdAt": "2025-03-10T00:00:00.000Z",
+    "featured": false,
+    "readTime": 9,
+    "affiliateProductIds": []
+  },
+  {
+    "id": "home-workouts-beginners",
+    "slug": "home-workouts-beginners",
+    "title": "10 Best Home Workouts for Beginners (No Equipment Needed)",
+    "description": "Start your fitness journey at home with these 10 beginner-friendly workouts that require zero equipment. Build strength, burn fat, and improve endurance.",
+    "category": "home-workouts",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2025-04-01T00:00:00.000Z",
+    "createdAt": "2025-04-01T00:00:00.000Z",
+    "featured": true,
+    "readTime": 8,
+    "affiliateProductIds": []
+  },
+  {
+    "id": "intermittent-fasting-beginners",
+    "slug": "intermittent-fasting-beginners",
+    "title": "Intermittent Fasting: The Beginner's Complete Guide",
+    "description": "Everything beginners need to know about intermittent fasting — the best protocols, what to eat, what to drink during a fast, and the real science behind it.",
+    "category": "wellness",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2025-03-05T00:00:00.000Z",
+    "createdAt": "2025-03-05T00:00:00.000Z",
+    "featured": false,
+    "readTime": 11,
+    "affiliateProductIds": []
+  },
+  {
+    "id": "keto-diet-beginners-guide",
+    "slug": "keto-diet-beginners-guide",
+    "title": "Keto Diet Complete Guide for Beginners (2025)",
+    "description": "Everything you need to know about starting a ketogenic diet — what to eat, what to avoid, how to get into ketosis, and whether keto is right for you.",
+    "category": "diet-nutrition",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2025-03-28T00:00:00.000Z",
+    "createdAt": "2025-03-28T00:00:00.000Z",
+    "featured": false,
+    "readTime": 12,
+    "affiliateProductIds": []
+  },
+  {
+    "id": "zone-2-cardio-performance-science",
+    "slug": "zone-2-cardio-performance-science",
+    "title": "Zone 2 Cardio: What the Performance Science Actually Shows",
+    "description": "Zone 2 training dominates fitness podcasts, but the research is more nuanced than the hype. Here's what the evidence actually says about fat oxidation, VO2max, and who benefits most.",
+    "category": "wellness",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-19T00:00:00.000Z",
+    "createdAt": "2026-04-19T00:00:00.000Z",
+    "featured": false,
+    "readTime": 14,
+    "affiliateProductIds": [
+      "fitness-tracker-fitbit",
+      "compression-socks",
+      "magnesium-glycinate"
+    ]
+  },
+  {
+    "id": "tongkat-ali-testosterone-research",
+    "slug": "tongkat-ali-testosterone-research",
+    "title": "Tongkat Ali and Testosterone: Separating the Science from the Supplement Hype",
+    "description": "Tongkat ali went viral after Huberman's endorsement. But the clinical evidence tells a more specific story — and it's not the one supplement companies want you to hear.",
+    "category": "supplements",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-19T00:00:00.000Z",
+    "createdAt": "2026-04-19T00:00:00.000Z",
+    "featured": false,
+    "readTime": 12,
+    "affiliateProductIds": [
+      "ashwagandha-ksm66",
+      "vitamin-d3-sports-research",
+      "thorne-multivitamin"
+    ]
+  },
+  {
+    "id": "rpe-based-training-intermediate",
+    "slug": "rpe-based-training-intermediate",
+    "title": "RPE-Based Training: The Smarter Way Intermediate Lifters Should Be Programming",
+    "description": "Fixed percentage programs work for beginners. But after 12-18 months of training, autoregulating your loads with RPE unlocks faster strength and size gains. Here's the complete system.",
+    "category": "muscle-building",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-19T00:00:00.000Z",
+    "createdAt": "2026-04-19T00:00:00.000Z",
+    "featured": false,
+    "readTime": 17,
+    "affiliateProductIds": [
+      "adjustable-dumbbells",
+      "creatine-monohydrate-bulk",
+      "foam-roller"
+    ]
+  },
+  {
+    "id": "blood-flow-restriction-training-guide",
+    "slug": "blood-flow-restriction-training-guide",
+    "title": "Blood Flow Restriction Training: The Science Behind Low-Load Muscle Building",
+    "description": "BFR training builds muscle with weights as light as 20% of your max — and the evidence base is stronger than you'd think. Here's the science, the protocols, and who benefits most.",
+    "category": "muscle-building",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-19T00:00:00.000Z",
+    "createdAt": "2026-04-19T00:00:00.000Z",
+    "featured": false,
+    "readTime": 10,
+    "affiliateProductIds": [
+      "resistance-bands-set",
+      "bcaa-xtend",
+      "massage-gun-renpho"
+    ]
+  },
+  {
+    "id": "protein-distribution-muscle-synthesis",
+    "slug": "protein-distribution-muscle-synthesis",
+    "title": "Protein Distribution: Does When You Eat Protein Matter as Much as How Much?",
+    "description": "You're hitting your daily protein target — but are you leaving muscle gains on the table by how you distribute it? Here's what the MPS research says about optimal protein timing.",
+    "category": "diet-nutrition",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-19T00:00:00.000Z",
+    "createdAt": "2026-04-19T00:00:00.000Z",
+    "featured": false,
+    "readTime": 12,
+    "affiliateProductIds": [
+      "optimum-nutrition-gold-standard",
+      "quest-protein-bars",
+      "food-scale-etekcity"
+    ]
+  },
+  {
+    "id": "nmn-nr-nad-longevity-supplements",
+    "slug": "nmn-nr-nad-longevity-supplements",
+    "title": "NMN vs NR: What the NAD+ Longevity Research Actually Shows",
+    "description": "NMN and NR supplements have generated billions in sales on the back of David Sinclair's research. Here's what the actual human clinical trials show — and where the evidence runs out.",
+    "category": "supplements",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-19T00:00:00.000Z",
+    "createdAt": "2026-04-19T00:00:00.000Z",
+    "featured": false,
+    "readTime": 14,
+    "affiliateProductIds": [
+      "fish-oil-nordic-naturals",
+      "vitamin-d3-sports-research",
+      "collagen-vital-proteins"
+    ]
+  },
+  {
+    "id": "glp1-drug-users-muscle-preservation",
+    "slug": "glp1-drug-users-muscle-preservation",
+    "title": "On GLP-1 Drugs? Here's How to Not Lose Your Muscle",
+    "description": "Clinical trials show 25-40% of weight lost on GLP-1 drugs is lean mass. Here's the exact protein strategy and training approach to change that ratio in your favor.",
+    "category": "diet-nutrition",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-19T00:00:00.000Z",
+    "createdAt": "2026-04-19T00:00:00.000Z",
+    "featured": false,
+    "readTime": 12,
+    "affiliateProductIds": [
+      "orgain-organic-protein",
+      "myprotein-impact-whey",
+      "meal-prep-containers"
+    ]
+  },
+  {
+    "id": "deload-week-programming-guide",
+    "slug": "deload-week-programming-guide",
+    "title": "You're Probably Deloading Wrong (And It's Killing Your Gains)",
+    "description": "The 4-6 week deload schedule is largely arbitrary. Here's the research-backed framework for knowing exactly when you need a deload — and which type to take.",
+    "category": "muscle-building",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-19T00:00:00.000Z",
+    "createdAt": "2026-04-19T00:00:00.000Z",
+    "featured": false,
+    "readTime": 9,
+    "affiliateProductIds": [
+      "foam-roller",
+      "epsom-salt-dr-teals",
+      "magnesium-glycinate"
+    ]
+  },
+  {
+    "id": "cold-water-immersion-vs-heat-therapy",
+    "slug": "cold-water-immersion-vs-heat-therapy",
+    "title": "Cold Plunge vs Sauna: What the Recovery Research Actually Recommends",
+    "description": "Cold plunges are everywhere on social media. But emerging research suggests heat therapy may be the better recovery tool for athletes focused on muscle and performance. Here's the evidence.",
+    "category": "wellness",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-19T00:00:00.000Z",
+    "createdAt": "2026-04-19T00:00:00.000Z",
+    "featured": false,
+    "readTime": 10,
+    "affiliateProductIds": [
+      "epsom-salt-dr-teals",
+      "compression-socks",
+      "magnesium-glycinate"
+    ]
+  },
+  {
+    "id": "fat-loss-cardio-programming-advanced",
+    "slug": "fat-loss-cardio-programming-advanced",
+    "title": "Advanced Cardio Programming for Fat Loss: The Zone 2 + HIIT Hybrid System",
+    "description": "Zone 2 alone and HIIT alone both work. Together, in the right ratio, they work dramatically better. Here's the complete hybrid programming framework for serious fat loss.",
+    "category": "weight-loss",
+    "status": "published",
+    "scheduledDate": null,
+    "publishedDate": "2026-04-19T00:00:00.000Z",
+    "createdAt": "2026-04-19T00:00:00.000Z",
+    "featured": false,
+    "readTime": 20,
+    "affiliateProductIds": [
+      "jump-rope-wod-nation",
+      "fitness-tracker-fitbit",
+      "bcaa-xtend"
+    ]
   }
 ]
