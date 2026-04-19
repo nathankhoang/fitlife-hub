@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
   }
-  revalidateTag("queue", "max");
+  revalidateTag("queue");
   revalidatePath("/", "layout");
   revalidatePath("/blog", "layout");
   return NextResponse.json({ revalidated: true, timestamp: new Date().toISOString() });
