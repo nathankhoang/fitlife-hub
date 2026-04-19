@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import { getAllArticles, categoryLabels } from "@/lib/articles";
+import { comparisons } from "@/lib/comparisons";
 import { SITE_URL } from "@/lib/site";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -86,6 +87,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    {
+      url: `${SITE_URL}/compare`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.7,
+    },
+    ...comparisons.map((c) => ({
+      url: `${SITE_URL}/compare/${c.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
     ...categoryUrls,
     ...articleUrls,
   ];

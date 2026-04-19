@@ -50,6 +50,12 @@ export default function Navbar() {
               Tools
             </Link>
             <Link
+              href="/compare"
+              className="text-sm font-medium text-[#525252] hover:text-[#0A0A0A] transition-colors"
+            >
+              Compare
+            </Link>
+            <Link
               href="/about"
               className="text-sm font-medium text-[#525252] hover:text-[#0A0A0A] transition-colors"
             >
@@ -104,6 +110,13 @@ export default function Navbar() {
                 className="px-3 py-2 text-sm font-medium text-[#525252] hover:text-[#0A0A0A] hover:bg-[#FAFAFA] rounded-md transition-colors"
               >
                 Tools
+              </Link>
+              <Link
+                href="/compare"
+                onClick={() => setMenuOpen(false)}
+                className="px-3 py-2 text-sm font-medium text-[#525252] hover:text-[#0A0A0A] hover:bg-[#FAFAFA] rounded-md transition-colors"
+              >
+                Compare
               </Link>
               <Link
                 href="/about"
