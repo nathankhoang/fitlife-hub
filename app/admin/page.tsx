@@ -143,20 +143,23 @@ export default async function AdminPage() {
       {/* ── Social Queue ── */}
       <section id="social">
         <h2 className="text-white/60 text-xs font-semibold uppercase tracking-widest mb-4">Social Media Queue</h2>
-        <div className="bg-white/5 border border-white/10 rounded-xl p-8 text-center">
-          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center mx-auto mb-3">
-            <span className="text-lg">📱</span>
+        <Link
+          href="/admin/social-queue"
+          className="block bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition-colors"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center shrink-0">
+              <span className="text-lg">📱</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-white font-semibold mb-0.5">Review & approve social posts</h3>
+              <p className="text-white/40 text-sm">
+                Instagram + Facebook. Auto-enqueued on article publish, posted via the Meta Graph API on approval.
+              </p>
+            </div>
+            <span className="text-white/30 text-sm shrink-0">→</span>
           </div>
-          <h3 className="text-white font-semibold mb-1">Social posting not yet configured</h3>
-          <p className="text-white/40 text-sm max-w-sm mx-auto">
-            The social media autoposting feature is in development. Once wired up, scheduled posts for
-            Instagram, Twitter/X, and Facebook will appear here.
-          </p>
-          <div className="mt-4 inline-flex items-center gap-2 text-xs text-white/30 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-yellow-400"></span>
-            feat/social-autoposting — in progress
-          </div>
-        </div>
+        </Link>
       </section>
 
       {/* ── Analytics ── */}

@@ -14,10 +14,13 @@
     "video:article": "node --env-file=.env.local scripts/video-to-article.mjs"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.64",
+    "@ai-sdk/groq": "^3.0.35",
     "@anthropic-ai/sdk": "^0.68.0",
     "@fontsource/geist-sans": "^5.2.5",
     "@resvg/resvg-js": "^2.6.2",
     "@vercel/blob": "^2.3.3",
+    "ai": "^6.0.168",
     "gray-matter": "^4.0.3",
     "next": "16.2.4",
     "next-mdx-remote": "^6.0.0",
@@ -25,7 +28,9 @@
     "react-dom": "19.2.4",
     "rehype-slug": "^6.0.0",
     "resend": "^6.12.0",
-    "satori": "^0.26.0"
+    "satori": "^0.26.0",
+    "sharp": "^0.34.5",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -36,6 +41,7 @@
     "eslint-config-next": "16.2.4",
     "sharp": "^0.34.5",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

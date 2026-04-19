@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/process-scheduled",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/generate-social",
+      "schedule": "15 0 * * *"
     }
   ]
 }
