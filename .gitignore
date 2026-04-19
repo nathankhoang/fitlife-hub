@@ -54,3 +54,6 @@ next-env.d.ts
 
 # Local tooling backups
 *.bak
+
+# Per-client rebrand input — never committed (lives in each client's fork)
+client.config.json

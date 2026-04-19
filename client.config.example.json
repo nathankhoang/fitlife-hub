@@ -1,0 +1,43 @@
+{
+  "$schema": "./client.config.schema.json",
+  "_comment": "Copy this file to client.config.json and fill it in. Then run `npm run rebrand` to write lib/brand.ts.",
+
+  "name": "Jane Fitness",
+  "shortName": "JF",
+  "tagline": "Strength and nutrition coaching for women who lift.",
+  "description": "Evidence-based strength training, nutrition, and recovery content for lifters — no fluff, no supplement shilling.",
+  "legalName": "Jane Fitness LLC",
+
+  "author": {
+    "name": "Jane Doe",
+    "credentials": "CSCS, RD",
+    "bio": "Jane is a strength coach and registered dietitian writing evidence-first guides for lifters.",
+    "longBio": "I started Jane Fitness after a decade of coaching collegiate strength athletes and working as a clinical RD. The content here is everything I wish my clients could read in one place — the strength-training and nutrition research, translated into programs that actually hold up in the real world.",
+    "photoUrl": "/images/author/jane-doe.webp",
+    "profileUrl": "/about",
+    "knowsAbout": [
+      "Strength training",
+      "Powerlifting",
+      "Nutrition for athletes",
+      "Body composition",
+      "Recovery"
+    ],
+    "emitPersonSchema": true
+  },
+
+  "contact": {
+    "email": "hello@janefitness.com"
+  },
+
+  "affiliates": {
+    "amazonTag": "janefit-20",
+    "clickbankId": null,
+    "shareasaleId": null
+  },
+
+  "socials": [
+    { "platform": "instagram", "handle": "janedoefit", "url": "https://www.instagram.com/janedoefit/" },
+    { "platform": "youtube",   "handle": "janedoefit", "url": "https://www.youtube.com/@janedoefit" },
+    { "platform": "tiktok",    "handle": "janedoefit", "url": "https://www.tiktok.com/@janedoefit" }
+  ]
+}
