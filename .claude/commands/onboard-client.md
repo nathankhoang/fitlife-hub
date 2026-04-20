@@ -150,6 +150,11 @@ include that summary in your final report.
 
 ## Step 6 — Stage initial content
 
+The proposal commits to "20 articles at launch." `/create-post`
+generates 10 per invocation, so the plan is: paste batch 1 today,
+batch 2 within 24–48h. See `docs/CLIENT_WORKFLOW.md` §3 for the full
+pacing rationale.
+
 Using `_operator.starterTopics` (one topic per line), produce a block
 of ready-to-paste `/create-post` commands — one per topic, using
 `_operator.audience` and `_operator.activeCategories`. Format each as
@@ -159,6 +164,11 @@ few at a time:
 ```
 /create-post <topic> — audience: <audience> — categories: <active>
 ```
+
+If `starterTopics` has fewer than 15 entries, tell the operator:
+> After batch 1 is reviewed, ask Claude in this repo to suggest 10
+> more cornerstone topics for the niche, avoiding duplicates of
+> `_operator.starterTopics`. Then paste those as the second batch.
 
 **Do NOT run `/create-post` automatically.** Each invocation generates
 10 posts via ScheduleWakeup — running several in sequence could spiral
@@ -242,8 +252,9 @@ Step 7.5 — don't re-list them. Cover at minimum:
 2. **RESEND_API_KEY** — if newsletter was requested and the operator
    didn't export the key before Step 7.5, add it now:
    `vercel env add RESEND_API_KEY production`
-3. **Starter articles** — paste the `/create-post` commands from Step 6
-   (pace it: 1–2 batches a day max at first)
+3. **Starter articles** — paste the `/create-post` commands from Step 6.
+   Target 20 articles at launch: first batch today, second batch within
+   24–48h. See `docs/CLIENT_WORKFLOW.md` §3.
 4. **Product images** — for each product added in Step 5, drop a photo
    at `public/images/products/<id>.webp` and update priceRange + rating
 5. **About page body** — `app/about/page.tsx` editorial copy may want
@@ -269,6 +280,11 @@ At the bottom, print the context block:
 
 If the headshot download failed in Step 4, add "manually download from
 `<_operator.headshotSourceUrl>`" at the top of the checklist.
+
+Finally, remind the operator about the **ongoing** workflows (content
+submission, revisions, launch batch pacing) documented in
+`docs/CLIENT_WORKFLOW.md` — that doc is the reference for everything
+that happens after onboarding.
 
 ---
 
