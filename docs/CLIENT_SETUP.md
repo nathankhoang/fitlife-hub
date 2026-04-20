@@ -22,6 +22,33 @@ something doesn't fit the fast path.
 
 ---
 
+## Operator machine prerequisites (one-time setup)
+
+Before you run `/onboard-client` on any client repo, the machine you
+run it from needs:
+
+- **Node.js 20+** — for the scripts under `scripts/onboarding/`.
+- **GitHub CLI on `PATH`** — the provisioner shells out to `gh`. On
+  Windows, the installer defaults to `C:\Program Files\GitHub CLI`
+  which **is not added to `PATH` automatically**; add it via System
+  Properties → Environment Variables, or PowerShell:
+  ```powershell
+  [Environment]::SetEnvironmentVariable(
+    'Path',
+    [Environment]::GetEnvironmentVariable('Path','User') + ';C:\Program Files\GitHub CLI',
+    'User'
+  )
+  ```
+  Verify with `gh --version` in a **new** shell.
+- **Vercel CLI** — installed via `npm i -g vercel`. Already on `PATH`
+  because npm's global dir is in it.
+- **Authenticated**: `gh auth login` and `vercel login` each run once.
+
+If any of these are missing, `/onboard-client` Step 7.5 will surface a
+clear error and halt — fix the prereq and re-run.
+
+---
+
 ## 0. Prerequisites (collect from the client up front)
 
 Have the client send over the following **before** you start, ideally in a

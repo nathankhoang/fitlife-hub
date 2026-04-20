@@ -204,9 +204,16 @@ npm run onboard:provision -- --apply
 - attach the custom domain and print the DNS records the operator
   must set at the registrar
 
-**Preconditions:** `gh auth login` and `vercel login` have both been
-run once on this machine. If either is missing, the script fails with
-a clear message — surface it to the operator and stop.
+**Preconditions:**
+- `gh` and `vercel` must both be on `PATH` (on Windows the GitHub CLI
+  installer does **not** add itself — see `docs/CLIENT_SETUP.md` for
+  the one-time PATH fix).
+- `gh auth login` and `vercel login` have both been run once on this
+  machine.
+
+If any of these are missing, the provisioner's preflight fails with a
+clear message — surface it to the operator and stop. Do not try to
+work around a missing CLI by shelling to an absolute path.
 
 Capture the printed `ADMIN_PASSWORD`, `CRON_SECRET`, and
 `BLOB_PUBLIC_BASE` in your final report — they are shown once.
