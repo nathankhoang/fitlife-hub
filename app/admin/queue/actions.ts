@@ -7,22 +7,9 @@ import { createBroadcast } from "@/lib/beehiiv";
 import { SITE_URL } from "@/lib/site";
 
 export async function publishPost(slug: string): Promise<void> {
-  const queue = await getQueue();
-  const entry = queue.find((e) => e.slug === slug);
-
+  // publishSlug handles the full publish transaction including social
+  // enqueue and newsletter broadcast — this action just revalidates.
   await publishSlug(slug);
-
-  if (entry && !entry.broadcastId) {
-    const broadcastId = await createBroadcast({
-      title: entry.title,
-      description: entry.description,
-      slug,
-      siteUrl: SITE_URL,
-    });
-    if (broadcastId) {
-      await updateQueueEntry(slug, { broadcastId });
-    }
-  }
 
   revalidatePath("/admin/queue");
   revalidatePath("/blog");

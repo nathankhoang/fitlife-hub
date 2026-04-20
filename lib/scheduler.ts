@@ -2,6 +2,8 @@ import { put, del } from "@vercel/blob";
 import { revalidateTag } from "next/cache";
 import { getQueue, updateQueueEntry } from "./queue";
 import { enqueueSocialPosts } from "./social/enqueue";
+import { createBroadcast } from "./beehiiv";
+import { SITE_URL } from "./site";
 
 function blobBase(): string {
   const base = process.env.BLOB_PUBLIC_BASE;
@@ -58,8 +60,28 @@ export async function publishSlug(slug: string): Promise<void> {
     } catch (err) {
       console.error(`[scheduler] social enqueue failed for ${slug}:`, err);
     }
+
+    // Newsletter broadcast: send the published article to the subscriber list
+    // via Beehiiv. Idempotent via entry.broadcastId — reschedules, re-runs,
+    // and re-publishes won't double-send. Wrapped so a broadcast failure
+    // never blocks the publish transaction.
+    if (!entry.broadcastId) {
+      try {
+        const broadcastId = await createBroadcast({
+          title: entry.title,
+          description: entry.description,
+          slug,
+          siteUrl: SITE_URL,
+        });
+        if (broadcastId) {
+          await updateQueueEntry(slug, { broadcastId });
+        }
+      } catch (err) {
+        console.error(`[scheduler] newsletter broadcast failed for ${slug}:`, err);
+      }
+    }
   } else {
-    console.warn(`[scheduler] no queue entry for ${slug}; skipping social enqueue`);
+    console.warn(`[scheduler] no queue entry for ${slug}; skipping social enqueue + broadcast`);
   }
 }
 
