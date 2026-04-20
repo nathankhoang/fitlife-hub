@@ -1,6 +1,12 @@
 import { brand } from "@/lib/brand";
 
-const PUBLICATION_ID = "pub_bf0910d1-3e8b-4501-9fec-9547eacc1849";
+// Per-client publication — read from env at runtime. The legacy literal is
+// kept as a fallback so LeanBodyEngine (the flagship) keeps working without
+// setting the env var; new client deployments MUST set BEEHIIV_PUBLICATION_ID
+// or every client's newsletter will land in LBE's publication.
+const LEGACY_LBE_PUBLICATION_ID = "pub_bf0910d1-3e8b-4501-9fec-9547eacc1849";
+const PUBLICATION_ID =
+  process.env.BEEHIIV_PUBLICATION_ID || LEGACY_LBE_PUBLICATION_ID;
 const BASE = "https://api.beehiiv.com/v2";
 
 function apiKey(): string | undefined {
