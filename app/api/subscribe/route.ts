@@ -5,7 +5,11 @@ export const dynamic = "force-dynamic";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-const PUBLICATION_ID = "pub_bf0910d1-3e8b-4501-9fec-9547eacc1849";
+// Kept in sync with lib/beehiiv.ts. New clients set BEEHIIV_PUBLICATION_ID in
+// Vercel env; flagship falls through to the hardcoded LBE publication.
+const LEGACY_LBE_PUBLICATION_ID = "pub_bf0910d1-3e8b-4501-9fec-9547eacc1849";
+const PUBLICATION_ID =
+  process.env.BEEHIIV_PUBLICATION_ID || LEGACY_LBE_PUBLICATION_ID;
 
 export async function POST(req: NextRequest) {
   let body: unknown;
