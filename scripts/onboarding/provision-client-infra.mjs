@@ -17,7 +17,9 @@
  *   6. Uploads a ping file to derive BLOB_PUBLIC_BASE, pushes the var
  *   7. Pushes scalar env vars       (NEXT_PUBLIC_SITE_URL, GA_ID,
  *                                    CRON_SECRET, ADMIN_PASSWORD,
- *                                    optionally RESEND_API_KEY)
+ *                                    optionally RESEND_API_KEY,
+ *                                    BEEHIIV_PUBLICATION_ID,
+ *                                    REPORT_RECIPIENT)
  *   8. Attaches the custom domain   (vercel domains add <domain> <slug>)
  *   9. Prints DNS records the operator must set at their registrar
  *  10. Invites _operator.vercelEmail to the team
@@ -99,6 +101,21 @@ const ga4Id = config?._operator?.ga4Id?.trim() || "";
 const newsletter = (config?._operator?.newsletter || "").toLowerCase();
 const wantsNewsletter = newsletter.startsWith("yes");
 
+// BEEHIIV_PUBLICATION_ID: routes the newsletter to the client's own Beehiiv
+// publication (not LBE's fallback). Pulled from _operator first, then env.
+const beehiivPublicationId =
+  config?._operator?.beehiivPublicationId?.trim() ||
+  process.env.BEEHIIV_PUBLICATION_ID ||
+  "";
+
+// REPORT_RECIPIENT: who receives the monthly performance report. Defaults
+// to the operator's ops inbox — falls back silently to brand.contact.email
+// at runtime if never set.
+const reportRecipient =
+  config?._operator?.reportRecipient?.trim() ||
+  process.env.REPORT_RECIPIENT ||
+  "";
+
 // Derive a stable slug for the Vercel project + Blob store. Stays in
 // client.config.json on re-runs so the same project/store are reused.
 function slugify(s) {
@@ -127,6 +144,8 @@ info(`Site URL:      ${siteUrl}`);
 info(`Blob store:    ${projectSlug}-blob (access=public, all envs)`);
 info(`GA4:           ${ga4Id || "(not provided)"}`);
 info(`Newsletter:    ${wantsNewsletter ? "yes (needs RESEND_API_KEY)" : "no"}`);
+info(`Beehiiv pub:   ${beehiivPublicationId || "(falls back to LBE — flag if this is a real client)"}`);
+info(`Report email:  ${reportRecipient || "(falls back to brand.contact.email)"}`);
 
 // ---- Preflight ----------------------------------------------------------
 
@@ -215,6 +234,10 @@ if (!APPLY) {
     console.log(
       `  10. vercel env add RESEND_API_KEY=<from RESEND_API_KEY env, or skip with a note>`,
     );
+  if (beehiivPublicationId)
+    console.log(`  10b. vercel env add BEEHIIV_PUBLICATION_ID=${beehiivPublicationId}`);
+  if (reportRecipient)
+    console.log(`  10c. vercel env add REPORT_RECIPIENT=${reportRecipient}`);
   console.log(`  11. vercel domains add ${domain} ${projectSlug}`);
   console.log(`  12. vercel domains inspect ${domain}   (prints DNS records)`);
   if (config?._operator?.vercelEmail) {
@@ -380,6 +403,8 @@ if (ga4Id) pushEnv("NEXT_PUBLIC_GA_ID", ga4Id);
 pushEnv("BLOB_PUBLIC_BASE", blobPublicBase);
 pushEnv("CRON_SECRET", cronSecret);
 pushEnv("ADMIN_PASSWORD", adminPassword);
+if (beehiivPublicationId) pushEnv("BEEHIIV_PUBLICATION_ID", beehiivPublicationId);
+if (reportRecipient) pushEnv("REPORT_RECIPIENT", reportRecipient);
 
 if (wantsNewsletter) {
   if (process.env.RESEND_API_KEY) {
@@ -463,6 +488,16 @@ if (!inviteSent && inviteEmail) {
 if (wantsNewsletter && !process.env.RESEND_API_KEY) {
   console.log(
     "  - Add RESEND_API_KEY once the client forwards their Resend key",
+  );
+}
+if (!beehiivPublicationId) {
+  console.log(
+    "  - Add BEEHIIV_PUBLICATION_ID — without it, newsletter broadcasts fall back to LeanBodyEngine's publication",
+  );
+}
+if (!reportRecipient) {
+  console.log(
+    "  - Optionally set REPORT_RECIPIENT — without it, monthly reports go to brand.contact.email (the client's public inbox)",
   );
 }
 console.log("  - git push  (triggers the first Vercel deploy)");

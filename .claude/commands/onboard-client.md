@@ -209,8 +209,13 @@ npm run onboard:provision -- --apply
 - create a Blob store (auto-wires `BLOB_READ_WRITE_TOKEN`)
 - upload a ping file to derive and push `BLOB_PUBLIC_BASE`
 - push `NEXT_PUBLIC_SITE_URL`, optional `NEXT_PUBLIC_GA_ID`,
-  a generated `CRON_SECRET`, a generated `ADMIN_PASSWORD`, and
-  `RESEND_API_KEY` (if exported and newsletter=yes)
+  a generated `CRON_SECRET`, a generated `ADMIN_PASSWORD`,
+  `RESEND_API_KEY` (if exported and newsletter=yes),
+  `BEEHIIV_PUBLICATION_ID` (from `_operator.beehiivPublicationId` or
+  env — without it, newsletters land in LBE's publication as a
+  fallback), and `REPORT_RECIPIENT` (from `_operator.reportRecipient`
+  or env — without it, monthly reports go to the client's public
+  email)
 - attach the custom domain and print the DNS records the operator
   must set at the registrar
 
@@ -228,12 +233,21 @@ work around a missing CLI by shelling to an absolute path.
 Capture the printed `ADMIN_PASSWORD`, `CRON_SECRET`, and
 `BLOB_PUBLIC_BASE` in your final report — they are shown once.
 
-If the operator wants to supply their own `ADMIN_PASSWORD` or a real
-`RESEND_API_KEY`, they can export those before running:
+If the operator wants to supply their own `ADMIN_PASSWORD`, a real
+`RESEND_API_KEY`, a `BEEHIIV_PUBLICATION_ID`, or a `REPORT_RECIPIENT`,
+they can export those before running:
 
 ```bash
-ADMIN_PASSWORD='pick-your-own' RESEND_API_KEY='re_...' npm run onboard:provision -- --apply
+ADMIN_PASSWORD='pick-your-own' \
+  RESEND_API_KEY='re_...' \
+  BEEHIIV_PUBLICATION_ID='pub_xxxxx' \
+  REPORT_RECIPIENT='ops@yourfirm.com' \
+  npm run onboard:provision -- --apply
 ```
+
+Alternatively, add `beehiivPublicationId` and `reportRecipient` to
+`_operator` in `client.config.json` — the provisioner reads from
+there first, then env, then skips (with a checklist reminder).
 
 **Do NOT push after this step.** Pushing triggers the first Vercel
 deploy — the operator should still eyeball the dashboard first.
