@@ -14,6 +14,11 @@
  *   5. In the repo, open Claude Code and run: /onboard-client
  */
 
+// Operator's ops inbox. Every client's monthly report is sent here so you
+// can see performance across all clients at a glance. Change this if you
+// route reports differently (e.g. a shared team inbox).
+const OPERATOR_REPORT_EMAIL = "nathankhoang0@gmail.com";
+
 function exportLatestResponse() {
   const form = FormApp.getActiveForm();
   if (!form) {
@@ -127,6 +132,8 @@ function mapAnswersToConfig(a) {
       vercelEmail: getStr("Your Vercel account email"),
       ga4Id: getStr("Google Analytics 4 measurement ID (optional)"),
       newsletter: getStr("Do you want an email newsletter set up?"),
+      beehiivPublicationId: getStr("Beehiiv publication ID (optional)"),
+      reportRecipient: OPERATOR_REPORT_EMAIL,
       launchDate: getStr(
         "Target launch date (We will be able to get the website up and running within a week. Expedited times are not guaranteed)",
       ),

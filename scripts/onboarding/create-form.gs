@@ -233,6 +233,12 @@ function createOnboardingForm() {
         "No, skip the newsletter for now",
       ]),
   );
+  form
+    .addTextItem()
+    .setTitle("Beehiiv publication ID (optional)")
+    .setHelpText(
+      "If you already have a Beehiiv account, paste your publication ID (starts with 'pub_'). Find it at beehiiv.com → Settings → Publication → Publication ID. Leave blank if you don't have Beehiiv set up — we'll configure it later.",
+    );
 
   // Section 9 — Launch preferences
   form.addPageBreakItem().setTitle("9. Launch preferences");
@@ -269,4 +275,51 @@ function createOnboardingForm() {
 function req(item) {
   item.setRequired(true);
   return item;
+}
+
+/**
+ * Adds the Beehiiv publication ID question to an already-deployed form.
+ * Run this ONCE from the Apps Script editor after pulling the latest
+ * create-form.gs — idempotent, so re-runs are safe (it checks whether the
+ * question already exists before adding).
+ *
+ * How to run:
+ *   1. Open the Apps Script editor attached to the live onboarding form.
+ *   2. Select `addNewOnboardingFields` from the function dropdown.
+ *   3. Click Run. Check the log for "added" vs "already present".
+ */
+function addNewOnboardingFields() {
+  const form = FormApp.getActiveForm();
+  if (!form) {
+    Logger.log(
+      "No active form. Open this Apps Script from the form's Script Editor (Form → three-dot menu → Script Editor).",
+    );
+    return;
+  }
+
+  const existingTitles = new Set(
+    form.getItems().map((i) => i.getTitle().trim()),
+  );
+
+  const fieldsToAdd = [
+    {
+      title: "Beehiiv publication ID (optional)",
+      help:
+        "If you already have a Beehiiv account, paste your publication ID (starts with 'pub_'). Find it at beehiiv.com → Settings → Publication → Publication ID. Leave blank if you don't have Beehiiv set up — we'll configure it later.",
+    },
+  ];
+
+  let added = 0;
+  for (const f of fieldsToAdd) {
+    if (existingTitles.has(f.title)) {
+      Logger.log(`- ${f.title} — already present, skipping`);
+      continue;
+    }
+    form.addTextItem().setTitle(f.title).setHelpText(f.help);
+    Logger.log(`+ ${f.title} — added`);
+    added++;
+  }
+
+  Logger.log(`Done. Added ${added} new field(s) to the form.`);
+  Logger.log(`Edit URL: ${form.getEditUrl()}`);
 }
