@@ -4,6 +4,10 @@ End-to-end guide for spinning up a new fitness-influencer site from this
 template. The goal: a working, rebranded, deployed site with initial
 content in **under 3 hours** of operator time.
 
+**After a client is live, move to [`CLIENT_WORKFLOW.md`](CLIENT_WORKFLOW.md)**
+for the ongoing playbook (content submission, revisions, launch-batch
+pacing).
+
 ## TL;DR — the fast path
 
 1. Send the client the onboarding Google Form
