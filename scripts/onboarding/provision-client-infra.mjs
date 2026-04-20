@@ -162,6 +162,18 @@ info(`origin: ${originUrl}`);
 {
   const r = runCapture("gh", ["auth", "status"]);
   if (r.status !== 0) {
+    // ENOENT (gh not on PATH) and auth-failure both land here. Differentiate
+    // so the operator doesn't chase `gh auth login` when the real issue is
+    // PATH.
+    const combined = `${r.stdout || ""}${r.stderr || ""}`;
+    const notFound =
+      r.error?.code === "ENOENT" ||
+      /not recognized|command not found|No such file/i.test(combined);
+    if (notFound) {
+      fail(
+        "gh not on PATH. On Windows the GitHub CLI installer doesn't add itself — see docs/CLIENT_SETUP.md 'Operator machine prerequisites'.",
+      );
+    }
     fail(
       "gh CLI not authenticated. Run `gh auth login`, then re-run this script.",
     );
