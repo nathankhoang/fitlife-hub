@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/generate-social",
       "schedule": "15 0 * * *"
+    },
+    {
+      "path": "/api/cron/monthly-report",
+      "schedule": "0 12 1 * *"
     }
   ]
 }
