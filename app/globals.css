@@ -68,14 +68,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .prose a {
-  color: #059669;
+  color: var(--color-primary);
   text-decoration: underline;
   text-underline-offset: 2px;
   text-decoration-thickness: 1px;
 }
 
 .prose a:hover {
-  color: #047857;
+  color: var(--color-primary-dark);
 }
 
 .prose strong {
@@ -84,9 +84,26 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .prose blockquote {
-  border-left: 3px solid #059669;
+  border-left: 3px solid var(--color-primary);
   padding-left: 1rem;
   color: #525252;
   font-style: normal;
   margin: 1.5rem 0;
+}
+
+/*
+ * Brand-colored primary button. Uses the runtime `--color-primary` variable
+ * so per-client rebrand applies without editing components. Used by Subscribe
+ * buttons, Newsletter CTAs, and other primary actions.
+ */
+.brand-primary-btn {
+  background-color: var(--color-primary);
+  color: #fff;
+  transition: background-color 150ms;
+}
+.brand-primary-btn:hover:not(:disabled) {
+  background-color: var(--color-primary-dark);
+}
+.brand-primary-btn:disabled {
+  opacity: 0.5;
 }

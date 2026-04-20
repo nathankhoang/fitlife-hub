@@ -68,7 +68,14 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${sora.variable} ${jakarta.variable}`}>
+    <html
+      lang="en"
+      className={`${sora.variable} ${jakarta.variable}`}
+      style={{
+        ["--color-primary" as string]: brand.theme.primaryColor,
+        ["--color-primary-dark" as string]: brand.theme.primaryColorDark,
+      }}
+    >
       <head>
         {GA_ID && (
           <>

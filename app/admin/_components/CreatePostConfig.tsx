@@ -244,7 +244,7 @@ export default function CreatePostConfig({
                   max={10}
                   value={maxIterations}
                   onChange={(e) => setMaxIterations(Number(e.target.value))}
-                  className="flex-1 accent-[#059669]"
+                  className="flex-1 accent-[var(--color-primary)]"
                 />
                 <span className="text-white font-bold w-6 text-center">
                   {maxIterations}
@@ -329,7 +329,7 @@ export default function CreatePostConfig({
                     type="checkbox"
                     checked={categories.includes(cat.id)}
                     onChange={() => toggleCategory(cat.id)}
-                    className="accent-[#059669] w-3.5 h-3.5"
+                    className="accent-[var(--color-primary)] w-3.5 h-3.5"
                   />
                   <span className="text-sm text-white/60 group-hover:text-white/80 transition-colors">
                     {cat.label}
@@ -376,7 +376,7 @@ export default function CreatePostConfig({
               type="checkbox"
               checked={skipFrame}
               onChange={(e) => setSkipFrame(e.target.checked)}
-              className="accent-[#059669] w-3.5 h-3.5"
+              className="accent-[var(--color-primary)] w-3.5 h-3.5"
             />
             <span className="text-sm text-white/60 group-hover:text-white/80 transition-colors">
               Skip hero-frame extraction (use a custom image instead)
@@ -443,7 +443,7 @@ export default function CreatePostConfig({
           <button
             onClick={copyCommand}
             disabled={!commandValid}
-            className="text-xs bg-[#059669] hover:bg-[#047857] disabled:bg-white/10 disabled:text-white/30 text-white px-3 py-1.5 rounded-lg font-medium transition-colors disabled:cursor-not-allowed"
+            className="text-xs bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] disabled:bg-white/10 disabled:text-white/30 text-white px-3 py-1.5 rounded-lg font-medium transition-colors disabled:cursor-not-allowed"
           >
             {copied ? "✓ Copied!" : "Copy command"}
           </button>
@@ -463,7 +463,7 @@ export default function CreatePostConfig({
 }
 
 const INPUT =
-  "w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-[#059669] [&>option]:bg-[#0f172a] [&>option]:text-white";
+  "w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] [&>option]:bg-[#0f172a] [&>option]:text-white";
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
@@ -496,7 +496,7 @@ function ModeTab({
       onClick={() => onClick(id)}
       className={
         "flex-1 px-4 py-2.5 rounded-md text-left transition-colors " +
-        (active ? "bg-[#059669] text-white" : "text-white/60 hover:text-white/90 hover:bg-white/5")
+        (active ? "bg-[var(--color-primary)] text-white" : "text-white/60 hover:text-white/90 hover:bg-white/5")
       }
     >
       <div className="text-sm font-semibold">{label}</div>

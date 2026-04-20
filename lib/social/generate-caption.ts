@@ -11,6 +11,8 @@ import { generateObject } from "ai";
 import { z } from "zod";
 import { STRATEGIES, type Platform } from "./strategies";
 import { BRAND_VOICE } from "./voice";
+import { brand } from "@/lib/brand";
+import { SITE_URL } from "@/lib/site";
 
 // Groq free tier: 30 req/min, generous daily quota. Using gpt-oss-120b
 // because it natively supports JSON schema structured outputs (Llama 3.3
@@ -59,7 +61,7 @@ function buildSystemPrompt(platform: Platform): string {
       : `- Include ${c.hashtagCount[0]}–${c.hashtagCount[1]} hashtags (placement: ${c.hashtagPlacement}). Hashtags must be niche-specific and directly relevant to the article content (e.g. "#CreatineMonohydrate" not "#FitnessMotivation"). Prefer fewer high-relevance tags over more generic ones.`;
 
   return [
-    `You are writing a single social media post for LeanBodyEngine (https://leanbodyengine.com), a fitness, nutrition, and wellness blog.`,
+    `You are writing a single social media post for ${brand.name} (${SITE_URL}), a fitness, nutrition, and wellness blog.`,
     ``,
     `Brand voice:`,
     BRAND_VOICE,
@@ -92,7 +94,7 @@ function buildSystemPrompt(platform: Platform): string {
 }
 
 function buildUserPrompt(article: ArticleForCaption): string {
-  const url = `https://leanbodyengine.com/blog/${article.slug}`;
+  const url = `${SITE_URL}/blog/${article.slug}`;
   const lines = [
     `Article to post about:`,
     `- Title: ${article.title}`,

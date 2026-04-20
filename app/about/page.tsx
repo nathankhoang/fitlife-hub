@@ -196,7 +196,7 @@ export default function AboutPage() {
         <div className="flex flex-wrap gap-3">
           <Link
             href="/blog"
-            className="inline-block bg-[#059669] hover:bg-[#047857] text-white font-semibold px-6 py-3 rounded-xl transition-colors text-sm"
+            className="inline-block bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-semibold px-6 py-3 rounded-xl transition-colors text-sm"
           >
             Browse all articles →
           </Link>

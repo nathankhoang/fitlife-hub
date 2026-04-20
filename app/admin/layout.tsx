@@ -17,7 +17,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar */}
       <aside className="w-56 shrink-0 border-r border-white/10 flex flex-col py-6 px-4">
         <div className="flex items-center gap-2 mb-8 px-2">
-          <span className="w-7 h-7 rounded bg-[#059669] flex items-center justify-center text-white text-[10px] font-bold">LBE</span>
+          <span className="w-7 h-7 rounded bg-[var(--color-primary)] flex items-center justify-center text-white text-[10px] font-bold">LBE</span>
           <span className="text-white text-sm font-bold">Admin</span>
         </div>
 

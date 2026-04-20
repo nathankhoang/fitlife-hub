@@ -25,6 +25,8 @@ export async function postToPlatform(ctx: AdapterContext): Promise<PostResult> {
   return adapter.post(ctx);
 }
 
+import { SITE_URL } from "@/lib/site";
+
 export function articleUrlFor(slug: string): string {
-  return `https://leanbodyengine.com/blog/${slug}`;
+  return `${SITE_URL}/blog/${slug}`;
 }

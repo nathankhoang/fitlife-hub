@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { brand } from "@/lib/brand";
+import { LogoBadge } from "@/components/LogoBadge";
 
 const categories = [
   { slug: "home-workouts", label: "Home Workouts" },
@@ -26,7 +27,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <span className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white text-[11px] font-bold tracking-tight">{brand.shortName}</span>
+              <LogoBadge />
               <span className="text-lg font-bold tracking-tight">{brand.name}</span>
             </div>
             <p className="text-white/50 text-sm leading-relaxed">
