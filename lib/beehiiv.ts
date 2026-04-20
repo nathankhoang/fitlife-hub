@@ -1,3 +1,5 @@
+import { brand } from "@/lib/brand";
+
 const PUBLICATION_ID = "pub_bf0910d1-3e8b-4501-9fec-9547eacc1849";
 const BASE = "https://api.beehiiv.com/v2";
 
@@ -101,7 +103,7 @@ export async function createBroadcast(opts: {
     const bodyContent = [
       `<p style="font-size:16px;line-height:1.6;color:#374151;">${opts.description}</p>`,
       `<p style="margin-top:24px;">`,
-      `<a href="${articleUrl}" style="background:#059669;color:#ffffff;padding:12px 24px;`,
+      `<a href="${articleUrl}" style="background:${brand.theme.primaryColor};color:#ffffff;padding:12px 24px;`,
       `border-radius:6px;text-decoration:none;font-weight:600;display:inline-block;">`,
       `Read the full article →</a></p>`,
     ].join("");

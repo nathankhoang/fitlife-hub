@@ -5,8 +5,8 @@
 import { Resend } from "resend";
 import type { SocialPostEntry } from "./types";
 import { STRATEGIES } from "./strategies";
-
-const FROM = "LeanBodyEngine Alerts <alerts@leanbodyengine.com>";
+import { brand } from "@/lib/brand";
+import { SITE_URL } from "@/lib/site";
 
 export async function notifyGenerationFailure(entry: SocialPostEntry): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
@@ -15,7 +15,9 @@ export async function notifyGenerationFailure(entry: SocialPostEntry): Promise<v
 
   const resend = new Resend(apiKey);
   const platformLabel = STRATEGIES[entry.platform].label;
-  const subject = `[LBE] Social post failed: ${entry.articleSlug} (${platformLabel})`;
+  const from = `${brand.name} Alerts <${brand.contact.email}>`;
+  const subjectTag = brand.shortName || brand.name.slice(0, 3).toUpperCase();
+  const subject = `[${subjectTag}] Social post failed: ${entry.articleSlug} (${platformLabel})`;
   const lines = [
     `Platform:    ${platformLabel}`,
     `Article:     ${entry.articleSlug}`,
@@ -25,10 +27,10 @@ export async function notifyGenerationFailure(entry: SocialPostEntry): Promise<v
     ``,
     `Entry ID:    ${entry.id}`,
     ``,
-    `Review at https://leanbodyengine.com/admin/social-queue`,
+    `Review at ${SITE_URL}/admin/social-queue`,
   ];
   try {
-    await resend.emails.send({ from: FROM, to, subject, text: lines.join("\n") });
+    await resend.emails.send({ from, to, subject, text: lines.join("\n") });
   } catch (err) {
     // Never let a notify failure escape the worker path.
     console.error("[social/notify] failed to send:", err);

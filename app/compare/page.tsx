@@ -75,7 +75,7 @@ export default function CompareIndexPage() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
         <div className="mb-10 md:mb-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#059669] mb-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)] mb-3">
             Head-to-head
           </p>
           <h1 className="text-3xl md:text-5xl font-bold text-[#0A0A0A] leading-[1.1] tracking-tight mb-4">
@@ -102,7 +102,7 @@ export default function CompareIndexPage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#A3A3A3] mb-2">
                   {c.category}
                 </p>
-                <h2 className="text-xl font-bold text-[#0A0A0A] tracking-tight mb-3 group-hover:text-[#059669] transition-colors">
+                <h2 className="text-xl font-bold text-[#0A0A0A] tracking-tight mb-3 group-hover:text-[var(--color-primary)] transition-colors">
                   {c.title}
                 </h2>
                 <div className="text-[#525252] text-[15px] leading-relaxed mb-4">
@@ -114,7 +114,7 @@ export default function CompareIndexPage() {
                     </>
                   ) : null}
                 </div>
-                <p className="text-sm font-semibold text-[#059669] group-hover:text-[#047857] transition-colors">
+                <p className="text-sm font-semibold text-[var(--color-primary)] group-hover:text-[var(--color-primary-dark)] transition-colors">
                   See the comparison →
                 </p>
               </Link>

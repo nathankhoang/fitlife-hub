@@ -36,7 +36,7 @@ export default function AdminLoginPage() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
-            <span className="w-9 h-9 rounded-lg bg-[#059669] flex items-center justify-center text-white text-xs font-bold">
+            <span className="w-9 h-9 rounded-lg bg-[var(--color-primary)] flex items-center justify-center text-white text-xs font-bold">
               LBE
             </span>
             <span className="text-white text-lg font-bold">Admin</span>
@@ -60,7 +60,7 @@ export default function AdminLoginPage() {
               required
               autoFocus
               placeholder="Enter admin password"
-              className={`w-full bg-white/10 border rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[#059669] focus:border-transparent transition-colors ${
+              className={`w-full bg-white/10 border rounded-lg px-3 py-2.5 text-white text-sm placeholder:text-white/30 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-colors ${
                 error ? "border-red-500/50" : "border-white/10"
               }`}
             />
@@ -69,7 +69,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#059669] hover:bg-[#047857] text-white font-semibold py-2.5 rounded-lg text-sm transition-colors disabled:opacity-50"
+            className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-semibold py-2.5 rounded-lg text-sm transition-colors disabled:opacity-50"
           >
             {loading ? "Signing in…" : "Sign in"}
           </button>

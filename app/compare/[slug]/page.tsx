@@ -161,7 +161,7 @@ export default async function ComparisonPage({ params }: Props) {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
         {/* Header */}
         <div className="mb-8 md:mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#059669] mb-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)] mb-3">
             {c.category} · Head-to-head
           </p>
           <h1 className="text-3xl md:text-5xl font-bold text-[#0A0A0A] leading-[1.1] tracking-tight mb-4">
@@ -192,7 +192,7 @@ export default async function ComparisonPage({ params }: Props) {
                   key={i}
                   className="rounded-xl border border-[#E5E5E5] bg-white p-5"
                 >
-                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#059669] mb-1.5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-primary)] mb-1.5">
                     {pick.label}
                   </p>
                   <p className="text-[#0A0A0A] font-bold text-[15px] leading-snug mb-2">
@@ -262,7 +262,7 @@ export default async function ComparisonPage({ params }: Props) {
                 <li key={other.slug}>
                   <Link
                     href={`/compare/${other.slug}`}
-                    className="font-semibold text-[#059669] hover:text-[#047857]"
+                    className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-dark)]"
                   >
                     {other.title} →
                   </Link>
@@ -298,7 +298,7 @@ function SideCard({
 
   return (
     <div className="rounded-2xl border border-[#E5E5E5] bg-white p-6 flex flex-col">
-      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#059669] mb-3">
+      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-primary)] mb-3">
         {side.heading}
       </p>
 
@@ -331,13 +331,13 @@ function SideCard({
       </p>
 
       <div className="mb-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#059669] mb-2">
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-primary)] mb-2">
           Pros
         </p>
         <ul className="space-y-1.5">
           {side.pros.map((pro, i) => (
             <li key={i} className="flex gap-2 text-sm text-[#0A0A0A]">
-              <span className="text-[#059669] font-bold flex-shrink-0" aria-hidden>
+              <span className="text-[var(--color-primary)] font-bold flex-shrink-0" aria-hidden>
                 +
               </span>
               <span className="leading-snug">{pro}</span>

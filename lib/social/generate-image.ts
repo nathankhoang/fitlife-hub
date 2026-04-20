@@ -10,6 +10,28 @@ import satori from "satori";
 import { Resvg } from "@resvg/resvg-js";
 import sharp from "sharp";
 import { STRATEGIES, type Platform, type ImageSpec } from "./strategies";
+import { SITE_URL } from "@/lib/site";
+import { brand } from "@/lib/brand";
+
+// Domain shown in the corner of every social image. Derived from the
+// runtime site URL so per-client rebrands surface the right host.
+const SITE_HOST = (() => {
+  try {
+    return new URL(SITE_URL).host;
+  } catch {
+    return "";
+  }
+})();
+
+// Satori is a separate renderer from the browser — it can't read CSS custom
+// properties off <html>, so we read raw hex from the brand object at import
+// time. Per-client rebuilds redeploy with the right values baked in.
+const MONO_BG = brand.theme.primaryColor;
+const MONO_TEXT = brand.shortName;
+// Light variant ("emerald-500-ish") is used for the category pill eyebrow.
+// Keep a second entry on the theme for this if we ever want per-client
+// lightness; for now a fixed lighter tint is close enough.
+const PILL_COLOR = "#10B981";
 
 export type ImageVariant = "hero-photo" | "stat-callout";
 
@@ -97,7 +119,7 @@ function overlayTree(
                   style: {
                     display: "flex",
                     backgroundColor: "rgba(0,0,0,0.55)",
-                    color: "#10B981",
+                    color: PILL_COLOR,
                     fontSize: eyebrowSize,
                     fontWeight: 700,
                     letterSpacing: 3,
@@ -115,7 +137,7 @@ function overlayTree(
                     display: "flex",
                     width: monogramSize,
                     height: monogramSize,
-                    backgroundColor: "#059669",
+                    backgroundColor: MONO_BG,
                     borderRadius: 14,
                     alignItems: "center",
                     justifyContent: "center",
@@ -123,7 +145,7 @@ function overlayTree(
                     fontWeight: 700,
                     letterSpacing: -0.5,
                   },
-                  children: "LBE",
+                  children: MONO_TEXT,
                 },
               },
             ],
@@ -165,7 +187,7 @@ function overlayTree(
                     color: "rgba(255,255,255,0.7)",
                     letterSpacing: 0.5,
                   },
-                  children: "leanbodyengine.com",
+                  children: SITE_HOST,
                 },
               },
             ],
@@ -231,7 +253,7 @@ function statCalloutTree(
                   style: {
                     display: "flex",
                     backgroundColor: "rgba(16,185,129,0.15)",
-                    color: "#10B981",
+                    color: PILL_COLOR,
                     fontSize: eyebrowSize,
                     fontWeight: 700,
                     letterSpacing: 3,
@@ -249,7 +271,7 @@ function statCalloutTree(
                     display: "flex",
                     width: monogramSize,
                     height: monogramSize,
-                    backgroundColor: "#059669",
+                    backgroundColor: MONO_BG,
                     borderRadius: 14,
                     alignItems: "center",
                     justifyContent: "center",
@@ -257,7 +279,7 @@ function statCalloutTree(
                     fontWeight: 700,
                     letterSpacing: -0.5,
                   },
-                  children: "LBE",
+                  children: MONO_TEXT,
                 },
               },
             ],
@@ -286,7 +308,7 @@ function statCalloutTree(
                     fontWeight: 700,
                     lineHeight: 1.0,
                     letterSpacing: -4,
-                    color: "#10B981",
+                    color: PILL_COLOR,
                   },
                   children: statValue,
                 },
@@ -347,7 +369,7 @@ function statCalloutTree(
                     color: "rgba(16,185,129,0.8)",
                     letterSpacing: 0.5,
                   },
-                  children: "leanbodyengine.com",
+                  children: SITE_HOST,
                 },
               },
             ],

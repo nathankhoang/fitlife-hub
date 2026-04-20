@@ -140,7 +140,7 @@ export default function PlateCalculatorPage() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
         <div className="mb-8 md:mb-10">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#059669] mb-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)] mb-3">
             Free tool
           </p>
           <h1 className="text-3xl md:text-5xl font-bold text-[#0A0A0A] leading-[1.1] tracking-tight mb-4">
@@ -156,7 +156,7 @@ export default function PlateCalculatorPage() {
         <PlateCalculator />
 
         <section className="mt-14 md:mt-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#059669] mb-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--color-primary)] mb-3">
             Under the hood
           </p>
           <h2 className="text-2xl md:text-3xl font-bold text-[#0A0A0A] tracking-tight mb-5">
@@ -237,7 +237,7 @@ export default function PlateCalculatorPage() {
             <li>
               <Link
                 href="/tools/1rm-calculator"
-                className="font-semibold text-[#059669] hover:text-[#047857]"
+                className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-dark)]"
               >
                 1RM calculator →
               </Link>{" "}
@@ -248,7 +248,7 @@ export default function PlateCalculatorPage() {
             <li>
               <Link
                 href="/blog/progressive-overload-guide-muscle-building"
-                className="font-semibold text-[#059669] hover:text-[#047857]"
+                className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-dark)]"
               >
                 Progressive overload guide →
               </Link>{" "}
@@ -259,7 +259,7 @@ export default function PlateCalculatorPage() {
             <li>
               <Link
                 href="/blog/compound-vs-isolation-exercises"
-                className="font-semibold text-[#059669] hover:text-[#047857]"
+                className="font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-dark)]"
               >
                 Compound vs isolation exercises →
               </Link>{" "}

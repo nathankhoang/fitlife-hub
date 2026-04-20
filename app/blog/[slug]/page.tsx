@@ -293,10 +293,18 @@ export default async function ArticlePage({ params }: Props) {
                   href={brand.author.profileUrl}
                   className="flex items-center gap-2 group"
                 >
-                  <span className="w-7 h-7 rounded-full bg-[#059669]/10 text-[#059669] text-[10px] font-bold flex items-center justify-center">
+                  <span
+                    className="w-7 h-7 rounded-full text-[10px] font-bold flex items-center justify-center"
+                    style={{
+                      backgroundColor: "color-mix(in srgb, var(--color-primary) 10%, transparent)",
+                      color: "var(--color-primary)",
+                    }}
+                  >
                     {brand.shortName}
                   </span>
-                  <span className="text-[#525252] font-medium text-sm group-hover:text-[#059669] transition-colors">
+                  <span
+                    className="text-[#525252] font-medium text-sm transition-colors group-hover:[color:var(--color-primary)]"
+                  >
                     {brand.author.name}
                   </span>
                 </Link>
@@ -305,7 +313,7 @@ export default async function ArticlePage({ params }: Props) {
                 {article.updatedDate && (
                   <>
                     <span>·</span>
-                    <span className="text-[#059669] font-medium">Updated {formatDate(article.updatedDate)}</span>
+                    <span className="text-[var(--color-primary)] font-medium">Updated {formatDate(article.updatedDate)}</span>
                   </>
                 )}
                 <span>·</span>
@@ -378,7 +386,7 @@ export default async function ArticlePage({ params }: Props) {
                 </p>
                 <Link
                   href="/#newsletter"
-                  className="block text-center text-sm font-semibold bg-[#059669] hover:bg-[#047857] text-white px-4 py-2.5 rounded-lg transition-colors"
+                  className="block text-center text-sm font-semibold bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white px-4 py-2.5 rounded-lg transition-colors"
                 >
                   Get new articles →
                 </Link>

@@ -122,7 +122,7 @@ export default function ToolsIndexPage() {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
         <div className="mb-10 md:mb-12">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#059669] mb-3">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)] mb-3">
             Free tools
           </p>
           <h1 className="text-3xl md:text-5xl font-bold text-[#0A0A0A] leading-[1.1] tracking-tight mb-4">
@@ -162,7 +162,7 @@ export default function ToolsIndexPage() {
                   />
                 </svg>
               </div>
-              <h2 className="text-xl font-bold text-[#0A0A0A] tracking-tight mb-2 group-hover:text-[#059669] transition-colors">
+              <h2 className="text-xl font-bold text-[#0A0A0A] tracking-tight mb-2 group-hover:text-[var(--color-primary)] transition-colors">
                 {t.title}
               </h2>
               <p className="text-[#525252] leading-relaxed text-[15px] mb-4">
@@ -182,7 +182,7 @@ export default function ToolsIndexPage() {
                   <dd className="text-[#525252] leading-relaxed">{t.formulas}</dd>
                 </div>
               </dl>
-              <p className="mt-5 text-sm font-semibold text-[#059669] group-hover:text-[#047857] transition-colors">
+              <p className="mt-5 text-sm font-semibold text-[var(--color-primary)] group-hover:text-[var(--color-primary-dark)] transition-colors">
                 Open tool →
               </p>
             </Link>

@@ -66,6 +66,23 @@ export type BrandContact = {
   email: string;
 };
 
+export type BrandTheme = {
+  /**
+   * Primary accent color. Used on the logo badge, subscribe CTA, article
+   * body links, and blockquote bars. Injected into CSS as
+   * `--color-primary` on <html>, overriding the default in globals.css.
+   */
+  primaryColor: string;
+  /** Hover / active state. Typically ~10% darker than primaryColor. */
+  primaryColorDark: string;
+  /**
+   * Path (from /public) to a custom logo image. When set, the nav+footer
+   * badges render the image instead of the monogram. Expected to be a
+   * square SVG or webp sized for 32px display.
+   */
+  logoUrl: string | null;
+};
+
 export type Brand = {
   /** Full site name used in metadata, schema, nav wordmark, and copy. */
   name: string;
@@ -81,6 +98,7 @@ export type Brand = {
   contact: BrandContact;
   affiliates: BrandAffiliates;
   socials: SocialLink[];
+  theme: BrandTheme;
 };
 
 export const brand: Brand = {
@@ -132,4 +150,10 @@ export const brand: Brand = {
       url: "https://www.instagram.com/leanbodyengine/",
     },
   ],
+
+  theme: {
+    primaryColor: "#059669",
+    primaryColorDark: "#047857",
+    logoUrl: null,
+  },
 };

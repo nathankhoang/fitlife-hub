@@ -60,7 +60,7 @@ function ArticleRow({ entry }: { entry: QueueEntry }) {
           : new Date(entry.createdAt).toLocaleDateString()}
       </div>
       {entry.status === "published" && (
-        <Link href={`/blog/${entry.slug}`} target="_blank" className="text-xs text-[#059669] hover:underline shrink-0">
+        <Link href={`/blog/${entry.slug}`} target="_blank" className="text-xs text-[var(--color-primary)] hover:underline shrink-0">
           View →
         </Link>
       )}
@@ -105,7 +105,7 @@ export default async function AdminPage() {
       <section id="articles">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-white/60 text-xs font-semibold uppercase tracking-widest">Article Queue</h2>
-          <Link href="/admin/queue" className="text-xs text-[#059669] hover:underline">
+          <Link href="/admin/queue" className="text-xs text-[var(--color-primary)] hover:underline">
             Full kanban view →
           </Link>
         </div>

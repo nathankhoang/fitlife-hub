@@ -85,7 +85,7 @@ export default async function HomePage() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               href="/blog"
-              className="bg-[#059669] hover:bg-[#047857] text-white font-semibold px-7 py-3.5 rounded-xl transition-colors text-sm"
+              className="bg-[var(--color-primary)] hover:bg-[var(--color-primary-dark)] text-white font-semibold px-7 py-3.5 rounded-xl transition-colors text-sm"
             >
               Browse all guides
             </Link>
@@ -149,7 +149,7 @@ export default async function HomePage() {
                   Featured guides
                 </h2>
               </div>
-              <Link href="/blog" className="text-[#059669] hover:text-[#047857] text-sm font-medium">
+              <Link href="/blog" className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] text-sm font-medium">
                 View all →
               </Link>
             </div>
@@ -177,7 +177,7 @@ export default async function HomePage() {
                 key={pillar.title}
                 className="bg-[#FAFAFA] border border-[#E5E5E5] rounded-2xl p-6 hover:border-[#059669]/40 transition-colors"
               >
-                <div className="w-10 h-10 rounded-xl bg-[#059669]/10 text-[#059669] flex items-center justify-center mb-4">
+                <div className="w-10 h-10 rounded-xl bg-[#059669]/10 text-[var(--color-primary)] flex items-center justify-center mb-4">
                   {pillar.icon}
                 </div>
                 <h3 className="font-bold text-[#0A0A0A] mb-2 text-base">{pillar.title}</h3>
@@ -200,7 +200,7 @@ export default async function HomePage() {
             </div>
             <Link
               href="/category/supplements"
-              className="text-[#059669] hover:text-[#047857] text-sm font-medium"
+              className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] text-sm font-medium"
             >
               All reviews →
             </Link>
@@ -258,7 +258,7 @@ export default async function HomePage() {
                 Latest articles
               </h2>
             </div>
-            <Link href="/blog" className="text-[#059669] hover:text-[#047857] text-sm font-medium">
+            <Link href="/blog" className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] text-sm font-medium">
               View all →
             </Link>
           </div>

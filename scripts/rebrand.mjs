@@ -107,6 +107,47 @@ function clean(s) {
   return typeof s === "string" ? s.trim() : s;
 }
 
+// Accept "#rrggbb", "rrggbb", or a named color from a tiny allow-list. Returns
+// a normalized #rrggbb string or null if the input isn't parseable.
+function normalizeHex(raw) {
+  if (typeof raw !== "string") return null;
+  const s = raw.trim().toLowerCase();
+  if (!s) return null;
+  const m = s.match(/^#?([0-9a-f]{6})$/);
+  if (m) return `#${m[1]}`;
+  const m3 = s.match(/^#?([0-9a-f]{3})$/);
+  if (m3) {
+    const [r, g, b] = m3[1];
+    return `#${r}${r}${g}${g}${b}${b}`;
+  }
+  return null;
+}
+
+// Derive a ~10% darker shade for hover/active. Naive per-channel RGB shift.
+function darken(hex) {
+  const m = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+  if (!m) return hex;
+  const shift = (c) => {
+    const n = Math.max(0, Math.round(parseInt(c, 16) * 0.85));
+    return n.toString(16).padStart(2, "0");
+  };
+  return `#${shift(m[1])}${shift(m[2])}${shift(m[3])}`;
+}
+
+const DEFAULT_PRIMARY = "#059669";
+const DEFAULT_PRIMARY_DARK = "#047857";
+const rawBrandColor = config?._operator?.brandColor;
+const primaryColor = normalizeHex(rawBrandColor) || DEFAULT_PRIMARY;
+const primaryColorDark =
+  primaryColor === DEFAULT_PRIMARY ? DEFAULT_PRIMARY_DARK : darken(primaryColor);
+
+const rawLogoUrl =
+  config?.theme?.logoUrl ?? config?._operator?.logoUrl ?? null;
+const logoUrl =
+  typeof rawLogoUrl === "string" && rawLogoUrl.trim().length > 0
+    ? rawLogoUrl.trim()
+    : null;
+
 const brand = {
   name: clean(config.name),
   shortName: clean(config.shortName),
@@ -144,6 +185,11 @@ const brand = {
     handle: clean(s.handle),
     url: clean(s.url),
   })),
+  theme: {
+    primaryColor,
+    primaryColorDark,
+    logoUrl,
+  },
 };
 
 // Code generation —
@@ -197,6 +243,15 @@ export type BrandContact = {
   email: string;
 };
 
+export type BrandTheme = {
+  /** Primary accent color (hex). Overrides --color-primary at runtime. */
+  primaryColor: string;
+  /** Hover / active state — typically ~10% darker than primaryColor. */
+  primaryColorDark: string;
+  /** /public path to a square logo image, or null to use the monogram fallback. */
+  logoUrl: string | null;
+};
+
 export type Brand = {
   name: string;
   shortName: string;
@@ -207,6 +262,7 @@ export type Brand = {
   contact: BrandContact;
   affiliates: BrandAffiliates;
   socials: SocialLink[];
+  theme: BrandTheme;
 };
 
 export const brand: Brand = ${JSON.stringify(brand, null, 2)};
@@ -219,5 +275,6 @@ ok(`Brand: ${brand.name} (${brand.shortName})`);
 ok(`Author: ${brand.author.name}${brand.author.emitPersonSchema ? " — Person schema ON" : " — Organization fallback"}`);
 ok(`Amazon tag: ${brand.affiliates.amazonTag}`);
 ok(`Socials: ${brand.socials.length === 0 ? "(none)" : brand.socials.map((s) => s.platform).join(", ")}`);
+ok(`Theme: primary ${brand.theme.primaryColor} / dark ${brand.theme.primaryColorDark} / logo ${brand.theme.logoUrl ?? "(monogram fallback)"}`);
 
 console.log(`\nNext steps:\n  1. Review git diff on lib/brand.ts\n  2. Drop the client's author photo at ${brand.author.photoUrl ?? "(photoUrl is null — set it in client.config.json if you have one)"}\n  3. Set env vars in Vercel (see docs/CLIENT_SETUP.md step 3)\n  4. Commit and push\n`);

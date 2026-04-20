@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 import { brand } from "@/lib/brand";
+import { LogoBadge } from "@/components/LogoBadge";
 
 const categories = [
   { slug: "home-workouts", label: "Workouts" },
@@ -59,7 +60,7 @@ function SubscribePopover() {
     <div ref={ref} className="relative">
       <button
         onClick={() => { setOpen(!open); setStatus("idle"); setErrorMsg(""); }}
-        className="text-sm font-semibold bg-[#059669] hover:bg-[#047857] text-white px-4 py-2 rounded-lg transition-colors"
+        className="brand-primary-btn text-sm font-semibold px-4 py-2 rounded-lg"
       >
         Subscribe
       </button>
@@ -67,7 +68,12 @@ function SubscribePopover() {
         <div className="absolute right-0 top-full mt-2 w-72 bg-white border border-[#E5E5E5] rounded-xl shadow-lg p-4 z-50">
           {status === "success" ? (
             <div className="text-center py-2">
-              <div className="text-[#059669] font-semibold text-sm mb-1">You&apos;re in!</div>
+              <div
+                className="font-semibold text-sm mb-1"
+                style={{ color: "var(--color-primary)" }}
+              >
+                You&apos;re in!
+              </div>
               <p className="text-[#525252] text-xs">Check your inbox for a welcome email.</p>
             </div>
           ) : (
@@ -82,13 +88,14 @@ function SubscribePopover() {
                   placeholder="your@email.com"
                   required
                   autoFocus
-                  className="w-full border border-[#E5E5E5] rounded-lg px-3 py-2 text-sm text-[#0A0A0A] placeholder:text-[#A3A3A3] focus:outline-none focus:ring-2 focus:ring-[#059669] focus:border-transparent"
+                  className="w-full border border-[#E5E5E5] rounded-lg px-3 py-2 text-sm text-[#0A0A0A] placeholder:text-[#A3A3A3] focus:outline-none focus:ring-2 focus:border-transparent"
+                  style={{ outlineColor: "var(--color-primary)" }}
                 />
                 {errorMsg && <p className="text-xs text-red-500">{errorMsg}</p>}
                 <button
                   type="submit"
                   disabled={status === "submitting"}
-                  className="w-full bg-[#059669] hover:bg-[#047857] text-white text-sm font-semibold py-2 rounded-lg transition-colors disabled:opacity-50"
+                  className="brand-primary-btn w-full text-sm font-semibold py-2 rounded-lg"
                 >
                   {status === "submitting" ? "Subscribing…" : "Subscribe — it's free"}
                 </button>
@@ -109,9 +116,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-            <span className="w-8 h-8 rounded-lg bg-[#059669] flex items-center justify-center text-white text-[11px] font-bold tracking-tight">
-              {brand.shortName}
-            </span>
+            <LogoBadge />
             <span className="text-lg font-bold text-[#0A0A0A] tracking-tight">
               {brand.name}
             </span>

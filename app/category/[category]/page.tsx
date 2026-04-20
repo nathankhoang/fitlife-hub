@@ -19,7 +19,7 @@ const categoryMeta: Record<Category, { gradient: string; description: string }> 
       "Effective routines you can do anywhere — no gym membership required. Build strength, endurance, and flexibility at home.",
   },
   supplements: {
-    gradient: "from-[#064e3b] to-[#059669]",
+    gradient: "from-[#064e3b] to-[var(--color-primary)]",
     description:
       "Unbiased reviews of protein powders, creatine, pre-workouts, vitamins, and more. Find out what actually works.",
   },
